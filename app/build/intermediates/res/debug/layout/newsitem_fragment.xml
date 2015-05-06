@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg2" >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/newsitem_backBtn"
+            android:src="@mipmap/global_backicon"
+            android:background="#00000000"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="News"
+            android:id="@+id/textView2"
+            android:textColor="#FFFFFF"
+            android:singleLine="false"
+            android:textSize="30dp"
+            android:layout_weight="0.77"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/newsitem_shareBtn"
+            android:src="@mipmap/global_filtericon"
+            android:background="#00000000"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+
+
+    <WebView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:id="@+id/newsitem_themeWebView"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/linearLayout3"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignWithParentIfMissing="false" />
+
+
+    <RelativeLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg2" >
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:weightSum="1">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:cropToPadding="false"
+                android:background="@android:color/transparent"
+                android:id="@+id/newsitem_goodImg"
+                android:src="@mipmap/news_good" />
+
+            <TextView
+                android:text="999"
+                android:id="@+id/newsitem_goodTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dip"
+                android:layout_marginTop="6dip"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF">
+            </TextView>
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:cropToPadding="false"
+                android:background="@android:color/transparent"
+                android:id="@+id/newsitem_favImg"
+                android:src="@mipmap/news_favoriteicon"
+                />
+
+            <TextView android:text="999"
+                android:id="@+id/newsitem_favTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dip"
+                android:layout_marginTop="6dip"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF">
+            </TextView>
+        </TableRow>
+    </RelativeLayout>
+
+
+</RelativeLayout>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/newsitem_fragment.xml -->

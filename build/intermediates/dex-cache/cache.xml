@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\ray\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\support-v4-18.0.0-a54c2a1152708ad69db7e114978a8a7c1b1faae0.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\libs\ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="224c93f1824fa17b96db7250c2e5e2703d45e052">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\ksoap2-android-assembly-3.0.0-jar-with-dependencies-fc6b269358463618728e0dd61e123c3471db2a05.jar" />
+    </item>
+
+</items>
