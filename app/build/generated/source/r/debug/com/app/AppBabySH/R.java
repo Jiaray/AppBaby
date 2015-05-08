@@ -154,13 +154,13 @@ public final class R {
         public static final int listView=0x7f0a0036;
         public static final int loginBtn=0x7f0a0005;
         public static final int newLayout=0x7f0a0014;
-        public static final int new_listView=0x7f0a0016;
         public static final int news_favImg=0x7f0a001b;
         public static final int news_favTxt=0x7f0a001c;
         public static final int news_goodImg=0x7f0a0019;
         public static final int news_goodTxt=0x7f0a001a;
         public static final int news_imageImg=0x7f0a0018;
         public static final int news_newImg=0x7f0a001d;
+        public static final int news_pulldownview=0x7f0a0016;
         public static final int news_titleTxt=0x7f0a0015;
         public static final int newsitem_backBtn=0x7f0a000b;
         public static final int newsitem_favImg=0x7f0a0012;

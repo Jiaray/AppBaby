@@ -3,6 +3,7 @@ package com.app.AppBabySH;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.ListView;
 import com.app.AppBabySH.adapter.NewsAdapter;
 import com.app.AppBabySH.item.NewsItem;
 import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.Common.PullDownView;
+import com.app.Common.ScrollOverListView;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
@@ -22,56 +25,68 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class NewsMainFragment extends Fragment {
+    private static final String TAG = "NewsMainFragment";
     private View rootView;
-    private ListView newslistView;
+    private PullDownView pullDownView;
+    private ScrollOverListView newslistView;
     private NewsAdapter adapter;
     private ProgressDialog pd;
     private MainTabActivity main;
     private ArrayList<NewsItem> newslist;
     private int listPosition = 0;//目前定位
     private boolean isLoading = false;//是否加載中
+    private boolean isInit = true;//是否首次進入
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.newsmain_fragment, container, false);
-            initRootView();
-        }
-        isLoading = false;
+        main = (MainTabActivity) getActivity();
+        rootView = inflater.inflate(R.layout.newsmain_fragment, container, false);
+        pullDownView = (PullDownView) rootView.findViewById(R.id.news_pulldownview);
+        pullDownView.enableAutoFetchMore(true, 0);
+        newslistView = pullDownView.getListView();
+        isInit = true;
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
+
             @Override
             public void run() {
+                Log.v(TAG, "頻道初始化");
                 initListView();
             }
         }, 500);
 
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
-        main = (MainTabActivity) getActivity();
-        return rootView;
-    }
-
-    private void initRootView() {
-        newslistView = (ListView) rootView.findViewById(R.id.new_listView);
-        newslistView.setAdapter(null);
-        newslistView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
 
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onRefresh() {//刷新
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "頻道刷新");
+                        initListView();
+                    }
+                }, 100);
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                listPosition = firstVisibleItem + visibleItemCount;//记录下拉位置
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    //TODO 滑到最底執行的事件
-                }
+            public void onLoadMore() {//加載更多
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "頻道加載更多");
+                        adapter.notifyDataSetChanged();
+                        pullDownView.notifyDidLoadMore(newslist.isEmpty());
+                    }
+                }, 1000);
             }
         });
+
+        isLoading = false;
+        return rootView;
     }
 
     private void initListView() {
@@ -79,8 +94,6 @@ public class NewsMainFragment extends Fragment {
             newslist = new ArrayList<NewsItem>();
         }
         clearList();
-        //String nowDate = ComFun.GetNowDate();
-        //String subDate = ComFun.GetSubDate(-14);
         getData();
     }
 
@@ -103,7 +116,7 @@ public class NewsMainFragment extends Fragment {
                     MyAlertDialog.Show(getActivity(), "沒有任何資訊！");
                     return;
                 }
-                Log.v("Zyo", "取得頻道資料成功 json:" + json.toString());
+                Log.v(TAG, "頻道資料取得成功 json:" + json.toString());
 
                 // TODO 塞值進陣列中
                 if (newslist == null) {
@@ -129,14 +142,12 @@ public class NewsMainFragment extends Fragment {
 
     private void createListView() {
         // TODO 移除當前畫面
-//        LinearLayout myLayout = (LinearLayout) getActivity().findViewById(R.id.newLayout);
-//        myLayout.removeView(rootView);
         ViewGroup parent = (ViewGroup) rootView.getParent();
         if (parent != null) {
             parent.removeView(rootView);
         }
         // TODO 依取得的資料創建 ListView
-        newslistView = (ListView) rootView.findViewById(R.id.new_listView);
+        newslistView = pullDownView.getListView();
         adapter.onCallBack = new NewsAdapter.CallBack() {
 
             @Override
@@ -148,7 +159,19 @@ public class NewsMainFragment extends Fragment {
         newslistView.setAdapter(adapter);
         newslistView.setSelection(listPosition);
         parent.addView(rootView);
-        Log.v("zyo", "Over!");
+        setPullView();
+        Log.v(TAG, "頻道畫面產生完畢!");
+    }
+
+    private void setPullView(){
+        if(isInit){
+            isInit = false;
+            adapter.notifyDataSetChanged();
+            pullDownView.notifyDidDataLoad(false);
+        }else{
+            adapter.notifyDataSetChanged();
+            pullDownView.notifyDidRefresh(newslist.isEmpty());
+        }
     }
 
     /**
@@ -191,6 +214,6 @@ public class NewsMainFragment extends Fragment {
         newsItemFragment.GOOD_CNT = _item.GOOD_CNT;
         newsItemFragment.FAVORITE_CNT = _item.FAVORITE_CNT;
         main.OpenBottom(newsItemFragment);
-        Log.v("zyo", "clickTheme CHLID:" + _item.CHANNEL_ID.toString());
+        Log.v(TAG, "點擊頻道 :" + _item.CHANNEL_ID.toString());
     }
 }

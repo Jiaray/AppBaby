@@ -157,7 +157,7 @@ public class PullDownView extends LinearLayout implements ScrollOverListView.OnS
 		mIsNoMoreData = isNoMoreData;
 		state &= ~STATE_LOADING_MORE;
 		updateFooter();
-		System.out.println("隐藏底部");
+		Log.v(TAG,"隐藏底部");
 		
 	}
 
@@ -395,7 +395,6 @@ public class PullDownView extends LinearLayout implements ScrollOverListView.OnS
 	 */
 	private void updateFooter() {
 		if (!mEnableLoadMore) return;
-		
 		if (mIsNoMoreData) {
 			mFooterTextView.setText("已加载完全部");
 			mFooterLoadingView.setVisibility(View.GONE);
@@ -525,7 +524,7 @@ public class PullDownView extends LinearLayout implements ScrollOverListView.OnS
 			state |= STATE_MOTION_DOWN;
 			mIsPullUpDone = false;
 			mMotionDownLastY = ev.getRawY();
-			Log.d(TAG, "pulldownview.onIntercept:" + mMotionDownLastY);
+			//Log.v(TAG, "pulldownview.onIntercept:" + mMotionDownLastY);
 		}
 		return super.onInterceptTouchEvent(ev);
 	}
