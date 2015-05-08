@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 //for git test
 public class MainTabActivity extends FragmentActivity {
+    private static final String TAG = "MainTabActivity";
     private boolean isActive = false;
     //定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
@@ -45,7 +46,7 @@ public class MainTabActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maintab_layout);
-        Log.v("zyo", "MainTab : onCreate");
+        Log.v(TAG, "onCreate");
         initView();
     }
 
@@ -54,12 +55,12 @@ public class MainTabActivity extends FragmentActivity {
     public void onResume() {
         super.onResume();
         if (UserMstr.userData == null) {
-            Log.v("zyo", "MainTab : UserMstr.userData != null");
+            Log.v(TAG, "onResume : (UserMstr.userData = null)");
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
         }
         if (!isActive) {
-            Log.v("zyo", "MainTab : isActive = false");
+            Log.v(TAG, "onResume : (isActive = false) app 从后台唤醒，进入前台");
             //app 从后台唤醒，进入前台
             isActive = true;
             Intent intent = new Intent(MainTabActivity.this, WelcomeActivity.class);
@@ -78,7 +79,7 @@ public class MainTabActivity extends FragmentActivity {
      * 初始化组件
      */
     private void initView() {
-        Log.v("zyo", "MainTab : initView");
+        Log.v(TAG, "initView : 初始化组件");
         //实例化布局对象
         layoutInflater = LayoutInflater.from(this);
 

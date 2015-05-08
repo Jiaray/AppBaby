@@ -20,6 +20,7 @@ public class WebService {
 
     /**
      * 登入
+     *
      * @param id
      * @param user
      * @param pswd
@@ -31,7 +32,6 @@ public class WebService {
      * @param callBack
      */
     public static void Login(String id, String user, String pswd, String d_type, String d_ver, String d_token, String p1, String p2, WebCallback callBack) {
-        //Log.v("zyo","WebService_Login : "+id+","+user+","+pswd+","+d_type+","+d_ver+","+d_token+","+p1+","+p2);
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_Name", user);
         map.put("Password", pswd);
@@ -46,6 +46,7 @@ public class WebService {
 
     /**
      * 頻道
+     *
      * @param id
      * @param $userID
      * @param $userType
@@ -57,6 +58,14 @@ public class WebService {
         map.put("User_Type", $userType);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Channel_List", map, $callBack);
+    }
+
+    public static void GetSetChannelFavGood(String $webName, String id, String $userID, String $chanlID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Channel_ID", $chanlID);
+        map.put("CheckKey", "");
+        GetJson(id, $webName, map, $callBack);
     }
 
     /**
@@ -94,7 +103,7 @@ public class WebService {
                             } else {
                                 jsonValue = values.optInt("value");
                             }
-						/*如果是JsonAry模式*/
+                        /*如果是JsonAry模式*/
                         } else if (valuesAry != null) {
                             jsonValue = valuesAry;
                         }
@@ -164,6 +173,8 @@ public class WebService {
         }
         return result;
     }
+
+
     /*public static void ExeSql(final String id, final String Sql,
                               final WebCallback callBack) {
         new Thread(new Runnable() {

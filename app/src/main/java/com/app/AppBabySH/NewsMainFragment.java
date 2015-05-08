@@ -19,6 +19,12 @@ import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.EmailHandler;
+import com.umeng.socialize.sso.SmsHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
+import com.umeng.socialize.yixin.controller.UMYXHandler;
 
 import org.json.JSONArray;
 

@@ -72,13 +72,13 @@
             android:weightSum="1">
 
 
-            <ImageView
+            <ImageButton
                 android:scaleType="centerInside"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:cropToPadding="false"
                 android:background="@android:color/transparent"
-                android:id="@+id/newsitem_goodImg"
+                android:id="@+id/newsitem_goodBtn"
                 android:src="@mipmap/news_good" />
 
             <TextView
@@ -92,13 +92,13 @@
                 android:textColor="#FFFFFF">
             </TextView>
 
-            <ImageView
+            <ImageButton
                 android:scaleType="centerInside"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:cropToPadding="false"
                 android:background="@android:color/transparent"
-                android:id="@+id/newsitem_favImg"
+                android:id="@+id/newsitem_favBtn"
                 android:src="@mipmap/news_favoriteicon"
                 />
 

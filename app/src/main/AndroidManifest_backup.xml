@@ -37,15 +37,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>   
-         <activity
+        </activity>
+        <activity
             android:name="com.app.AppBabySH.WelcomeActivity"
             android:screenOrientation="portrait" >
-        </activity>  
+        </activity>
         <activity
             android:name="com.app.AppBabySH.LoginActivity"
             android:screenOrientation="portrait" >
-        </activity>  
+        </activity>
     </application>
 
 </manifest>
