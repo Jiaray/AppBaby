@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 public class MainTabActivity extends FragmentActivity {
     private static final String TAG = "MainTabActivity";
     private boolean isActive = false;
+    private CenterVariable centerV;
     //定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     private ViewGroup mTabHostParent;
@@ -47,6 +49,13 @@ public class MainTabActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maintab_layout);
         Log.v(TAG, "onCreate");
+
+        //取得螢幕寬高
+        centerV = (CenterVariable) getApplicationContext();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        centerV.windowHeight = metrics.heightPixels;
+        centerV.windowWidth = metrics.widthPixels;
         initView();
     }
 
@@ -72,6 +81,7 @@ public class MainTabActivity extends FragmentActivity {
     public void onStop() {
         super.onStop();
         isActive = isBackground(this);
+        Log.v(TAG, "onStop : isActive : " + isActive);
     }
 
 

@@ -24,7 +24,6 @@ public class NewsAdapter extends BaseAdapter {
     public ImageLoader imageLoader;
     private ViewHolder viewHolder;
 
-
     public interface CallBack {
         public void onClick(NewsItem _item);
     }
@@ -61,7 +60,6 @@ public class NewsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         viewHolder = null;
         final NewsItem item = list.get(position);
         if (convertView == null) {
@@ -84,11 +82,6 @@ public class NewsAdapter extends BaseAdapter {
             viewHolder.goodTxt.setText(item.GOOD_CNT);
             viewHolder.favTxt.setText(item.FAVORITE_CNT);
             viewHolder.item = item;
-            /*if (item.R_STATUS.equals("0")) {
-                viewHolder.bg.setImageResource(R.drawable.list_bg_yellow);
-            } else {
-                viewHolder.bg.setImageResource(R.drawable.internalmsg_listbg);
-            }*/
             imageLoader.DisplayImage(item.THUMB_URL, viewHolder.mainIMGIMG);
             viewHolder.mainIMGIMG.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,14 +91,11 @@ public class NewsAdapter extends BaseAdapter {
             });
         }
         return convertView;
-
     }
-
 
     static class ViewHolder {
         TextView titleTxt, goodTxt, favTxt;
         ImageView newIMG,mainIMGIMG,goodIMG,favIMG;
         NewsItem item;
     }
-
 }

@@ -19,22 +19,10 @@ import com.app.Common.WebService;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.facebook.controller.UMFacebookHandler;
-import com.umeng.socialize.facebook.controller.UMFacebookHandler.PostType;
-import com.umeng.socialize.facebook.media.FaceBookShareContent;
-import com.umeng.socialize.flickr.controller.UMFlickrHandler;
-import com.umeng.socialize.flickr.media.FlickrShareContent;
-import com.umeng.socialize.instagram.controller.UMInstagramHandler;
-import com.umeng.socialize.instagram.media.InstagramShareContent;
-import com.umeng.socialize.kakao.controller.UMKakaoHandler;
-import com.umeng.socialize.kakao.media.KakaoShareContent;
 import com.umeng.socialize.laiwang.controller.UMLWHandler;
 import com.umeng.socialize.laiwang.media.LWDynamicShareContent;
 import com.umeng.socialize.laiwang.media.LWShareContent;
-import com.umeng.socialize.line.controller.UMLineHandler;
-import com.umeng.socialize.line.media.LineShareContent;
 import com.umeng.socialize.media.GooglePlusShareContent;
-import com.umeng.socialize.media.MailShareContent;
 import com.umeng.socialize.media.QQShareContent;
 import com.umeng.socialize.media.QZoneShareContent;
 import com.umeng.socialize.media.RenrenShareContent;
@@ -43,8 +31,6 @@ import com.umeng.socialize.media.SmsShareContent;
 import com.umeng.socialize.media.TencentWbShareContent;
 import com.umeng.socialize.media.TwitterShareContent;
 import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMVideo;
-import com.umeng.socialize.media.UMusic;
 import com.umeng.socialize.sso.EmailHandler;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.RenrenSsoHandler;
@@ -52,8 +38,6 @@ import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.TencentWBSsoHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
-import com.umeng.socialize.tumblr.controller.UMTumblrHandler;
-import com.umeng.socialize.tumblr.media.TumblrShareContent;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.umeng.socialize.weixin.media.CircleShareContent;
 import com.umeng.socialize.weixin.media.WeiXinShareContent;
@@ -64,7 +48,6 @@ import com.umeng.socialize.yixin.controller.UMYXHandler;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * Created by ray on 2015/4/29.
@@ -110,17 +93,12 @@ public class NewsItemFragment extends BaseFragment {
             rootView = inflater.inflate(R.layout.newsitem_fragment,
                     container, false);
             creatRootView();
+            // 设置分享的内容
+            setShareContent();
+            main = (MainTabActivity) getActivity();
+            /* 初始化本頁面 */
+            thisFragment = this;
         }
-
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
-        // 设置分享的内容
-        setShareContent();
-        main = (MainTabActivity) getActivity();
-        /* 初始化本頁面 */
-        thisFragment = this;
         return rootView;
     }
 

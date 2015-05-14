@@ -61,6 +61,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
      * 判斷登入
      */
     private void CheckLogin() {
+        pd = MyAlertDialog.ShowProgress(this, "資料確認中...");
+        pd.show();
         File dbDatabase = getApplicationContext().getDatabasePath("appbaby.db");
         boolean getCheckDB = sqlLocal.CheckDB(dbDatabase);
         boolean getCheckBaseTable = false;
@@ -73,14 +75,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     // 自動登錄
                     checkLoginData();
                 } else {
+                    pd.cancel();
                     DisplayToast("0筆");
                     return;
                 }
             } else {
+                pd.cancel();
                 DisplayToast("沒找到表");
                 return;
             }
         } else {// 沒找到DB 等待輸入
+            pd.cancel();
             DisplayToast("首次開啟，尚無資料");
             return;
         }
@@ -152,8 +157,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             MyAlertDialog.Show(this, "当前网络不可用，请设置后重试！");
             pd.cancel();
             return;
-        }else{
-            pd.cancel();
         }
 
         WebService.Login(null, UserMstr.userData.getUserID(),
@@ -179,6 +182,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                         UserMstr.userData.setIdentity(json.optJSONObject(0)
                                 .optString("USER_ID"));
                         GetUserDataSuccess();
+                        pd.cancel();
                     }
                 });
     }

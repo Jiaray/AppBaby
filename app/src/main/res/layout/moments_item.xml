@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:background="#FFFF00">
+
+
+    <ImageView
+        android:id="@+id/momentsitem_headerIMG"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_column="0"
+        android:shape="rectangle"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/moments_listview_avatar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/momentsitem_headerIMG"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/momentsitem_nameTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="張老師"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/momentsitem_titleTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="5dp"
+            android:text="new Circle 2-1"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#888888" />
+
+        <GridView
+            android:id="@+id/momentsitem_gridView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginRight="5dp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/momentsitem_classTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="APP測試園-B班"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FF3333" />
+
+            <ImageButton
+                android:id="@+id/momentsitem_interactBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="5dp"
+                android:background="#00000000"
+                android:src="@drawable/moments_message_normal" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/momentsitem_dateTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="2015/04/13 13:58"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#888888" />
+
+
+        <LinearLayout
+            android:id="@+id/momentsitem_goodlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2828FF"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@mipmap/news_good" />
+
+            <TextView
+                android:id="@+id/momentsitem_peopleTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="XXX老師"
+                android:textColor="#930000"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/momentsitem_replylayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#28FF28"
+            android:orientation="vertical"></LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

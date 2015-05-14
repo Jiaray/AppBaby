@@ -45,8 +45,22 @@ public class WebService {
     }
 
     /**
+     * 取得班級圈列表-依班級
+     * @param id
+     * @param $userID
+     * @param $classID
+     * @param $callBack
+     */
+    public static void GetCircleListClass(String id, String $userID, String $classID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Class_ID", $classID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_List_Class", map, $callBack);
+    }
+
+    /**
      * 頻道
-     *
      * @param id
      * @param $userID
      * @param $userType
@@ -60,6 +74,14 @@ public class WebService {
         GetJson(id, "Baby_Get_Channel_List", map, $callBack);
     }
 
+    /**
+     * 取得或設定喜歡收藏的資訊
+     * @param $webName
+     * @param id
+     * @param $userID
+     * @param $chanlID
+     * @param $callBack
+     */
     public static void GetSetChannelFavGood(String $webName, String id, String $userID, String $chanlID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
