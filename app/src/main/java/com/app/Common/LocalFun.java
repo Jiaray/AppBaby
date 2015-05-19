@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LocalFun {
+	private static final String TAG = "LocalFun";
 	private SQLiteDatabase Database;
 	private Cursor cursor;
 	private Handler mHandler = new Handler();
@@ -38,7 +39,7 @@ public class LocalFun {
 			}
 			closeDB();
 		} catch (Exception e) {
-			Log.v("zyo", "RunSqlOnlyOne : SqlError:" + sql);
+			Log.v(TAG, "RunSqlOnlyOne : SqlError:" + sql);
 		}
 		if (RS == null)
 			RS = "";
@@ -52,12 +53,13 @@ public class LocalFun {
 	 * 
 	 */
 	public void RunSqlNoQuery(String sql) {
+		//Log.v(TAG, "執行SQL:" + sql);
 		Database = LocalDB.GetOpenHelper().getWritableDatabase();
 		try {
 			Database.execSQL(sql);
 			closeDB();
 		} catch (Exception e) {
-			Log.v("zyo", "ExecuteNoQuery : SqlError:" + sql);
+			Log.v(TAG, "ExecuteNoQuery : SqlError:" + sql);
 		}
 	}
 
@@ -67,7 +69,7 @@ public class LocalFun {
 	 * @return True/False
 	 */
 	public boolean CheckDB(File dataBase) {
-		Log.v("zyo", "LocalFun : CheckDB");
+		Log.v(TAG, "LocalFun : CheckDB");
 		return dataBase.exists();
 	}
 
@@ -130,13 +132,13 @@ public class LocalFun {
 						cursor.moveToNext();
 					}
 				}
-				Log.v("zyo", "RunSqlDataTable:SDDD");
+				Log.v(TAG, "RunSqlDataTable:SDDD");
 			}
-			Log.v("zyo", "RunSqlDataTable:cursor:" + cursor.getCount());
+			Log.v(TAG, "RunSqlDataTable:cursor:" + cursor.getCount());
 			closeDB();
 			return list;
 		} catch (Exception e) {
-			Log.v("zyo", "RunSqlDataTable:SqlError:" + e + " SQL=" + sql);
+			Log.v(TAG, "RunSqlDataTable:SqlError:" + e + " SQL=" + sql);
 			return null;
 		}
 	}

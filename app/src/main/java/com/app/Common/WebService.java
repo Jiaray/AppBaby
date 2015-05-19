@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.util.Log;
 
 public class WebService {
+    private static final String TAG = "WebService";
     public final static Handler handler = new Handler();
 
     /**
@@ -45,12 +46,25 @@ public class WebService {
     }
 
     /**
-     * 取得班級圈列表-依班級
+     * 取得使用者詳細資訊
      * @param id
+     * @param $userName
      * @param $userID
-     * @param $classID
-     * @param $callBack
+     * @param callBack
      */
+    public static void GetUserInfo(String id, String $userName,String $userID, WebCallback callBack){
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_Name", $userName);
+        map.put("User_ID", $userID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_User_Info ", map, callBack);
+    }
+
+
+
+
+    /*========  班級圈 Moments  ========*/
+    //  取得班級圈列表-依班級
     public static void GetCircleListClass(String id, String $userID, String $classID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
@@ -58,14 +72,59 @@ public class WebService {
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Circle_List_Class", map, $callBack);
     }
+    //  班級圈刪除 (發表人才能刪)
+    public static void SetCircleDelete(String id, String $circleID, String $userID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("User_ID", $userID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Circle_Delete", map, $callBack);
+    }
+    //  班級圈是否已按讚
+    public static void GetCircleHadGood(String id, String $circleID, String $userID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("User_ID", $userID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_Had_Good", map, $callBack);
+    }
+    //  班級圈按讚
+    public static void SetCircleGood(String id, String $circleID, String $userID, WebCallback $callBack) {
+        Log.v(TAG,"$circleID:"+$circleID+" $userID:"+$userID);
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("User_ID", $userID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Circle_Good", map, $callBack);
+    }
+    //  班級圈是否已收藏到成長檔案
+    public static void GetCircleHadKeepToGrow(String id, String $circleID, String $userID, String $growFrom, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("User_ID", $userID);
+        map.put("Grow_From", $growFrom);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_Had_KeepTo_Grow", map, $callBack);
+    }
+    //  班級圈回覆
+    public static void SetCircleReply(String id, String $circleID, String $userID, String $replydesc, String $atreplysn, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("User_ID", $userID);
+        map.put("Reply_Desc", $replydesc);
+        map.put("AT_Reply_SN", $atreplysn);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Circle_Reply", map, $callBack);
+    }
 
-    /**
-     * 頻道
-     * @param id
-     * @param $userID
-     * @param $userType
-     * @param $callBack
-     */
+
+
+
+
+
+
+    /*========  頻道 News  ========*/
+    //  取得頻道列表
     public static void GetNews(String id, String $userID, String $userType, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
@@ -74,14 +133,7 @@ public class WebService {
         GetJson(id, "Baby_Get_Channel_List", map, $callBack);
     }
 
-    /**
-     * 取得或設定喜歡收藏的資訊
-     * @param $webName
-     * @param id
-     * @param $userID
-     * @param $chanlID
-     * @param $callBack
-     */
+    //  取得或設定喜歡收藏的資訊
     public static void GetSetChannelFavGood(String $webName, String id, String $userID, String $chanlID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
@@ -90,6 +142,13 @@ public class WebService {
         GetJson(id, $webName, map, $callBack);
     }
 
+
+
+
+
+
+
+    /*========  共用 Common  ========*/
     /**
      * 處理Json
      *

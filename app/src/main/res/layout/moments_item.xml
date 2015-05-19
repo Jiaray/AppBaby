@@ -7,11 +7,11 @@
 
 
     <ImageView
-        android:id="@+id/momentsitem_headerIMG"
+        android:id="@+id/imgMomentsItemHeader"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:scaleType="centerCrop"
         android:layout_column="0"
-        android:shape="rectangle"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="5dp"
         android:background="@drawable/moments_listview_avatar" />
@@ -19,11 +19,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/momentsitem_headerIMG"
+        android:layout_toRightOf="@+id/imgMomentsItemHeader"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/momentsitem_nameTxt"
+            android:id="@+id/txtMomentsItemName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -33,7 +33,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/momentsitem_titleTxt"
+            android:id="@+id/txtMomentsItemTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -43,7 +43,7 @@
             android:textColor="#888888" />
 
         <GridView
-            android:id="@+id/momentsitem_gridView"
+            android:id="@+id/gdvMomentsItemPic"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginRight="5dp" />
@@ -55,9 +55,8 @@
             android:orientation="horizontal"
             android:weightSum="1"
             android:layout_marginTop="10dp">
-
             <TextView
-                android:id="@+id/momentsitem_classTxt"
+                android:id="@+id/txtMomentsItemClassName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -67,7 +66,7 @@
                 android:textColor="#FF3333" />
 
             <ImageButton
-                android:id="@+id/momentsitem_interactBtn"
+                android:id="@+id/btnMomentsItemCommentFun"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -75,10 +74,97 @@
                 android:layout_marginRight="5dp"
                 android:background="#00000000"
                 android:src="@drawable/moments_message_normal" />
+            <LinearLayout
+                android:id="@+id/lyMomentsItemComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal"
+                android:background="#ff21ffe5"
+                android:layout_alignParentBottom="false"
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_marginRight="50dp">
+
+                <ImageButton
+                    android:id="@+id/imgbMomentsItemDel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_listview_trangle"
+                    android:background="#00000000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="刪除" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_tableview_line"/>
+
+                <ImageButton
+                    android:id="@+id/imgbMomentsItemGood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_listview_favorite"
+                    android:background="#00000000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="讚" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_tableview_line"/>
+
+                <ImageButton
+                    android:id="@+id/imgbMomentsItemFav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_listview_favorite"
+                    android:background="#00000000"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="收藏" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_tableview_line"/>
+
+                <ImageButton
+                    android:id="@+id/imgbMomentsItemComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/moments_listview_comment"
+                    android:background="#00000000"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="評論" />
+            </LinearLayout>
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/momentsitem_dateTxt"
+            android:id="@+id/txtMomentsItemDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -88,7 +174,7 @@
 
 
         <LinearLayout
-            android:id="@+id/momentsitem_goodlayout"
+            android:id="@+id/lyMomentsItemGood"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#2828FF"
@@ -100,7 +186,7 @@
                 android:src="@mipmap/news_good" />
 
             <TextView
-                android:id="@+id/momentsitem_peopleTxt"
+                android:id="@+id/txtMomentsItemPeople"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -111,10 +197,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/momentsitem_replylayout"
+            android:id="@+id/lyMomentsItemReply"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#28FF28"
             android:orientation="vertical"></LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -3,14 +3,11 @@ package com.app.AppBabySH;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import com.app.AppBabySH.adapter.NewsAdapter;
 import com.app.AppBabySH.item.NewsItem;
@@ -19,12 +16,6 @@ import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.sso.EmailHandler;
-import com.umeng.socialize.sso.SmsHandler;
-import com.umeng.socialize.weixin.controller.UMWXHandler;
-import com.umeng.socialize.yixin.controller.UMYXHandler;
 
 import org.json.JSONArray;
 
@@ -107,7 +98,7 @@ public class NewsMainFragment extends Fragment {
     private void getData() {
         pd = MyAlertDialog.ShowProgress(getActivity(), "資料讀取中...");
         pd.show();
-        WebService.GetNews(null, UserMstr.userData.getIdentity(), "P", new WebService.WebCallback() {
+        WebService.GetNews(null, UserMstr.userData.getUserID(), "P", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {

@@ -1,14 +1,8 @@
 package com.app.AppBabySH.adapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,15 +20,6 @@ import com.app.AppBabySH.R;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import lazylist.ImageLoader;
@@ -45,7 +30,7 @@ import lazylist.ImageLoader;
 public class MomentsAdapter extends BaseAdapter {
     private static final String TAG = "MomentsAdapter";
     private LayoutInflater minflater;
-    private ArrayList<MomentsItem> list;// 資料
+    private ArrayList<MomentsItem> list;
     private ArrayList<MomentsImageItem> momentsIMGlist;
     public ImageLoader imageLoader;
     private ViewHolder viewHolder;
@@ -55,9 +40,11 @@ public class MomentsAdapter extends BaseAdapter {
     private String targetNameColor = "#930000";
     private CenterVariable centerV;
     private MomentsImageAdapter adapter;
+    private ViewGroup onClickVG;
+    private View targetV;
 
     public interface CallBack {
-        public void onClick(MomentsItem _item);
+        public void onClick(String $actionType, MomentsItem $item);
     }
 
     public CallBack onCallBack;
@@ -69,6 +56,14 @@ public class MomentsAdapter extends BaseAdapter {
         this.minflater = LayoutInflater.from(context);
         this.list = _list;
         imageLoader = new ImageLoader(context.getApplicationContext());
+    }
+
+    static class ViewHolder {
+        TextView mTxtName, mTxtTitle, mTxtClass, mTxtDate;
+        ImageView mImgHeader;
+        ImageButton mImgbCommentFun, mImgbDel, mImgbGood, mImgbFav, mImgbComment;
+        GridView mGdvPic;
+        LinearLayout mLyComment, mLyGood, mLyReply;
     }
 
     @Override
@@ -93,26 +88,32 @@ public class MomentsAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = minflater.inflate(R.layout.moments_item, null);
-            viewHolder.headerIMG = (ImageView) convertView.findViewById(R.id.momentsitem_headerIMG);
-            viewHolder.nameTxt = (TextView) convertView.findViewById(R.id.momentsitem_nameTxt);
-            viewHolder.titleTxt = (TextView) convertView.findViewById(R.id.momentsitem_titleTxt);
-            viewHolder.gridView = (GridView) convertView.findViewById(R.id.momentsitem_gridView);
-            viewHolder.classTxt = (TextView) convertView.findViewById(R.id.momentsitem_classTxt);
-            viewHolder.interactBtn = (ImageButton) convertView.findViewById(R.id.momentsitem_interactBtn);
-            viewHolder.dateTxt = (TextView) convertView.findViewById(R.id.momentsitem_dateTxt);
-            viewHolder.goodLayout = (LinearLayout) convertView.findViewById(R.id.momentsitem_goodlayout);
-            viewHolder.replyLayout = (LinearLayout) convertView.findViewById(R.id.momentsitem_replylayout);
+            viewHolder.mImgHeader = (ImageView) convertView.findViewById(R.id.imgMomentsItemHeader);
+            viewHolder.mTxtName = (TextView) convertView.findViewById(R.id.txtMomentsItemName);
+            viewHolder.mTxtTitle = (TextView) convertView.findViewById(R.id.txtMomentsItemTitle);
+            viewHolder.mGdvPic = (GridView) convertView.findViewById(R.id.gdvMomentsItemPic);
+            viewHolder.mTxtClass = (TextView) convertView.findViewById(R.id.txtMomentsItemClassName);
+            viewHolder.mLyComment = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemComment);
+            viewHolder.mImgbCommentFun = (ImageButton) convertView.findViewById(R.id.btnMomentsItemCommentFun);
+            viewHolder.mImgbDel = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemDel);
+            viewHolder.mImgbGood = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemGood);
+            viewHolder.mImgbFav = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemFav);
+            viewHolder.mImgbComment = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemComment);
+            viewHolder.mTxtDate = (TextView) convertView.findViewById(R.id.txtMomentsItemDate);
+            viewHolder.mLyGood = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemGood);
+            viewHolder.mLyReply = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemReply);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         if (item != null) {
-            imageLoader.DisplayImage(item.USER_AVATAR, viewHolder.headerIMG);
-            viewHolder.nameTxt.setText(item.NIC_NAME);
-            viewHolder.titleTxt.setText(item.DESCRIPTION);
-            viewHolder.classTxt.setText(item.SCHOOL_NAME + item.CLASS_NAME);
-            viewHolder.dateTxt.setText(item.ENTRY_DATE + item.ENTRY_TIME);
+            imageLoader.DisplayRoundedCornerImage(item.USER_AVATAR, viewHolder.mImgHeader);
+            viewHolder.mLyComment.setVisibility(View.GONE);
+            viewHolder.mTxtName.setText(item.NIC_NAME);
+            viewHolder.mTxtTitle.setText(item.DESCRIPTION);
+            viewHolder.mTxtClass.setText(item.SCHOOL_NAME + item.CLASS_NAME);
+            viewHolder.mTxtDate.setText(item.ENTRY_DATE + item.ENTRY_TIME);
 
             // TODO 創建圖片
             createImage(item, convertView);
@@ -123,18 +124,14 @@ public class MomentsAdapter extends BaseAdapter {
             // TODO 創建回覆列表
             createReply(item, convertView);
 
-
-            viewHolder.interactBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.v(TAG, "設定:" + item.CIRCLE_ID);
-                    //onCallBack.onClick(item);
-                }
-            });
+            viewHolder.mImgbCommentFun.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mImgbDel.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mImgbGood.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mImgbFav.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mImgbComment.setOnClickListener(new MyOnClickListener(item));
         }
         return convertView;
     }
-
 
 
     /*創建圖示*/
@@ -142,44 +139,44 @@ public class MomentsAdapter extends BaseAdapter {
         //清空IMG資料列
         if (momentsIMGlist != null) {
             momentsIMGlist.clear();
-        }else{
+        } else {
             momentsIMGlist = new ArrayList<MomentsImageItem>();
         }
-        viewHolder.gridView.setAdapter(null);
+        viewHolder.mGdvPic.setAdapter(null);
         adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist);
 
         //設定顯示列數
-        switch (item.ATCH.size()){
+        switch (item.ATCH.size()) {
             case 1:
-                viewHolder.gridView.setNumColumns(1);
+                viewHolder.mGdvPic.setNumColumns(1);
                 break;
             case 4:
             case 2:
-                viewHolder.gridView.setNumColumns(2);
+                viewHolder.mGdvPic.setNumColumns(2);
                 break;
             default:
-                viewHolder.gridView.setNumColumns(3);
+                viewHolder.mGdvPic.setNumColumns(3);
                 break;
         }
 
         //先把高度設定好(原因:GridView in ListView 當內容 Adapter 後，畫面無法展開)
-        ViewGroup.LayoutParams  lp = viewHolder.gridView.getLayoutParams();
-        if(item.ATCH.size() == 0){
+        ViewGroup.LayoutParams lp = viewHolder.mGdvPic.getLayoutParams();
+        if (item.ATCH.size() == 0) {
             lp.height = 0;
-        }else if(item.ATCH.size() == 1){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[2]);
-        }else if(item.ATCH.size() == 2){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[1]);
-        }else if(item.ATCH.size() == 3){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[0]);
-        }else if(item.ATCH.size() == 4){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[1]) * 2;
-        }else if(item.ATCH.size() > 4 && item.ATCH.size() <= 6){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[0]) * 2;
-        }else if(item.ATCH.size() > 6 && item.ATCH.size() <= 9){
-            lp.height = (int)(centerV.windowWidth * centerV.momentsImageSizeAry[0]) * 3;
+        } else if (item.ATCH.size() == 1) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[2]);
+        } else if (item.ATCH.size() == 2) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[1]);
+        } else if (item.ATCH.size() == 3) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[0]);
+        } else if (item.ATCH.size() == 4) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[1]) * 2;
+        } else if (item.ATCH.size() > 4 && item.ATCH.size() <= 6) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[0]) * 2;
+        } else if (item.ATCH.size() > 6 && item.ATCH.size() <= 9) {
+            lp.height = (int) (centerV.windowWidth * centerV.momentsImageSizeAry[0]) * 3;
         }
-        viewHolder.gridView.setLayoutParams(lp);
+        viewHolder.mGdvPic.setLayoutParams(lp);
 
         //創建內容
         i = -1;
@@ -191,29 +188,29 @@ public class MomentsAdapter extends BaseAdapter {
             imgitem.SEQ = item.ATCH.get(i).optString("SEQ");
             momentsIMGlist.add(imgitem);
         }
-        viewHolder.gridView.setAdapter(adapter);
+        viewHolder.mGdvPic.setAdapter(adapter);
     }
 
     /*設定按讚人數*/
     private void setGoodInfo(MomentsItem item) {
         if (item.GOOD.size() == 0) {
-            viewHolder.goodLayout.setVisibility(View.GONE);
+            viewHolder.mLyGood.setVisibility(View.GONE);
         } else {
-            viewHolder.goodLayout.setVisibility(View.VISIBLE);
+            viewHolder.mLyGood.setVisibility(View.VISIBLE);
             contentStr = "";
             i = -1;
             while (++i < item.GOOD.size()) {
                 contentStr += item.GOOD.get(i).optString("NIC_NAME");
                 if ((i + 1) < item.GOOD.size()) contentStr += ",";
             }
-            TextView peopleTxt = (TextView) viewHolder.goodLayout.findViewById(R.id.momentsitem_peopleTxt);
+            TextView peopleTxt = (TextView) viewHolder.mLyGood.findViewById(R.id.txtMomentsItemPeople);
             peopleTxt.setText(contentStr);
         }
     }
 
     /*創建回覆列表*/
     private void createReply(MomentsItem item, View convertView) {
-        viewHolder.replyLayout.removeAllViews();
+        viewHolder.mLyReply.removeAllViews();
         i = -1;
         while (++i < item.REPLY.size()) {
             Button replyBtn = new Button(convertView.getContext());
@@ -235,17 +232,49 @@ public class MomentsAdapter extends BaseAdapter {
             }
             contentStr += item.REPLY.get(i).optString("REPLY_DESC");
             replyBtn.setText(Html.fromHtml(contentStr));
-            viewHolder.replyLayout.addView(replyBtn);
+            viewHolder.mLyReply.addView(replyBtn);
         }
     }
 
-    static class ViewHolder {
-        TextView nameTxt, titleTxt, classTxt, dateTxt;
-        ImageView headerIMG;
-        ImageButton interactBtn;
-        GridView gridView;
-        LinearLayout goodLayout, replyLayout;
+
+    /*點擊按鈕監聽*/
+    class MyOnClickListener implements View.OnClickListener {
+        private MomentsItem callBackItem;
+
+        public MyOnClickListener(MomentsItem $item) {
+            callBackItem = $item;
+        }
+
+        public void onClick(View v) {
+            switch (v.getId()) {
+                //Open Comment
+                case R.id.btnMomentsItemCommentFun:
+                    onClickVG = (ViewGroup) v.getParent();
+                    targetV = onClickVG.findViewById(R.id.lyMomentsItemComment);
+                    if (targetV.isShown()) {
+                        targetV.setVisibility(View.GONE);
+                    } else {
+                        targetV.setVisibility(View.VISIBLE);
+                    }
+                    break;
+
+                //About Comment
+                case R.id.imgbMomentsItemDel://Del Circle
+                    onCallBack.onClick("del", callBackItem);
+                    break;
+                case R.id.imgbMomentsItemGood://Set Circle Good
+                    onCallBack.onClick("good", callBackItem);
+                    break;
+                case R.id.imgbMomentsItemFav://Fav Circle
+                    onCallBack.onClick("fav", callBackItem);
+                    break;
+                case R.id.imgbMomentsItemComment://Add Comment for Circle
+                    onCallBack.onClick("comment", callBackItem);
+                    break;
+            }
+        }
     }
+
 }
 
 

@@ -172,7 +172,7 @@ public class NewsItemFragment extends BaseFragment {
      * 取得收藏狀態
      */
     private void getFavState() {
-        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Favorite", null, UserMstr.userData.getIdentity(), CHANNEL_ID, new WebService.WebCallback() {
+        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -190,7 +190,7 @@ public class NewsItemFragment extends BaseFragment {
      * 設定收藏狀態
      */
     private void setFavState() {
-        WebService.GetSetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getIdentity(), CHANNEL_ID, new WebService.WebCallback() {
+        WebService.GetSetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -207,7 +207,7 @@ public class NewsItemFragment extends BaseFragment {
      * 取得喜歡狀態
      */
     private void getGoodState() {
-        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Good", null, UserMstr.userData.getIdentity(), CHANNEL_ID, new WebService.WebCallback() {
+        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Good", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -225,7 +225,7 @@ public class NewsItemFragment extends BaseFragment {
      * 設定喜歡狀態
      */
     private void setGoodState() {
-        WebService.GetSetChannelFavGood("Baby_Set_Channel_Good ", null, UserMstr.userData.getIdentity(), CHANNEL_ID, new WebService.WebCallback() {
+        WebService.GetSetChannelFavGood("Baby_Set_Channel_Good ", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {

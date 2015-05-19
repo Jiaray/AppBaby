@@ -21,12 +21,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
+    private static final String TAG = "LoginActivity";
     private EditText idTxt, pwTxt;
     private Button loginBtn;
     private ProgressDialog pd;
@@ -38,16 +40,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         setContentView(R.layout.login_activity);
-        Log.v("zyo", "LoginActivity : onCreate");
         InitView();
         CheckLogin();
-        //sql查询
-        //WebService.GetJsonTable(null, "sql", new WebCallback() {
-        //	@Override
-        //	public void CompleteCallback(String id, Object obj) {
-        //		ArrayList<HashMap<String, String>> arr = (ArrayList<HashMap<String, String>>) obj;
-        //	}
-        //});
     }
 
     private void InitView() {
@@ -98,14 +92,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
      */
     private boolean Display_Local_Data_To_Screen() {
         // TODO 自動產生的方法 Stub
-        List<Map<String, String>> wLocal_Data = sqlLocal
-                .RunSqlDataTable(LocalSQLCode.SQLite_GetMSTRList());
+        List<Map<String, String>> wLocal_Data = sqlLocal.RunSqlDataTable(LocalSQLCode.SQLite_GetMSTRList());
         if (wLocal_Data != null) {
-            Log.v("zyo", "取得本機資料 ID = " + wLocal_Data.get(0).get("USER_ID") + "||PW = " + wLocal_Data.get(0).get("USER_PSWD"));
+            Log.v(TAG, "取得本機資料 ID = " + wLocal_Data.get(0).get("USER_NAME") + "||PW = " + wLocal_Data.get(0).get("USER_PSWD"));
             UserMstr.userData = new UserData();
-            UserMstr.userData.setUserID(wLocal_Data.get(0).get("USER_ID"));
+            UserMstr.userData.setUserName(wLocal_Data.get(0).get("USER_NAME"));
             UserMstr.userData.setUserPW(wLocal_Data.get(0).get("USER_PSWD"));
-            idTxt.setText(UserMstr.userData.getUserID());
+            idTxt.setText(UserMstr.userData.getUserName());
             pwTxt.setText(UserMstr.userData.getUserPW());
             if (UserMstr.userData.getUserPW().equals("")) {
                 return false;
@@ -124,7 +117,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.loginBtn:
-                Log.v("zyo", "LoginActivity : 點擊登入按鈕");
+                Log.v(TAG, "點擊登入按鈕");
                 checkLoginData();
                 overridePendingTransition(android.R.anim.fade_in, R.anim.out_to_bottom);
                 break;
@@ -132,7 +125,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     private void checkLoginData() {
-        Log.v("zyo", "LoginActivity : 初步確認輸入的資料");
+        Log.v(TAG, "初步確認輸入的資料");
         if (idTxt.getText().toString().equals("")) {
             DisplayToast("请输入用戶名称");
             return;
@@ -145,13 +138,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         pd.show();
 
         if (UserMstr.userData == null) UserMstr.userData = new UserData();
-        UserMstr.userData.setUserID(idTxt.getText().toString());
+        UserMstr.userData.setUserName(idTxt.getText().toString());
         UserMstr.userData.setUserPW(pwTxt.getText().toString());
         connectWebLogin();
     }
 
     private void connectWebLogin() {
-        Log.v("zyo", "LoginActivity : 連結至網路確認登入資料");
+        Log.v(TAG, "連結至網路確認登入資料");
         /** 判斷網路 */
         if (!ComFun.checkNetworkState(this)) {
             MyAlertDialog.Show(this, "当前网络不可用，请设置后重试！");
@@ -159,7 +152,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        WebService.Login(null, UserMstr.userData.getUserID(),
+        WebService.Login(null, UserMstr.userData.getUserName(),
                 UserMstr.userData.getUserPW(), "Android", "1234", "1234", "1234", "1234", new WebService.WebCallback() {
 
                     @Override
@@ -177,20 +170,48 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                             pd.cancel();
                             return;
                         }
-                        Log.v("Zyo", "登入成功，取得會員 json:" + json.toString());
-                        finish();
-                        UserMstr.userData.setIdentity(json.optJSONObject(0)
-                                .optString("USER_ID"));
-                        GetUserDataSuccess();
-                        pd.cancel();
+                        Log.v(TAG, "登入成功，取得會員 json:" + json.toString());
+                        UserMstr.userData.setUserID(json.optJSONObject(0).optString("USER_ID"));
+                        getUserInfo();
                     }
                 });
+    }
+
+    private void getUserInfo() {
+        WebService.GetUserInfo(null, UserMstr.userData.getUserName(),
+                UserMstr.userData.getUserID(), new WebService.WebCallback() {
+
+                    @Override
+                    public void CompleteCallback(String id, Object obj) {
+                        Log.v(TAG, "obj:" + obj);
+                        // TODO Auto-generated method stub
+                        if (obj == null) {
+                            MyAlertDialog.Show(LoginActivity.this, "账号或密码错误！");
+                            pd.cancel();
+                            return;
+                        }
+                        JSONArray json = (JSONArray) obj;
+
+                        if (json.length() == 0) {
+                            MyAlertDialog.Show(LoginActivity.this, "无登录权限！");
+                            pd.cancel();
+                            return;
+                        }
+                        UserMstr.userData.setBaseInfoAry(json.optJSONObject(0).optJSONArray("BASE_INFO"));
+                        UserMstr.userData.setChildinfoAry(json.optJSONObject(0).optJSONArray("CHILD_INFO"));
+                        UserMstr.userData.setClassInfoAry(json.optJSONObject(0).optJSONArray("CLASS_INFO"));
+                        UserMstr.userData.setPushInfoAry(json.optJSONObject(0).optJSONArray("PUSH_INFO"));
+                        GetUserDataSuccess();
+                    }
+                });
+
     }
 
     /**
      * 取得使用者資訊成功
      */
     private void GetUserDataSuccess() {
+        Log.v(TAG, "登入成功，將資料寫入本地資料庫!");
         /**
          * 回存SQL
          */
@@ -198,8 +219,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             sqlLocal.RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
         }
         sqlLocal.RunSqlNoQuery(LocalSQLCode.SQLite_CreatMSTR());
-        sqlLocal.RunSqlNoQuery(LocalSQLCode.SQLite_InsertMSTR(
-                UserMstr.userData.getUserID(), UserMstr.userData.getUserPW(),
-                UserMstr.userData.getIdentity()));
+        sqlLocal.RunSqlNoQuery(
+                LocalSQLCode.SQLite_InsertMSTR(
+                        UserMstr.userData.getUserName(),
+                        UserMstr.userData.getUserPW(),
+                        UserMstr.userData.getUserID()));
+        pd.cancel();
+        finish();
     }
 }

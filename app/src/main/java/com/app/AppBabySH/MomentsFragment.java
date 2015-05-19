@@ -1,6 +1,9 @@
 package com.app.AppBabySH;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -8,8 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
 
 import com.app.AppBabySH.UIBase.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
@@ -24,6 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import lazylist.ImageLoader;
+
 public class MomentsFragment extends Fragment {
     private static final String TAG = "MomentsFragment";
     private View rootView;
@@ -33,18 +37,28 @@ public class MomentsFragment extends Fragment {
     private ProgressDialog pd;
     private ArrayList<MomentsItem> momentslist;
     private int listPosition = 0;
-    private boolean isLoading = false;
     private boolean isInit = true;
+    private LayoutInflater _inflater;
+    public ImageLoader imageLoader;
+    private MomentsItem callBackItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
         pullDownView = (PullDownView) rootView.findViewById(R.id.moments_pulldownview);
         pullDownView.enableAutoFetchMore(true, 0);
         momentslistView = pullDownView.getListView();
+        imageLoader = new ImageLoader(container.getContext().getApplicationContext());
+        ViewGroup header = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
+        ImageView headerIMG = (ImageView) header.findViewById(R.id.momentsheader_userIMG);
+        imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR")
+                , headerIMG);
+
+        momentslistView.addHeaderView(header, null, false);
+
         isInit = true;
-        isLoading = false;
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
 
@@ -92,6 +106,7 @@ public class MomentsFragment extends Fragment {
         clearList();
         getData();
     }
+
     /**
      * 清除列表
      */
@@ -102,7 +117,7 @@ public class MomentsFragment extends Fragment {
         }
         if (momentslist != null) {
             momentslist.clear();
-        }else{
+        } else {
             momentslist = new ArrayList<MomentsItem>();
         }
         momentslistView.setAdapter(null);
@@ -112,7 +127,7 @@ public class MomentsFragment extends Fragment {
     private void getData() {
         pd = MyAlertDialog.ShowProgress(getActivity(), "Loading...");
         pd.show();
-        WebService.GetCircleListClass(null, UserMstr.userData.getIdentity(), "C201504000002", new WebService.WebCallback() {
+        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), "C201504000002", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -168,7 +183,7 @@ public class MomentsFragment extends Fragment {
                         }
                     }
                     momentslist.add(item);
-               }
+                }
                 createListView();
             }
         });
@@ -184,13 +199,26 @@ public class MomentsFragment extends Fragment {
         momentslistView = pullDownView.getListView();
         momentslistView.setAdapter(adapter);
         momentslistView.setSelection(listPosition);
+        adapter.onCallBack = new MomentsAdapter.CallBack() {
+            @Override
+            public void onClick(String $actiontype, MomentsItem $item) {
+                callBackItem = $item;
+                Log.v(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID);
+                Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
+                if ($actiontype.equals("del")) {
+                    delCircle();
+                } else if($actiontype.equals("good")){
+                    goodCircle();
+                } else if($actiontype.equals("fav")){
+                    favCircle();
+                } else if($actiontype.equals("comment")){
+                    commentCircle();
+                }
+            }
+        };
+
         parent.addView(rootView);
         adapter.notifyDataSetChanged();
-        setPullView();
-        Log.v(TAG, "Moments Load Complete!");
-    }
-
-    private void setPullView() {
         if (isInit) {
             isInit = false;
             adapter.notifyDataSetChanged();
@@ -199,5 +227,59 @@ public class MomentsFragment extends Fragment {
             adapter.notifyDataSetChanged();
             pullDownView.notifyDidRefresh(momentslist.isEmpty());
         }
+        Log.v(TAG, "Moments Load Complete!");
     }
+
+    ///刪除班級圈
+    private void delCircle() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(getActivity()); //創建訊息方塊
+        ad.setTitle("Delete current Circle!");
+        ad.setMessage("are you Sure?");
+        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() { //按"是",則退出應用程式
+            public void onClick(DialogInterface dialog, int i) {
+                WebService.SetCircleDelete(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+                    @Override
+                    public void CompleteCallback(String id, Object obj) {
+                        initListView();
+                    }
+                });
+            }
+        });
+
+        ad.setNegativeButton("No", new DialogInterface.OnClickListener() { //按"否",則不執行任何操作
+            public void onClick(DialogInterface dialog, int i) {
+
+            }
+        });
+        ad.show();//顯示訊息視窗
+    }
+    private void goodCircle(){
+        WebService.GetCircleHadGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+            @Override
+            public void CompleteCallback(String id, Object obj) {
+                if (obj == null) {
+                    MyAlertDialog.Show(getActivity(), "Error!");
+                    return;
+                }
+                JSONObject json = (JSONObject) obj;
+                if (json.optString("GOOD_CNT").equals("1")){
+                    Log.v(TAG,"goodCircle : 已按過讚!");
+                }else{
+                    WebService.SetCircleGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+                        @Override
+                        public void CompleteCallback(String id, Object obj) {
+                           Log.v(TAG,"obj:"+obj);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    private void favCircle(){
+
+    }
+    private void commentCircle(){
+
+    }
+
 }

@@ -3,6 +3,15 @@ package lazylist;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
@@ -55,7 +64,6 @@ public class ImageLoader {
             if (bitmap != null)
                 imageView.setImageBitmap(bitmap);
             else {
-                Log.v("!!!", "url :" + url + " stub_id:" + stub_id);
                 queuePhoto(url, imageView);
                 imageView.setImageResource(stub_id);
             }
@@ -74,6 +82,20 @@ public class ImageLoader {
         }
 
         return bitmap;
+    }
+
+
+    public void DisplayRoundedCornerImage(String url, ImageView imageView) {
+        imageViews.put(imageView, url);
+        Bitmap bitmap = memoryCache.get(url);
+        if (bitmap != null)
+            imageView.setImageBitmap(getRoundedCornerBitmap(bitmap,300));
+        else {
+            PhotoToLoad p = new PhotoToLoad(url, imageView);
+            p.roundedCorner = true;
+            executorService.submit(new PhotosLoader(p));
+            imageView.setImageResource(stub_id);
+        }
     }
 
     /**
@@ -188,10 +210,12 @@ public class ImageLoader {
     private class PhotoToLoad {
         public String url;
         public ImageView imageView;
+        public boolean roundedCorner;
 
         public PhotoToLoad(String u, ImageView i) {
             url = u;
             imageView = i;
+            roundedCorner = false;
         }
     }
 
@@ -205,12 +229,10 @@ public class ImageLoader {
         @Override
         public void run() {
             try {
-                if (imageViewReused(photoToLoad))
-                    return;
+                if (imageViewReused(photoToLoad)) return;
                 Bitmap bmp = getBitmap(photoToLoad.url);
                 memoryCache.put(photoToLoad.url, bmp);
-                if (imageViewReused(photoToLoad))
-                    return;
+                if (imageViewReused(photoToLoad)) return;
                 BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
                 handler.post(bd);
             } catch (Throwable th) {
@@ -221,8 +243,7 @@ public class ImageLoader {
 
     boolean imageViewReused(PhotoToLoad photoToLoad) {
         String tag = imageViews.get(photoToLoad.imageView);
-        if (tag == null || !tag.equals(photoToLoad.url))
-            return true;
+        if (tag == null || !tag.equals(photoToLoad.url)) return true;
         return false;
     }
 
@@ -237,12 +258,16 @@ public class ImageLoader {
         }
 
         public void run() {
-            if (imageViewReused(photoToLoad))
-                return;
-            if (bitmap != null)
-                photoToLoad.imageView.setImageBitmap(bitmap);
-            else
+            if (imageViewReused(photoToLoad)) return;
+            if (bitmap != null) {
+                if (photoToLoad.roundedCorner) {
+                    photoToLoad.imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
+                } else {
+                    photoToLoad.imageView.setImageBitmap(bitmap);
+                }
+            } else {
                 photoToLoad.imageView.setImageResource(stub_id);
+            }
         }
     }
 
@@ -297,4 +322,29 @@ public class ImageLoader {
         return bitmap;
     }
 
+    //圓角轉換函式，帶入Bitmap圖片及圓角數值則回傳圓角圖，回傳Bitmap再置入ImageView
+    public static Bitmap getRoundedCornerBitmap(Bitmap bmp, int radius) {
+        Bitmap sbmp;
+        if (bmp.getWidth() != radius || bmp.getHeight() != radius)
+            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
+        else
+            sbmp = bmp;
+        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(),
+                sbmp.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xffa19774;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f, sbmp.getHeight() / 2 + 0.7f,
+                sbmp.getWidth() / 2 + 0.1f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(sbmp, rect, rect, paint);
+        return output;
+    }
 }
