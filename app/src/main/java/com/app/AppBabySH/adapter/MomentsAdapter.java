@@ -3,6 +3,7 @@ package com.app.AppBabySH.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,8 @@ public class MomentsAdapter extends BaseAdapter {
 
     public interface CallBack {
         public void onClick(String $actionType, MomentsItem $item);
+
+        public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName);
     }
 
     public CallBack onCallBack;
@@ -115,28 +118,28 @@ public class MomentsAdapter extends BaseAdapter {
             viewHolder.mTxtClass.setText(item.SCHOOL_NAME + item.CLASS_NAME);
             viewHolder.mTxtDate.setText(item.ENTRY_DATE + item.ENTRY_TIME);
 
-            // TODO ³Ğ«Ø¹Ï¤ù
+            // TODO å‰µå»ºåœ–ç‰‡
             createImage(item, convertView);
 
-            // TODO ³]©w«öÆg¤H¼Æ
+            // TODO è¨­å®šæŒ‰è®šäººæ•¸
             setGoodInfo(item);
 
-            // TODO ³Ğ«Ø¦^ÂĞ¦Cªí
+            // TODO å‰µå»ºå›è¦†åˆ—è¡¨
             createReply(item, convertView);
 
             viewHolder.mImgbCommentFun.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbDel.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbGood.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbFav.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbComment.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mImgbComment.setOnClickListener(new AtReply(item,"",""));
         }
         return convertView;
     }
 
 
-    /*³Ğ«Ø¹Ï¥Ü*/
+    /*å‰µå»ºåœ–ç¤º*/
     private void createImage(MomentsItem item, View convertView) {
-        //²MªÅIMG¸ê®Æ¦C
+        //æ¸…ç©ºIMGè³‡æ–™åˆ—
         if (momentsIMGlist != null) {
             momentsIMGlist.clear();
         } else {
@@ -145,7 +148,7 @@ public class MomentsAdapter extends BaseAdapter {
         viewHolder.mGdvPic.setAdapter(null);
         adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist);
 
-        //³]©wÅã¥Ü¦C¼Æ
+        //è¨­å®šé¡¯ç¤ºåˆ—æ•¸
         switch (item.ATCH.size()) {
             case 1:
                 viewHolder.mGdvPic.setNumColumns(1);
@@ -159,7 +162,7 @@ public class MomentsAdapter extends BaseAdapter {
                 break;
         }
 
-        //¥ı§â°ª«×³]©w¦n(­ì¦]:GridView in ListView ·í¤º®e Adapter «á¡Aµe­±µLªk®i¶})
+        //å…ˆæŠŠé«˜åº¦è¨­å®šå¥½(åŸå› :GridView in ListView ç•¶å…§å®¹ Adapter å¾Œï¼Œç•«é¢ç„¡æ³•å±•é–‹)
         ViewGroup.LayoutParams lp = viewHolder.mGdvPic.getLayoutParams();
         if (item.ATCH.size() == 0) {
             lp.height = 0;
@@ -178,7 +181,7 @@ public class MomentsAdapter extends BaseAdapter {
         }
         viewHolder.mGdvPic.setLayoutParams(lp);
 
-        //³Ğ«Ø¤º®e
+        //å‰µå»ºå…§å®¹
         i = -1;
         while (++i < item.ATCH.size()) {
             MomentsImageItem imgitem = new MomentsImageItem();
@@ -191,7 +194,7 @@ public class MomentsAdapter extends BaseAdapter {
         viewHolder.mGdvPic.setAdapter(adapter);
     }
 
-    /*³]©w«öÆg¤H¼Æ*/
+    /*è¨­å®šæŒ‰è®šäººæ•¸*/
     private void setGoodInfo(MomentsItem item) {
         if (item.GOOD.size() == 0) {
             viewHolder.mLyGood.setVisibility(View.GONE);
@@ -208,7 +211,7 @@ public class MomentsAdapter extends BaseAdapter {
         }
     }
 
-    /*³Ğ«Ø¦^ÂĞ¦Cªí*/
+    /*å‰µå»ºå›è¦†åˆ—è¡¨*/
     private void createReply(MomentsItem item, View convertView) {
         viewHolder.mLyReply.removeAllViews();
         i = -1;
@@ -223,21 +226,39 @@ public class MomentsAdapter extends BaseAdapter {
                 getReplySN:
                 while (++j < item.REPLY.size()) {
                     if (item.REPLY.get(i).optString("AT_REPLY_SN").equals(item.REPLY.get(j).optString("REPLY_SN"))) {
-                        contentStr += "Reply<font color=\"" + targetNameColor + "\">" + item.REPLY.get(j).optString("NIC_NAME") + " : </font>";
+                        contentStr += "å›è¦†<font color=\"" + targetNameColor + "\">" + item.REPLY.get(j).optString("NIC_NAME") + " : </font>";
                         break getReplySN;
                     }
                 }
             } else {
                 contentStr += "<font color=\"" + replyNameColor + "\"> : </font>";
             }
+            replyBtn.setOnClickListener(new AtReply(item, item.REPLY.get(i).optString("REPLY_SN"), item.REPLY.get(i).optString("NIC_NAME")));
             contentStr += item.REPLY.get(i).optString("REPLY_DESC");
             replyBtn.setText(Html.fromHtml(contentStr));
             viewHolder.mLyReply.addView(replyBtn);
         }
     }
 
+    /*å›è¦†*/
+    class AtReply implements View.OnClickListener {
+        private MomentsItem callBackItem;
+        private String atSN, atName;
 
-    /*ÂIÀ»«ö¶sºÊÅ¥*/
+        public AtReply(MomentsItem $itme, String $atSN, String $atName) {
+            callBackItem = $itme;
+            atSN = $atSN;
+            atName = $atName;
+        }
+
+        public void onClick(View v) {
+            Log.v(TAG, "AtReply onClick!");
+            onCallBack.onCommentClick(callBackItem, atSN, atName);
+            targetV.setVisibility(View.GONE);
+        }
+    }
+
+    /*é»æ“ŠæŒ‰éˆ•ç›£è½*/
     class MyOnClickListener implements View.OnClickListener {
         private MomentsItem callBackItem;
 
@@ -261,15 +282,15 @@ public class MomentsAdapter extends BaseAdapter {
                 //About Comment
                 case R.id.imgbMomentsItemDel://Del Circle
                     onCallBack.onClick("del", callBackItem);
+                    targetV.setVisibility(View.GONE);
                     break;
                 case R.id.imgbMomentsItemGood://Set Circle Good
                     onCallBack.onClick("good", callBackItem);
+                    targetV.setVisibility(View.GONE);
                     break;
                 case R.id.imgbMomentsItemFav://Fav Circle
                     onCallBack.onClick("fav", callBackItem);
-                    break;
-                case R.id.imgbMomentsItemComment://Add Comment for Circle
-                    onCallBack.onClick("comment", callBackItem);
+                    targetV.setVisibility(View.GONE);
                     break;
             }
         }

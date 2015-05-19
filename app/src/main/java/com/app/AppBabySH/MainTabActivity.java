@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class MainTabActivity extends FragmentActivity {
     private boolean isActive = false;
     private CenterVariable centerV;
     //定义FragmentTabHost对象
-    private FragmentTabHost mTabHost;
+    public FragmentTabHost mTabHost;
     private ViewGroup mTabHostParent;
     //定义一个布局
     private LayoutInflater layoutInflater;
@@ -168,6 +169,11 @@ public class MainTabActivity extends FragmentActivity {
             InputMethodManager inputmanger = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+    /*開啟鍵盤*/
+    public void OpenInput(){
+        InputMethodManager imm = ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE));
+        imm.toggleSoftInput(0, 0);
     }
 
     //判断是否后台

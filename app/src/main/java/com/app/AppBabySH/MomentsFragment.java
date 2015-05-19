@@ -2,16 +2,25 @@ package com.app.AppBabySH;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.app.AppBabySH.UIBase.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
@@ -25,26 +34,42 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import lazylist.ImageLoader;
 
 public class MomentsFragment extends Fragment {
     private static final String TAG = "MomentsFragment";
+    private MainTabActivity main;
     private View rootView;
+    private ViewGroup viewG;
     private PullDownView pullDownView;
     private ScrollOverListView momentslistView;
     private MomentsAdapter adapter;
     private ProgressDialog pd;
+    private AlertDialog.Builder alertD;
     private ArrayList<MomentsItem> momentslist;
     private int listPosition = 0;
     private boolean isInit = true;
     private LayoutInflater _inflater;
     public ImageLoader imageLoader;
     private MomentsItem callBackItem;
+    private Toast toast;
+
+    //About Reply
+    private View mLyReply;
+    private EditText edtReplyTo;
+    private Button btnReplySend;
+    private String strReplySN;
+    private String strReplyName;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
+
+        main = (MainTabActivity) getActivity();
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
         pullDownView = (PullDownView) rootView.findViewById(R.id.moments_pulldownview);
@@ -53,22 +78,21 @@ public class MomentsFragment extends Fragment {
         imageLoader = new ImageLoader(container.getContext().getApplicationContext());
         ViewGroup header = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
         ImageView headerIMG = (ImageView) header.findViewById(R.id.momentsheader_userIMG);
-        imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR")
-                , headerIMG);
-
+        imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), headerIMG);
         momentslistView.addHeaderView(header, null, false);
-
         isInit = true;
+
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
 
             @Override
             public void run() {
                 Log.v(TAG, "Moments-Init");
+                viewG = (ViewGroup) rootView.getParent();
                 initListView();
             }
         }, 200);
-
         pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
 
             @Override
@@ -98,17 +122,32 @@ public class MomentsFragment extends Fragment {
                 }, 1000);
             }
         });
+        momentslistView.setOnTouchListener(new View.OnTouchListener() {
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                    toViewMode();
+                }
+                return false;
+            }
+
+        });
         return rootView;
     }
 
+
     private void initListView() {
+        if (mLyReply != null) {
+            viewG.removeView(mLyReply);
+            mLyReply = null;
+        }
         clearList();
         getData();
     }
 
     /**
-     * ≤M∞£¶C™Ì
+     * Ê∏ÖÈô§ÂàóË°®
      */
     private void clearList() {
         if (adapter != null) {
@@ -146,19 +185,19 @@ public class MomentsFragment extends Fragment {
                     return;
                 }
 
-                // TODO ∂Î≠»∂i∞}¶C§§
+                // TODO Â°ûÂÄºÈÄ≤Èô£Âàó‰∏≠
                 Integer i = -1, j;
                 //i = 0;
                 while (++i < infoAry.length()) {
                     MomentsItem item = new MomentsItem();
                     item.CIRCLE_ID = infoAry.optJSONObject(i).optString("CIRCLE_ID");//"C201504120015"
                     item.USER_ID = infoAry.optJSONObject(i).optString("USER_ID");//"U201504000002"
-                    item.NIC_NAME = infoAry.optJSONObject(i).optString("NIC_NAME");//"±i¶—Æv"
+                    item.NIC_NAME = infoAry.optJSONObject(i).optString("NIC_NAME");//"ÂºµËÄÅÂ∏´"
                     item.USER_AVATAR = infoAry.optJSONObject(i).optString("USER_AVATAR");//"http://img.appbaby.net/test_icon.png"
                     item.CLASS_ID = infoAry.optJSONObject(i).optString("CLASS_ID");//"C201504000002"
-                    item.CLASS_NAME = infoAry.optJSONObject(i).optString("CLASS_NAME");//"BØZ"
-                    item.SCHOOL_NAME = infoAry.optJSONObject(i).optString("SCHOOL_NAME");//"APP¥˙∏’∂È§@"
-                    item.DESCRIPTION = infoAry.optJSONObject(i).optString("DESCRIPTION");//"¶˝§Z¶≥?§I"
+                    item.CLASS_NAME = infoAry.optJSONObject(i).optString("CLASS_NAME");//"BÁè≠"
+                    item.SCHOOL_NAME = infoAry.optJSONObject(i).optString("SCHOOL_NAME");//"APPÊ∏¨Ë©¶Âúí‰∏Ä"
+                    item.DESCRIPTION = infoAry.optJSONObject(i).optString("DESCRIPTION");//"‰ΩÜÂá°Êúâ?ÂÑø"
                     item.CIRCLE_TYPE = infoAry.optJSONObject(i).optString("CIRCLE_TYPE");//"T"
                     item.LATITUDE = infoAry.optJSONObject(i).optString("LATITUDE");//""
                     item.LONGITUDE = infoAry.optJSONObject(i).optString("LONGITUDE");//""
@@ -190,12 +229,10 @@ public class MomentsFragment extends Fragment {
     }
 
     private void createListView() {
-        // TODO ≤æ∞£∑Ì´eµe≠±
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
-        // TODO ®Ã®˙±o™∫∏ÍÆ∆≥–´ÿ ListView
+        // TODO ÁßªÈô§Áï∂ÂâçÁï´Èù¢
+        Log.v(TAG, "ViewG : createListView : " + viewG);
+        viewG.removeView(rootView);
+        // TODO ‰æùÂèñÂæóÁöÑË≥áÊñôÂâµÂª∫ ListView
         momentslistView = pullDownView.getListView();
         momentslistView.setAdapter(adapter);
         momentslistView.setSelection(listPosition);
@@ -207,17 +244,35 @@ public class MomentsFragment extends Fragment {
                 Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
                 if ($actiontype.equals("del")) {
                     delCircle();
-                } else if($actiontype.equals("good")){
+                } else if ($actiontype.equals("good")) {
                     goodCircle();
-                } else if($actiontype.equals("fav")){
+                } else if ($actiontype.equals("fav")) {
                     favCircle();
-                } else if($actiontype.equals("comment")){
-                    commentCircle();
                 }
+            }
+
+            @Override
+            public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName) {
+                callBackItem = $item;
+                strReplySN = $atReplySN;
+                strReplyName = $atReplyName;
+                //momentslistView.setScrollY(0);
+                int i = -1;
+                geti:while (++i < momentslist.size()) {
+                    if (momentslist.get(i).CIRCLE_ID.equals($item.CIRCLE_ID)) {
+                        if (android.os.Build.VERSION.SDK_INT >= 8) {
+                            momentslistView.smoothScrollToPosition(i+1);
+                        } else {
+                            momentslistView.setSelection(i+1);
+                        }
+                        break geti;
+                    }
+                }
+                commentCircle();
             }
         };
 
-        parent.addView(rootView);
+        viewG.addView(rootView);
         adapter.notifyDataSetChanged();
         if (isInit) {
             isInit = false;
@@ -230,30 +285,46 @@ public class MomentsFragment extends Fragment {
         Log.v(TAG, "Moments Load Complete!");
     }
 
-    ///ßR∞£ØZØ≈∞È
+    //  Âà™Èô§Áè≠Á¥öÂúà
     private void delCircle() {
-        AlertDialog.Builder ad = new AlertDialog.Builder(getActivity()); //≥–´ÿ∞TÆß§Ë∂Ù
-        ad.setTitle("Delete current Circle!");
-        ad.setMessage("are you Sure?");
-        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() { //´ˆ"¨O",´h∞h•X¿≥•Œµ{¶°
+        alertD = new AlertDialog.Builder(getActivity()); //ÂâµÂª∫Ë®äÊÅØÊñπÂ°ä
+        alertD.setTitle("Delete current Circle!");
+        alertD.setMessage("are you Sure?");
+        alertD.setPositiveButton("Yes", new DialogInterface.OnClickListener() { //Êåâ"ÊòØ",ÂâáÈÄÄÂá∫ÊáâÁî®Á®ãÂºè
             public void onClick(DialogInterface dialog, int i) {
                 WebService.SetCircleDelete(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
-                        initListView();
+                        alertD = new AlertDialog.Builder(getActivity());
+                        alertD.setTitle("Áè≠Á¥öÂúàÂ∑≤Âà™Èô§");
+                        alertD.setCancelable(false);
+                        alertD.setPositiveButton("Á¢∫ÂÆö", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (int i = 0; i < momentslist.size(); i++) {
+                                    if ("c".equals(momentslist.get(i))) {
+                                        momentslist.remove(i);
+                                    }
+                                }
+                                initListView();
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        alertD.show();
                     }
                 });
             }
         });
 
-        ad.setNegativeButton("No", new DialogInterface.OnClickListener() { //´ˆ"ß_",´h§£∞ı¶Ê•Ù¶Ûæﬁß@
+        alertD.setNegativeButton("No", new DialogInterface.OnClickListener() { //Êåâ"Âê¶",Ââá‰∏çÂü∑Ë°å‰ªª‰ΩïÊìç‰Ωú
             public void onClick(DialogInterface dialog, int i) {
 
             }
         });
-        ad.show();//≈„•‹∞TÆßµ¯µ°
+        alertD.show();//È°ØÁ§∫Ë®äÊÅØË¶ñÁ™ó
     }
-    private void goodCircle(){
+
+    //  Â∞çÁè≠Á¥öÂúàÊåâËÆö
+    private void goodCircle() {
         WebService.GetCircleHadGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -262,24 +333,123 @@ public class MomentsFragment extends Fragment {
                     return;
                 }
                 JSONObject json = (JSONObject) obj;
-                if (json.optString("GOOD_CNT").equals("1")){
-                    Log.v(TAG,"goodCircle : §w´ˆπL∆g!");
-                }else{
+                if (json.optString("GOOD_CNT").equals("1")) {
+                    DisplayToast("Â∑≤ÊåâËÆö!");
+                } else {
                     WebService.SetCircleGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
                         @Override
                         public void CompleteCallback(String id, Object obj) {
-                           Log.v(TAG,"obj:"+obj);
+                            Map map = new HashMap();
+                            map.put("CIRCLE_ID", callBackItem.CIRCLE_ID);
+                            map.put("USER_ID", UserMstr.userData.getUserID());
+                            map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
+                            JSONObject newJsonObj = new JSONObject(map);
+                            // Êåâ‰∏ã"Êî∂Âà∞"‰ª•ÂæåË¶ÅÂÅöÁöÑ‰∫ãÊÉÖ
+                            callBackItem.GOOD.add(newJsonObj);
+                            adapter.notifyDataSetChanged();
                         }
                     });
                 }
             }
         });
     }
-    private void favCircle(){
+
+    //  Êî∂ËóèÁè≠Á¥öÂúà
+    private void favCircle() {
+        WebService.GetCircleHadKeepToGrow(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+            @Override
+            public void CompleteCallback(String id, Object obj) {
+                if (obj == null) {
+                    MyAlertDialog.Show(getActivity(), "Error!");
+                    return;
+                }
+                JSONObject json = (JSONObject) obj;
+                if (json.optString("GROW_CNT").equals("1")) {
+                    DisplayToast("Â∑≤Êî∂Ëóè!");
+                } else {
+                    WebService.SetCircleKeepToGrow(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+                        @Override
+                        public void CompleteCallback(String id, Object obj) {
+                            alertD = new AlertDialog.Builder(getActivity());
+                            alertD.setTitle("Ê™¢Êü•"); //Ë®≠ÂÆödialog ÁöÑtitleÈ°ØÁ§∫ÂÖßÂÆπ
+                            alertD.setMessage("Êî∂ËóèÊàêÂäü!");
+                            alertD.setCancelable(false); //ÈóúÈñâ Android Á≥ªÁµ±ÁöÑ‰∏ªË¶ÅÂäüËÉΩÈçµ(menu,homeÁ≠â...)
+                            alertD.setPositiveButton("Á¢∫ÂÆö", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            alertD.show();
+                        }
+                    });
+                }
+            }
+        });
+
 
     }
-    private void commentCircle(){
 
+    //  ÂõûË¶ÜÁè≠Á¥öÂúà
+    private void commentCircle() {
+        main.mTabHost.setVisibility(View.GONE);
+        if (mLyReply == null) {
+            mLyReply = _inflater.inflate(R.layout.moments_reply, momentslistView, false);
+            viewG.addView(mLyReply);
+            edtReplyTo = (EditText) mLyReply.findViewById(R.id.txtMomentsReplyTo);
+            btnReplySend = (Button) mLyReply.findViewById(R.id.btnMomentsReplySend);
+            btnReplySend.setOnClickListener(new SendReplyMsg());
+        } else {
+            mLyReply.setVisibility(View.VISIBLE);
+        }
+        edtReplyTo.setText("");
+        edtReplyTo.setHint("ÂõûË¶Ü " + strReplyName);
+        edtReplyTo.requestFocus();
+
+
+        main.OpenInput();
     }
 
+    class SendReplyMsg implements View.OnClickListener {
+        public void onClick(View v) {
+            toViewMode();
+            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), edtReplyTo.getText().toString(), strReplySN, new WebService.WebCallback() {
+                @Override
+                public void CompleteCallback(String id, Object obj) {
+                    if (obj != null) {
+                        Map map = new HashMap();
+                        map.put("CIRCLE_ID", callBackItem.CIRCLE_ID);
+                        map.put("REPLY_SN", "");
+                        map.put("USER_ID", UserMstr.userData.getUserID());
+                        map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
+                        map.put("REPLY_DESC", edtReplyTo.getText().toString());
+                        map.put("AT_REPLY_SN", strReplySN);
+                        JSONObject newJsonObj = new JSONObject(map);
+                        // Êåâ‰∏ã"Êî∂Âà∞"‰ª•ÂæåË¶ÅÂÅöÁöÑ‰∫ãÊÉÖ
+                        callBackItem.REPLY.add(newJsonObj);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    }
+
+    //  ÂàáÂõûÁÄèË¶ΩÁè≠Á¥öÂúàÁï´Èù¢
+    private void toViewMode() {
+        main.CloseInput();
+        if (mLyReply != null && mLyReply.getVisibility() == View.VISIBLE) {
+            mLyReply.setVisibility(View.GONE);
+            main.mTabHost.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void DisplayToast(String Msg) {
+        if (toast == null) {
+            toast = Toast.makeText(getActivity(), Msg, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+        } else {
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setText(Msg);
+        }
+        toast.show();
+    }
 }
