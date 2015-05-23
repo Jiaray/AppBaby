@@ -72,7 +72,7 @@ public class MomentsCustomFragment extends BaseFragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         _inflater = inflater;
-        rootView = inflater.inflate(R.layout.moments_custom_f, container, false);
+        rootView = inflater.inflate(R.layout.moments_custom_frag, container, false);
         main = (MainTabActivity) getActivity();
         thisFragment = this;
 

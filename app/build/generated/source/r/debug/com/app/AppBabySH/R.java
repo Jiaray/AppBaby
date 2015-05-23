@@ -351,7 +351,7 @@ public final class R {
         public static final int login_activity=0x7f040002;
         public static final int maintab_item=0x7f040003;
         public static final int maintab_layout=0x7f040004;
-        public static final int moments_custom_f=0x7f040005;
+        public static final int moments_custom_frag =0x7f040005;
         public static final int moments_custom_item=0x7f040006;
         public static final int moments_fragment=0x7f040007;
         public static final int moments_header=0x7f040008;
