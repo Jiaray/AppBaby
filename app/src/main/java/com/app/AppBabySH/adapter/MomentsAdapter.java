@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.app.AppBabySH.CenterVariable;
+import com.app.AppBabySH.GlobalVar;
 import com.app.AppBabySH.R;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
@@ -39,7 +39,7 @@ public class MomentsAdapter extends BaseAdapter {
     private String contentStr;
     private String replyNameColor = "#930000";
     private String targetNameColor = "#930000";
-    private CenterVariable centerV;
+    private GlobalVar centerV;
     private MomentsImageAdapter adapter;
     private ViewGroup onClickVG;
     private View targetV;
@@ -48,6 +48,8 @@ public class MomentsAdapter extends BaseAdapter {
         public void onClick(String $actionType, MomentsItem $item);
 
         public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName);
+
+        public void onImgAdapterClick(MomentsImageItem $item);
     }
 
     public CallBack onCallBack;
@@ -55,10 +57,10 @@ public class MomentsAdapter extends BaseAdapter {
     public MomentsAdapter(Context context,
                           ArrayList<MomentsItem> _list) {
         if (context == null) return;
-        centerV = (CenterVariable) context.getApplicationContext();
+        centerV = (GlobalVar) context.getApplicationContext();
         this.minflater = LayoutInflater.from(context);
         this.list = _list;
-        imageLoader = new ImageLoader(context.getApplicationContext());
+        imageLoader = new ImageLoader();
     }
 
     static class ViewHolder {
@@ -117,7 +119,6 @@ public class MomentsAdapter extends BaseAdapter {
             viewHolder.mTxtTitle.setText(item.DESCRIPTION);
             viewHolder.mTxtClass.setText(item.SCHOOL_NAME + item.CLASS_NAME);
             viewHolder.mTxtDate.setText(item.ENTRY_DATE + item.ENTRY_TIME);
-
             // TODO 創建圖片
             createImage(item, convertView);
 
@@ -127,18 +128,19 @@ public class MomentsAdapter extends BaseAdapter {
             // TODO 創建回覆列表
             createReply(item, convertView);
 
+            viewHolder.mImgHeader.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbCommentFun.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbDel.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbGood.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbFav.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbComment.setOnClickListener(new AtReply(item,"",""));
+            viewHolder.mImgbComment.setOnClickListener(new AtReply(item, "", ""));
         }
         return convertView;
     }
 
 
     /*創建圖示*/
-    private void createImage(MomentsItem item, View convertView) {
+    private void createImage(final MomentsItem item, View convertView) {
         //清空IMG資料列
         if (momentsIMGlist != null) {
             momentsIMGlist.clear();
@@ -146,8 +148,13 @@ public class MomentsAdapter extends BaseAdapter {
             momentsIMGlist = new ArrayList<MomentsImageItem>();
         }
         viewHolder.mGdvPic.setAdapter(null);
-        adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist);
-
+        adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist , "normal");
+        adapter.onImgCallBack = new MomentsImageAdapter.callBackImgItem() {
+            @Override
+            public void onImgClick(MomentsImageItem $item) {
+                onCallBack.onImgAdapterClick($item);
+            }
+        };
         //設定顯示列數
         switch (item.ATCH.size()) {
             case 1:
@@ -254,7 +261,7 @@ public class MomentsAdapter extends BaseAdapter {
         public void onClick(View v) {
             Log.v(TAG, "AtReply onClick!");
             onCallBack.onCommentClick(callBackItem, atSN, atName);
-            targetV.setVisibility(View.GONE);
+            if (targetV != null) targetV.setVisibility(View.GONE);
         }
     }
 
@@ -268,6 +275,11 @@ public class MomentsAdapter extends BaseAdapter {
 
         public void onClick(View v) {
             switch (v.getId()) {
+                //Open Personal Page
+                case R.id.imgMomentsItemHeader:
+                    if (targetV != null)  targetV.setVisibility(View.GONE);
+                    onCallBack.onClick("personal", callBackItem);
+                    break;
                 //Open Comment
                 case R.id.btnMomentsItemCommentFun:
                     onClickVG = (ViewGroup) v.getParent();
@@ -281,16 +293,16 @@ public class MomentsAdapter extends BaseAdapter {
 
                 //About Comment
                 case R.id.imgbMomentsItemDel://Del Circle
+                    if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("del", callBackItem);
-                    targetV.setVisibility(View.GONE);
                     break;
                 case R.id.imgbMomentsItemGood://Set Circle Good
+                    if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("good", callBackItem);
-                    targetV.setVisibility(View.GONE);
                     break;
                 case R.id.imgbMomentsItemFav://Fav Circle
+                    if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("fav", callBackItem);
-                    targetV.setVisibility(View.GONE);
                     break;
             }
         }

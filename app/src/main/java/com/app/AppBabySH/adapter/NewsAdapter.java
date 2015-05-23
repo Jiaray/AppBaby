@@ -35,7 +35,7 @@ public class NewsAdapter extends BaseAdapter {
         if (context == null) return;
         this.minflater = LayoutInflater.from(context);
         this.list = _list;
-        imageLoader = new ImageLoader(context.getApplicationContext());
+        imageLoader = new ImageLoader();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class NewsAdapter extends BaseAdapter {
         final NewsItem item = list.get(position);
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = minflater.inflate(R.layout.newsmain_item, null);
+            convertView = minflater.inflate(R.layout.news_item, null);
             viewHolder.titleTxt = (TextView) convertView.findViewById(R.id.news_titleTxt);
             viewHolder.goodTxt = (TextView) convertView.findViewById(R.id.news_goodTxt);
             viewHolder.favTxt = (TextView) convertView.findViewById(R.id.news_favTxt);

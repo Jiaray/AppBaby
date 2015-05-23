@@ -3,6 +3,22 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/MomentsFragment.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/adapter/MomentsAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/AsyncImageLoader.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/Animation.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/Animator.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/FlingAnimation.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/FlingAnimationListener.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/FlingListener.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/GestureImageView.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/GestureImageViewListener.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/GestureImageViewTouchListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/MathUtils.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/MoveAnimation.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/MoveAnimationListener.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/VectorF.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/ZoomAnimation.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPage/ZoomAnimationListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/LogUtils.java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

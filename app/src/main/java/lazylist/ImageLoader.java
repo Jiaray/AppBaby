@@ -12,11 +12,17 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.app.AppBabySH.R;
+import com.app.Common.AsyncImageLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,7 +44,6 @@ import java.util.concurrent.Executors;
 public class ImageLoader {
 
     MemoryCache memoryCache = new MemoryCache();
-    FileCache fileCache;
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
     Handler handler = new Handler();//handler to display images in UI thread
@@ -46,17 +51,23 @@ public class ImageLoader {
     public int setImagHeight = 0;
     public int compreeNum = 20;
     public boolean webNotCompress = false;
+    AsyncImageLoader asyncImageLoader;
 
-    public ImageLoader(Context context) {
+    private static ImageLoader imageLoader; // 本类的引用
+    public static ImageLoader getInstance() {
+        if (null == imageLoader) {
+            imageLoader = new ImageLoader();
+        }
+        return imageLoader;
+    }
 
-        fileCache = new FileCache(context);
+    public ImageLoader() {
         executorService = Executors.newFixedThreadPool(5);
     }
 
     final int stub_id = R.drawable.doroto_loadimag;
 
     public Bitmap DisplayImage(String url, ImageView imageView) {
-
         String geturltitle = url.substring(0, 4);
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
@@ -89,7 +100,7 @@ public class ImageLoader {
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
         if (bitmap != null)
-            imageView.setImageBitmap(getRoundedCornerBitmap(bitmap,300));
+            imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
         else {
             PhotoToLoad p = new PhotoToLoad(url, imageView);
             p.roundedCorner = true;
@@ -127,7 +138,7 @@ public class ImageLoader {
     }
 
     private Bitmap getBitmap(String url) {
-        File f = fileCache.getFile(url);
+        File f = FileCache.getInstance().getFile(url);
         //from SD cache
         Bitmap b = decodeFile(f);
         //System.out.println("-----zyo "+b);
@@ -273,7 +284,7 @@ public class ImageLoader {
 
     public void clearCache() {
         memoryCache.clear();
-        fileCache.clear();
+        FileCache.getInstance().clear();
     }
 
 
@@ -347,4 +358,56 @@ public class ImageLoader {
         canvas.drawBitmap(sbmp, rect, rect, paint);
         return output;
     }
+
+
+
+    /*載入網路圖片並存入緩存中*/
+    public void DisplayWebUrlImage(String $url, ImageView $imageView) {
+       // $imageView.setImageResource(stub_id);
+        Bitmap bmpFromSD = FileCache.getInstance().getBmp($url);
+        if (null != bmpFromSD) {
+            $imageView.setImageBitmap(bmpFromSD);
+        } else {
+            asyncImageLoader = new AsyncImageLoader();
+            Drawable cachedImage = asyncImageLoader.loaDrawable($url, new AsyncImageCallBack($url, $imageView));
+            if (cachedImage != null) {
+                Bitmap bitmap = drawToBmp(cachedImage);
+                $imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+    class AsyncImageCallBack implements AsyncImageLoader.ImageCallBack {
+        private String strUrl;
+        private ImageView imgV;
+
+        public AsyncImageCallBack(String $url, ImageView $imageView) {
+            strUrl = $url;
+            imgV = $imageView;
+        }
+
+        @Override
+        public void imageLoaded(Drawable imageDrawable) {
+            Bitmap bitmap = drawToBmp(imageDrawable);
+            FileCache.getInstance().savaBmpData(strUrl, bitmap);// 先缓存起来
+            imgV.setImageBitmap(bitmap);
+            imgV.setScaleType(ImageView.ScaleType.MATRIX);
+        }
+    }
+
+
+    /**
+     * Drawable转换成Bitmap
+     *
+     * @param d
+     * @return
+     */
+    public Bitmap drawToBmp(Drawable d) {
+        if (null != d) {
+            BitmapDrawable bd = (BitmapDrawable) d;
+            return bd.getBitmap();
+        }
+        return null;
+    }
+
 }

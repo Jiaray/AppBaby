@@ -2,28 +2,26 @@ package com.app.AppBabySH;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.AppBabySH.UIBase.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
+import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
 import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
@@ -39,8 +37,12 @@ import java.util.Map;
 
 import lazylist.ImageLoader;
 
+import static com.app.Common.LogUtils.logd;
+import static com.app.Common.LogUtils.logi;
+
 public class MomentsFragment extends Fragment {
     private static final String TAG = "MomentsFragment";
+    private static final String ForTestClassID = "C201504000002";
     private MainTabActivity main;
     private View rootView;
     private ViewGroup viewG;
@@ -57,90 +59,120 @@ public class MomentsFragment extends Fragment {
     private MomentsItem callBackItem;
     private Toast toast;
 
+    private Handler hdrMain;
+
     //About Reply
-    private View mLyReply;
-    private EditText edtReplyTo;
-    private Button btnReplySend;
+    private View mVReply;
+    private LinearLayout mLyReply;
+    private EditText mEdtReplyTo;
+    private Button mBtnReplySend;
     private String strReplySN;
     private String strReplyName;
+    private Integer intReplyPosition;
+    private Integer intListViewH;
+    private Integer intAdjustH;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
+        //共用宣告
         main = (MainTabActivity) getActivity();
+        imageLoader = new ImageLoader();
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
-        pullDownView = (PullDownView) rootView.findViewById(R.id.moments_pulldownview);
-        pullDownView.enableAutoFetchMore(true, 0);
-        momentslistView = pullDownView.getListView();
-        imageLoader = new ImageLoader(container.getContext().getApplicationContext());
-        ViewGroup header = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
-        ImageView headerIMG = (ImageView) header.findViewById(R.id.momentsheader_userIMG);
-        imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), headerIMG);
-        momentslistView.addHeaderView(header, null, false);
-        isInit = true;
 
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                Log.v(TAG, "Moments-Init");
-                viewG = (ViewGroup) rootView.getParent();
-                initListView();
-            }
-        }, 200);
-        pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
-
-            @Override
-            public void onRefresh() {//Refresh
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-Refresh");
-                        initListView();
-                    }
-                }, 100);
-            }
-
-            @Override
-            public void onLoadMore() {//LoadMore
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-LoadMore");
-                        adapter.notifyDataSetChanged();
-                        pullDownView.notifyDidLoadMore(momentslist.isEmpty());
-                    }
-                }, 1000);
-            }
-        });
-        momentslistView.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-                    toViewMode();
-                }
-                return false;
-            }
-
-        });
+        //Start
+        hdrMain = new Handler();
+        hdrMain.post(runInit);
         return rootView;
     }
 
+    private Runnable runInit = new Runnable() {
+        @Override
+        public void run() {
+            Log.v(TAG, "Moments-Init");
+            isInit = true;
+            viewG = (ViewGroup) rootView.getParent();
+
+            //ListView Ready
+            pullDownView = (PullDownView) rootView.findViewById(R.id.pdvMomentsContent);
+            pullDownView.enableAutoFetchMore(true, 0);
+            pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
+
+                @Override
+                public void onRefresh() {//Refresh
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-Refresh");
+                            initListView();
+                        }
+                    }, 100);
+                }
+
+                @Override
+                public void onLoadMore() {//LoadMore
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-LoadMore");
+                            adapter.notifyDataSetChanged();
+                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                        }
+                    }, 1000);
+                }
+            });
+
+            //ListView Add Header
+            momentslistView = pullDownView.getListView();
+            ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
+            ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
+            TextView mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
+            mTxtHeaderNews.setText(main.momentPushNum+" 條新消息!");
+            mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Handler tt=new Handler();
+                    tt.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            customCircle("news");
+                        }
+                    });
+                }
+            });
+            imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
+            momentslistView.addHeaderView(mVgHeader, null, false);
+
+            //Create ListView
+            initListView();
+
+            //Cancel Reply Mode
+            momentslistView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                        toViewMode();
+                    }
+                    return false;
+                }
+
+            });
+            hdrMain.removeCallbacks(runInit);
+        }
+    };
+
 
     private void initListView() {
-        if (mLyReply != null) {
-            viewG.removeView(mLyReply);
-            mLyReply = null;
+        if (mVReply != null) {
+            viewG.removeView(mVReply);
+            mVReply = null;
         }
         clearList();
         getData();
@@ -151,7 +183,7 @@ public class MomentsFragment extends Fragment {
      */
     private void clearList() {
         if (adapter != null) {
-            adapter.imageLoader.clearCache();
+            //adapter.imageLoader.clearCache();
             adapter.notifyDataSetChanged();
         }
         if (momentslist != null) {
@@ -159,14 +191,17 @@ public class MomentsFragment extends Fragment {
         } else {
             momentslist = new ArrayList<MomentsItem>();
         }
+        listPosition = 0;
         momentslistView.setAdapter(null);
         adapter = new MomentsAdapter(getActivity(), momentslist);
+        System.gc();
     }
 
+    //  取得 Web 資料
     private void getData() {
         pd = MyAlertDialog.ShowProgress(getActivity(), "Loading...");
         pd.show();
-        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), "C201504000002", new WebService.WebCallback() {
+        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), ForTestClassID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -228,6 +263,7 @@ public class MomentsFragment extends Fragment {
         });
     }
 
+    //  創建內容
     private void createListView() {
         // TODO 移除當前畫面
         Log.v(TAG, "ViewG : createListView : " + viewG);
@@ -236,42 +272,7 @@ public class MomentsFragment extends Fragment {
         momentslistView = pullDownView.getListView();
         momentslistView.setAdapter(adapter);
         momentslistView.setSelection(listPosition);
-        adapter.onCallBack = new MomentsAdapter.CallBack() {
-            @Override
-            public void onClick(String $actiontype, MomentsItem $item) {
-                callBackItem = $item;
-                Log.v(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID);
-                Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
-                if ($actiontype.equals("del")) {
-                    delCircle();
-                } else if ($actiontype.equals("good")) {
-                    goodCircle();
-                } else if ($actiontype.equals("fav")) {
-                    favCircle();
-                }
-            }
-
-            @Override
-            public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName) {
-                callBackItem = $item;
-                strReplySN = $atReplySN;
-                strReplyName = $atReplyName;
-                //momentslistView.setScrollY(0);
-                int i = -1;
-                geti:while (++i < momentslist.size()) {
-                    if (momentslist.get(i).CIRCLE_ID.equals($item.CIRCLE_ID)) {
-                        if (android.os.Build.VERSION.SDK_INT >= 8) {
-                            momentslistView.smoothScrollToPosition(i+1);
-                        } else {
-                            momentslistView.setSelection(i+1);
-                        }
-                        break geti;
-                    }
-                }
-                commentCircle();
-            }
-        };
-
+        adapter.onCallBack = new AdapterCallBack();
         viewG.addView(rootView);
         adapter.notifyDataSetChanged();
         if (isInit) {
@@ -283,6 +284,90 @@ public class MomentsFragment extends Fragment {
             pullDownView.notifyDidRefresh(momentslist.isEmpty());
         }
         Log.v(TAG, "Moments Load Complete!");
+    }
+
+    // MomentsAdapterCallBack 班級圈各個 Item 的功能(刪除、按讚、收藏、回覆、圖示放大瀏覽)
+    class AdapterCallBack implements MomentsAdapter.CallBack {
+
+        //刪除、按讚、收藏功能
+        @Override
+        public void onClick(String $actiontype, MomentsItem $item) {
+            callBackItem = $item;
+            Log.v(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID);
+            Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
+            if ($actiontype.equals("del")) {
+                delCircle();
+            } else if ($actiontype.equals("good")) {
+                goodCircle();
+            } else if ($actiontype.equals("fav")) {
+                favCircle();
+            } else if ($actiontype.equals("personal")) {
+                customCircle("personal");
+            }
+        }
+
+        //  回覆功能
+        @Override
+        public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName) {
+            callBackItem = $item;
+            strReplySN = $atReplySN;
+            strReplyName = $atReplyName;
+            commentCircle();
+        }
+
+        //  進入瀏覽圖示的畫面
+        @Override
+        public void onImgAdapterClick(MomentsImageItem $item) {
+            MomentsImageFragment momentsImageFragment = new MomentsImageFragment();
+            int i = -1;
+            while (++i < momentslist.size()) {
+                if (momentslist.get(i).CIRCLE_ID.equals($item.CIRCLE_ID)) {
+                    momentsImageFragment.CricleItem = momentslist.get(i);
+                }
+            }
+            momentsImageFragment.openFunBar = true;
+            momentsImageFragment.SEQ = $item.SEQ;
+            //  MomentsImageFragmentCallBack
+            momentsImageFragment.onCallBack = new MomentsImageFragment.imgCallBack() {
+                @Override
+                public void onBack(MomentsItem $item, String $actionType) {
+                    if ($actionType.equals("comment")) {
+                        onCommentClick($item, "", "");
+                    } else {
+                        //  取 ID 位置
+                        int i = -1;
+                        getI:
+                        while (++i < momentslist.size()) {
+                            if (momentslist.get(i).CIRCLE_ID.equals($item.CIRCLE_ID)) break getI;
+                        }
+                        //  清除畫面
+                        clearList();
+
+                        //  設定進入前的 ID 位置
+                        listPosition = (i + 1);//有 header 所以+1
+                        getData();
+                    }
+                }
+            };
+            main.OpenBottom(momentsImageFragment);
+        }
+    }
+
+    //  條件顯示班級圈頁面
+    private void customCircle(String $type) {
+        MomentsCustomFragment personalF = new MomentsCustomFragment();
+        personalF.Class_ID = ForTestClassID;
+        if($type.equals("personal")){
+            personalF.USER_ID = callBackItem.USER_ID;
+            personalF.NIC_NAME = callBackItem.NIC_NAME;
+            personalF.USER_AVATAR = callBackItem.USER_AVATAR;
+        }else if($type.equals("news")){
+            personalF.USER_ID = UserMstr.userData.getUserID();
+            personalF.NIC_NAME = "MomentsNews";
+            personalF.USER_AVATAR = "";
+        }
+
+        main.OpenBottom(personalF);
     }
 
     //  刪除班級圈
@@ -385,34 +470,65 @@ public class MomentsFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
     //  回覆班級圈
     private void commentCircle() {
         main.mTabHost.setVisibility(View.GONE);
-        if (mLyReply == null) {
-            mLyReply = _inflater.inflate(R.layout.moments_reply, momentslistView, false);
-            viewG.addView(mLyReply);
-            edtReplyTo = (EditText) mLyReply.findViewById(R.id.txtMomentsReplyTo);
-            btnReplySend = (Button) mLyReply.findViewById(R.id.btnMomentsReplySend);
-            btnReplySend.setOnClickListener(new SendReplyMsg());
+        if (mVReply == null) {
+            mVReply = _inflater.inflate(R.layout.moments_reply, momentslistView, false);
+            viewG.addView(mVReply);
+            mEdtReplyTo = (EditText) mVReply.findViewById(R.id.txtMomentsReplyTo);
+            mBtnReplySend = (Button) mVReply.findViewById(R.id.btnMomentsReplySend);
+            mLyReply = (LinearLayout) mVReply.findViewById(R.id.lyMomentsReply);
+            mBtnReplySend.setOnClickListener(new SendReplyMsg());
         } else {
-            mLyReply.setVisibility(View.VISIBLE);
+            mVReply.setVisibility(View.VISIBLE);
         }
-        edtReplyTo.setText("");
-        edtReplyTo.setHint("回覆 " + strReplyName);
-        edtReplyTo.requestFocus();
+        mEdtReplyTo.setText("");
+        mEdtReplyTo.setHint("回覆 " + strReplyName);
+        mEdtReplyTo.requestFocus();
 
 
-        main.OpenInput();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                int i = -1;
+                getI:
+                while (++i < momentslist.size()) {
+                    if (momentslist.get(i).CIRCLE_ID.equals(callBackItem.CIRCLE_ID)) {
+                        intReplyPosition = i;
+                        break getI;
+                    }
+                }
+                momentslistView.setSelection(intReplyPosition + 1);
+                intAdjustH = mVReply.getMeasuredHeight();
+                main.OpenInput();
+            }
+        });
+
+        hdrMain.post(checkValue);
     }
+
+    private Runnable checkValue = new Runnable() {
+        @Override
+        public void run() {
+            //確定鍵盤已展開
+            if (intAdjustH == mVReply.getMeasuredHeight()) {
+                hdrMain.postDelayed(checkValue, 100);
+            } else {
+                hdrMain.removeCallbacks(checkValue);
+                intListViewH = pullDownView.getMeasuredHeight();
+                intAdjustH = intListViewH - momentslistView.getChildAt(0).getHeight() - mLyReply.getMeasuredHeight();
+                momentslistView.setSelectionFromTop(intReplyPosition + 1, intAdjustH);
+            }
+        }
+    };
 
     class SendReplyMsg implements View.OnClickListener {
         public void onClick(View v) {
             toViewMode();
-            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), edtReplyTo.getText().toString(), strReplySN, new WebService.WebCallback() {
+            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString(), strReplySN, new WebService.WebCallback() {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     if (obj != null) {
@@ -421,7 +537,7 @@ public class MomentsFragment extends Fragment {
                         map.put("REPLY_SN", "");
                         map.put("USER_ID", UserMstr.userData.getUserID());
                         map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
-                        map.put("REPLY_DESC", edtReplyTo.getText().toString());
+                        map.put("REPLY_DESC", mEdtReplyTo.getText().toString());
                         map.put("AT_REPLY_SN", strReplySN);
                         JSONObject newJsonObj = new JSONObject(map);
                         // 按下"收到"以後要做的事情
@@ -433,11 +549,12 @@ public class MomentsFragment extends Fragment {
         }
     }
 
+
     //  切回瀏覽班級圈畫面
     private void toViewMode() {
         main.CloseInput();
-        if (mLyReply != null && mLyReply.getVisibility() == View.VISIBLE) {
-            mLyReply.setVisibility(View.GONE);
+        if (mVReply != null && mVReply.getVisibility() == View.VISIBLE) {
+            mVReply.setVisibility(View.GONE);
             main.mTabHost.setVisibility(View.VISIBLE);
         }
     }

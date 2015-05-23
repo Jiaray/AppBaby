@@ -4,6 +4,7 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
+        android:id="@+id/lyMomentsReply"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,6 +12,7 @@
         android:gravity="center"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true">
+
         <EditText
             android:layout_width="296dp"
             android:layout_height="wrap_content"

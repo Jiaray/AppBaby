@@ -1,6 +1,5 @@
 package com.app.Common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,19 +18,7 @@ public class WebService {
     private static final String TAG = "WebService";
     public final static Handler handler = new Handler();
 
-    /**
-     * 登入
-     *
-     * @param id
-     * @param user
-     * @param pswd
-     * @param d_type
-     * @param d_ver
-     * @param d_token
-     * @param p1
-     * @param p2
-     * @param callBack
-     */
+    //  登入
     public static void Login(String id, String user, String pswd, String d_type, String d_ver, String d_token, String p1, String p2, WebCallback callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_Name", user);
@@ -45,14 +32,7 @@ public class WebService {
         GetJson(id, "Baby_Get_Login", map, callBack);
     }
 
-    /**
-     * 取得使用者詳細資訊
-     *
-     * @param id
-     * @param $userName
-     * @param $userID
-     * @param callBack
-     */
+    //  取得使用者詳細資訊
     public static void GetUserInfo(String id, String $userName, String $userID, WebCallback callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_Name", $userName);
@@ -70,6 +50,24 @@ public class WebService {
         map.put("Class_ID", $classID);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Circle_List_Class", map, $callBack);
+    }
+
+    //  取得班及圈列表-依個人
+    public static void GetCircleListPersonal(String id, String $userID, String $classID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Class_ID", $classID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_List_Personal", map, $callBack);
+    }
+
+    //  取得班及圈列表-最新 (Push未讀的)
+    public static void GetCircleListNotRead(String id, String $userID, String $classID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Class_ID", $classID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_List_Not_Read", map, $callBack);
     }
 
     //  班級圈刪除 (發表人才能刪)
@@ -108,6 +106,15 @@ public class WebService {
         map.put("Grow_From", "CIRCLE");
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Circle_Had_KeepTo_Grow", map, $callBack);
+    }
+
+    //  班級圈被收藏的個數
+    public static void GetCircleKeepToGrowCount(String id, String $circleID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Circle_ID", $circleID);
+        map.put("Grow_From", "CIRCLE");
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Circle_KeepTo_Grow_Count", map, $callBack);
     }
 
     //  班級圈收藏到成長檔案
@@ -220,7 +227,6 @@ public class WebService {
         }).start();
     }
 
-
     private static String WebServiceFunc(String MethodName, HashMap<String, String> map) {
         String result = null;
         String NameSpace = "http://tempuri.org/";
@@ -264,211 +270,6 @@ public class WebService {
         }
         return result;
     }
-
-
-    /*public static void ExeSql(final String id, final String Sql,
-                              final WebCallback callBack) {
-        new Thread(new Runnable() {
-            public void run() {
-                int wExeRows = 0;
-                // System.out.println(">>>>>>>>>>>>>>>" +1);
-                String str = WebServiceFunc("ExecuteString", Sql);
-                // System.out.println(">>>>>>>>>>>>>>>" + str);
-                try {
-                    JSONObject JsonObj = new JSONObject(str);
-                    // System.out.println(">>>>>>>>>>>>>>>" + JsonObj);
-                    String error = JsonObj.optJSONObject("errors").optString(
-                            "error");
-                    if (error.equals("10200")) {
-                        wExeRows = JsonObj.optJSONObject("values").optInt(
-                                "value");
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                final Object Rs = wExeRows;
-                handler.post(new Runnable() {
-                    public void run() {
-                        callBack.CompleteCallback(id, Rs);
-                    }
-                });
-            }
-        }).start();
-    }*/
-
-    /*public static void GetJsonArray(final String id, final String Sql,
-                                    final WebCallback callBack) {
-
-        new Thread(new Runnable() {
-            public void run() {
-                ArrayList<String> bLst = new ArrayList<String>();
-                String str = WebServiceFunc("SelectList", Sql);
-                try {
-                    JSONObject JsonObj = new JSONObject(str);
-                    String error = JsonObj.optJSONObject("errors").optString(
-                            "error");
-                    if (error.equals("10200")) {
-
-                        JSONArray values = JsonObj.optJSONObject("values")
-                                .optJSONArray("value");
-                        for (int i = 0; i < values.length(); i++) {
-                            bLst.add(values.getString(i));
-                        }
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                final Object Rs = bLst;
-                handler.post(new Runnable() {
-                    public void run() {
-                        callBack.CompleteCallback(id, Rs);
-                    }
-                });
-            }
-        }).start();
-        ;
-    }*/
-
-    /*public static void GetJsonTable(final String id, final String Sql,
-                                    final WebCallback callBack) {
-
-        new Thread(new Runnable() {
-            public void run() {
-                ArrayList<HashMap<String, String>> bLst = new ArrayList<HashMap<String, String>>();
-                String str = WebServiceFunc("SelectDataTable", Sql);
-                try {
-                    JSONObject JsonObj = new JSONObject(str);
-                    String error = JsonObj.optJSONObject("errors").optString(
-                            "error");
-                    if (error.equals("10200")) {
-                        JSONArray values = JsonObj.optJSONObject("values")
-                                .optJSONArray("value");
-                        for (int rowCnt = 0; rowCnt < values.length(); rowCnt++) {
-                            HashMap<String, String> RowData = new HashMap<String, String>();
-
-                            JSONObject rowObj = values.getJSONObject(rowCnt);
-                            Iterator keys = rowObj.keys();
-                            while (keys.hasNext()) {
-                                String key = (String) keys.next();
-                                RowData.put(key, rowObj.getString(key));
-                            }
-                            bLst.add(RowData);
-                        }
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    // e.printStackTrace();
-                }
-                final Object Rs = bLst;
-//				  System.out.println("<<<<<<<<<<<<<<<<<" + Sql);
-//				  System.out.println("<<<<<<<<<<<<<<<<<" + Rs);
-                handler.post(new Runnable() {
-                    public void run() {
-                        // System.out.println("<<<<<<<<<<<<<<<<<");
-                        callBack.CompleteCallback(id, Rs);
-                    }
-                });
-            }
-        }).start();
-        ;
-    }*/
-
-    /*public static void GetJsonString(final String id, final String Sql,
-                                     final WebCallback callBack) {
-
-        new Thread(new Runnable() {
-            public void run() {
-                String bStr = null;
-                String str = WebServiceFunc("SelectString", Sql);
-                try {
-                    JSONObject JsonObj = new JSONObject(str);
-                    String error = JsonObj.optJSONObject("errors").optString(
-                            "error");
-                    if (error.equals("10200")) {
-
-                        bStr = JsonObj.optJSONObject("values").optString(
-                                "value");
-
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                final Object Rs = bStr;
-                handler.post(new Runnable() {
-                    public void run() {
-                        callBack.CompleteCallback(id, Rs);
-                    }
-                });
-            }
-        });
-    }*/
-
-
-
-
-
-
-
-    /*private static String WebServiceFunc(String MethodName, String Sql) {
-        String result = null;
-
-        String NameSpace = "http://tempuri.org/";
-        String u = UserMstr.gwSvr_Url;
-
-        String webService = "/appservice.asmx";
-        String url = u + webService;
-        String soapAction = NameSpace + MethodName;
-
-        int RunCnt = 0;
-
-        while (RunCnt <= 5) {
-            RunCnt++;
-
-            try {
-                SoapObject request = new SoapObject(NameSpace, MethodName);// NameSpace
-//				String user = UserMstr.userData.getUserID();
-
-                String user = "";
-
-                if (UserMstr.userData == null) {
-                    user = "82215008";
-                } else {
-                    user = UserMstr.userData.getUserID();
-                }
-                if (user == null || user == "") {
-                    user = "82215008";
-                }
-
-                String appKey = ComFun.Md5("Zyo" + user + "Soft", false);
-                String Group = "Android";
-                request.addProperty("appkey", appKey);
-                request.addProperty("user", user);
-                request.addProperty("sql", Sql);
-                request.addProperty("group", Group);
-                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-                        SoapEnvelope.VER11);
-
-                envelope.dotNet = true;//
-
-                envelope.setOutputSoapObject(request);
-
-                HttpTransportSE ht = new HttpTransportSE(url);
-                ht.call(soapAction, envelope);//
-                if (envelope.getResponse() != null) {
-                    result = envelope.getResponse().toString();
-                }
-                break;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = null;
-            }
-        }
-        return result;
-    }*/
 
     public interface WebCallback {
         public void CompleteCallback(String id, Object obj);

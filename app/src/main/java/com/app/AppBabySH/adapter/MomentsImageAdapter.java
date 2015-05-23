@@ -1,7 +1,6 @@
 package com.app.AppBabySH.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.app.AppBabySH.CenterVariable;
+import com.app.AppBabySH.GlobalVar;
 import com.app.AppBabySH.item.MomentsImageItem;
 
 import java.util.ArrayList;
@@ -23,18 +22,23 @@ public class MomentsImageAdapter extends BaseAdapter {
     private static final String TAG = "MomentsImageAdapter";
     private LayoutInflater minflater;
     private ArrayList<MomentsImageItem> list;
-    public ImageLoader imageLoader;
-    private CenterVariable centerV;
+    private GlobalVar centerV;
+    private String strSizeType;
     private Integer imageSize;
+    public callBackImgItem onImgCallBack;
 
-    public MomentsImageAdapter(Context context,
-                               ArrayList<MomentsImageItem> _list) {
-        //Log.v(TAG, "in MomentsImageAdapter");
-        if (context == null) return;
-        centerV = (CenterVariable) context.getApplicationContext();
-        this.minflater = LayoutInflater.from(context);
-        this.list = _list;
-        imageLoader = new ImageLoader(context.getApplicationContext());
+    public interface callBackImgItem {
+        public void onImgClick(MomentsImageItem $item);
+    }
+
+    public MomentsImageAdapter(Context $context,
+                               ArrayList<MomentsImageItem> $list,
+                               String $sizeType) {
+        if ($context == null) return;
+        centerV = (GlobalVar) $context.getApplicationContext();
+        this.minflater = LayoutInflater.from($context);
+        this.list = $list;
+        strSizeType = $sizeType;
     }
 
     @Override
@@ -54,18 +58,28 @@ public class MomentsImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        switch (list.size()) {
-            case 1:
-                imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[2]);
-                break;
-            case 2:
-            case 4:
-                imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[1]);
-                break;
-            default:
-                imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[0]);
-                break;
+        if (strSizeType.equals("normal")) {
+            switch (list.size()) {
+                case 1:
+                    imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[2]);
+                    break;
+                case 2:
+                case 4:
+                    imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[1]);
+                    break;
+                default:
+                    imageSize = (int) ((double) centerV.windowWidth * centerV.momentsImageSizeAry[0]);
+                    break;
+            }
+        } else if (strSizeType.equals("personal")) {
+            if (list.size() <= 2) {
+                imageSize = (int) ((double) centerV.windowWidth * 0.35);
+            } else {
+                imageSize = (int) ((double) centerV.windowWidth * 0.175);
+            }
         }
+
+
         MomentsImageItem item = list.get(position);
         ImageView iv;
         if (convertView == null) {
@@ -78,7 +92,23 @@ public class MomentsImageAdapter extends BaseAdapter {
             iv = (ImageView) convertView;
         }
         //Log.v(TAG, "CIRCLE_ID:" + item.CIRCLE_ID + "ImageAdapter Url:" + item.URL);
-        imageLoader.DisplayImage(item.URL, iv);
+        ImageLoader.getInstance().DisplayImage(item.URL, iv);
+        iv.setOnClickListener(new openBigPic(item));
         return iv;
     }
+
+    class openBigPic implements View.OnClickListener {
+        private MomentsImageItem imgItem;
+
+        public openBigPic(MomentsImageItem $item) {
+            imgItem = $item;
+        }
+
+        @Override
+        public void onClick(View v) {
+            onImgCallBack.onImgClick(imgItem);
+        }
+    }
 }
+
+

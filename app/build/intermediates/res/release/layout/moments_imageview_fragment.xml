@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/milinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg2">
+
+        <ImageButton
+            android:id="@+id/imgbtnMomentsImageBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:src="@mipmap/global_backicon" />
+
+        <TextView
+            android:id="@+id/txtMomentsImageNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="0.77"
+            android:singleLine="false"
+            android:text="9/9"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
+            android:textSize="30dp" />
+
+    </RelativeLayout>
+
+
+    <view
+        android:id="@+id/vpMomentsImageContent"
+        class="android.support.v4.view.ViewPager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lyMomentsImageFun"
+        android:layout_below="@+id/milinearLayout2"
+        android:layout_centerHorizontal="true"
+        android:background="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/lyMomentsImageFun"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg2">
+        <LinearLayout
+            android:id="@+id/lyMomentsImageGood"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="2dip"
+            android:background="@drawable/news_conerround"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:cropToPadding="false"
+                android:scaleType="centerInside"
+                android:src="@mipmap/news_good" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dip"
+                android:layout_marginTop="6dip"
+                android:autoText="true"
+                android:text="讚"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF"></TextView>
+
+            <TextView
+                android:id="@+id/txtMomentsImageGood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dip"
+                android:layout_marginTop="6dip"
+                android:text="999"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF">
+                android:gravity="center"
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lyMomentsImageFav"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dip"
+            android:layout_toLeftOf="@+id/lyMomentsImageComment"
+            android:layout_toRightOf="@+id/lyMomentsImageGood"
+            android:background="@drawable/news_conerround"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:cropToPadding="false"
+                android:scaleType="centerInside"
+                android:src="@mipmap/news_favoriteicon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dip"
+                android:layout_marginTop="6dip"
+                android:autoText="true"
+                android:text="收藏"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF"></TextView>
+
+            <TextView
+                android:id="@+id/txtMomentsImageFav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dip"
+                android:layout_marginTop="6dip"
+                android:autoText="true"
+                android:text="999"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF">
+                android:gravity="center"
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lyMomentsImageComment"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginTop="2dip"
+            android:background="@drawable/news_conerround"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:cropToPadding="false"
+                android:scaleType="centerInside"
+                android:src="@mipmap/news_favoriteicon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dip"
+                android:layout_marginTop="6dip"
+                android:text="評論"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#FFFFFF"></TextView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtMomentsImageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Content"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:layout_alignBottom="@+id/vpMomentsImageContent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+
+    <!--<ProgressBar
+        android:id="@+id/proBarMomentsLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />-->
+</RelativeLayout>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/moments_imageview_fragment.xml -->

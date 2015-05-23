@@ -1,6 +1,7 @@
 package com.app.AppBabySH;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.app.AppBabySH.UIBase.BaseFragment;
@@ -16,7 +17,6 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +25,13 @@ import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 //for git test
 public class MainTabActivity extends FragmentActivity {
     private static final String TAG = "MainTabActivity";
     private boolean isActive = false;
-    private CenterVariable centerV;
+    private GlobalVar centerV;
     //定义FragmentTabHost对象
     public FragmentTabHost mTabHost;
     private ViewGroup mTabHostParent;
@@ -37,14 +39,20 @@ public class MainTabActivity extends FragmentActivity {
     private LayoutInflater layoutInflater;
 
     //定义数组来存放Fragment界面
-    private Class fragmentArray[] = {MomentsFragment.class, ChatFragment.class, NewsMainFragment.class, GrowthFragment.class, ProfileFragment.class};
+    //private Class fragmentArray[] = {MomentsFragment.class, ChatFragment.class, NewsFragment.class, GrowthFragment.class, ProfileFragment.class};
+    private Class fragmentArray[] = {MomentsFragment.class, NewsFragment.class, ProfileFragment.class};
 
     //定义数组来存放按钮图片
-    private int mImageViewArray[] = {R.drawable.tab_moments, R.drawable.tab_chat, R.drawable.tab_news,
-            R.drawable.tab_growth, R.drawable.tab_profile};
+    //private int mImageViewArray[] = {R.drawable.tab_moments, R.drawable.tab_chat, R.drawable.tab_news,R.drawable.tab_growth, R.drawable.tab_profile};
+    private int mImageViewArray[] = {R.drawable.tab_moments, R.drawable.tab_news, R.drawable.tab_profile};
 
     //Tab选项卡的文字
-    private String mTextviewArray[] = {"Moments", "Chat", "News", "Growth", "Profile"};
+    //private String mTextviewArray[] = {"Moments", "Chat", "News", "Growth", "Profile"};
+    private String mTextviewArray[] = {"Moments", "News", "Profile"};
+
+    private ArrayList<TextView> aryPushText;
+    private int i;
+    public String momentPushNum, chatPushNum, newsPushNum, growthPushNum,strTmpJsonName;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +60,12 @@ public class MainTabActivity extends FragmentActivity {
         Log.v(TAG, "onCreate");
 
         //取得螢幕寬高
-        centerV = (CenterVariable) getApplicationContext();
+        centerV = (GlobalVar) getApplicationContext();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         centerV.windowHeight = metrics.heightPixels;
         centerV.windowWidth = metrics.widthPixels;
+        aryPushText = new ArrayList<TextView>();
         initView();
     }
 
@@ -68,6 +77,8 @@ public class MainTabActivity extends FragmentActivity {
             Log.v(TAG, "onResume : (UserMstr.userData = null)");
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
+        }else{
+            refreshPush();
         }
         if (!isActive) {
             Log.v(TAG, "onResume : (isActive = false) app 从后台唤醒，进入前台");
@@ -117,13 +128,75 @@ public class MainTabActivity extends FragmentActivity {
     private View getTabItemView(int index) {
         View view = layoutInflater.inflate(R.layout.maintab_item, null);
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
+        ImageView imageView = (ImageView) view.findViewById(R.id.imgTabIcon);
         imageView.setImageResource(mImageViewArray[index]);
 
-        TextView textView = (TextView) view.findViewById(R.id.textview);
+        TextView textView = (TextView) view.findViewById(R.id.txtTabName);
         textView.setText(mTextviewArray[index]);
 
+        TextView mTxtPushNum = (TextView) view.findViewById(R.id.txtTabPushNum);
+        mTxtPushNum.setVisibility(View.GONE);
+        aryPushText.add(mTxtPushNum);
         return view;
+    }
+
+    /**
+     * 刷新新訊息數量
+     */
+    public void refreshPush() {
+        Log.i(TAG,"refreshPush");
+        momentPushNum = chatPushNum = newsPushNum = growthPushNum = "0";
+        i = -1;
+        while(++i < UserMstr.userData.getPushInfoAry().length()){
+            strTmpJsonName = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("PUSH_TYPE");
+            if(strTmpJsonName.equals("CIRCLE")){
+                momentPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
+            }else if(strTmpJsonName.equals("CHANNEL")){
+                newsPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
+            }
+        }
+        if(momentPushNum.equals("0")){
+            aryPushText.get(0).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(0).setText(momentPushNum);
+            aryPushText.get(0).setVisibility(View.VISIBLE);
+        }
+        if(newsPushNum.equals("0")){
+            aryPushText.get(1).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(1).setText(newsPushNum);
+            aryPushText.get(1).setVisibility(View.VISIBLE);
+        }
+        if(growthPushNum.equals("0")){
+            aryPushText.get(2).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(2).setText(growthPushNum);
+            aryPushText.get(2).setVisibility(View.VISIBLE);
+        }
+        /*if(momentPushNum.equals("0")){
+            aryPushText.get(0).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(0).setText(momentPushNum);
+            aryPushText.get(0).setVisibility(View.VISIBLE);
+        }
+        if(chatPushNum.equals("0")){
+            aryPushText.get(1).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(1).setText(chatPushNum);
+            aryPushText.get(1).setVisibility(View.VISIBLE);
+        }
+        if(newsPushNum.equals("0")){
+            aryPushText.get(2).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(2).setText(newsPushNum);
+            aryPushText.get(2).setVisibility(View.VISIBLE);
+        }
+        if(growthPushNum.equals("0")){
+            aryPushText.get(3).setVisibility(View.GONE);
+        }else{
+            aryPushText.get(3).setText(growthPushNum);
+            aryPushText.get(3).setVisibility(View.VISIBLE);
+        }*/
     }
 
     /**
@@ -161,6 +234,15 @@ public class MainTabActivity extends FragmentActivity {
     }
 
     /**
+     * 移除子頁面*
+     */
+    public void RemoveTab() {
+        if (mTabHostParent != null) {
+            mTabHostParent.removeView(mTabHost);
+        }
+    }
+
+    /**
      * 關閉鍵盤
      */
     public void CloseInput() {
@@ -170,9 +252,10 @@ public class MainTabActivity extends FragmentActivity {
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
     /*開啟鍵盤*/
-    public void OpenInput(){
-        InputMethodManager imm = ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE));
+    public void OpenInput() {
+        InputMethodManager imm = ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE));
         imm.toggleSoftInput(0, 0);
     }
 
