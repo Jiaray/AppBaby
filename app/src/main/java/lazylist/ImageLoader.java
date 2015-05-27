@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
@@ -42,7 +43,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ImageLoader {
-
+    final private String TAG = "ImageLoader";
     MemoryCache memoryCache = new MemoryCache();
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
@@ -54,6 +55,7 @@ public class ImageLoader {
     AsyncImageLoader asyncImageLoader;
 
     private static ImageLoader imageLoader; // 本类的引用
+
     public static ImageLoader getInstance() {
         if (null == imageLoader) {
             imageLoader = new ImageLoader();
@@ -139,9 +141,10 @@ public class ImageLoader {
 
     private Bitmap getBitmap(String url) {
         File f = FileCache.getInstance().getFile(url);
+        System.out.println("-----zyo f:" + f);
         //from SD cache
         Bitmap b = decodeFile(f);
-        //System.out.println("-----zyo "+b);
+        System.out.println("-----zyo b:" + b);
         if (b != null)
             return b;
         String geturltitle = url.substring(0, 4);
@@ -360,10 +363,9 @@ public class ImageLoader {
     }
 
 
-
     /*載入網路圖片並存入緩存中*/
     public void DisplayWebUrlImage(String $url, ImageView $imageView) {
-       // $imageView.setImageResource(stub_id);
+        // $imageView.setImageResource(stub_id);
         Bitmap bmpFromSD = FileCache.getInstance().getBmp($url);
         if (null != bmpFromSD) {
             $imageView.setImageBitmap(bmpFromSD);
@@ -410,4 +412,65 @@ public class ImageLoader {
         return null;
     }
 
+    public void AChangeSmallSizeToB(String $oriPath, String $targetPath) {
+        try {
+            Bitmap bm = ImageLoader.getInstance().getSmallBitmap($oriPath);
+            FileOutputStream fos = new FileOutputStream(new File($targetPath));
+            bm.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+        } catch (Exception e) {
+            Log.e(TAG, "ASmallSizeFromB Error : ", e);
+        }
+    }
+
+    /**
+     * 根据路径获得突破并压缩返回bitmap用于显示
+     *
+     * @param filePath
+     * @return
+     */
+    public Bitmap getSmallBitmap(String filePath) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 960, 1600);
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+    /**
+     * 计算图片的缩放值
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public int calculateInSampleSize(BitmapFactory.Options options,
+                                     int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        return inSampleSize;
+    }
 }

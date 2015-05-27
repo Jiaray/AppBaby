@@ -1,11 +1,11 @@
 package lazylist;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,9 +19,19 @@ public class FileCache {
     final private String TAG = "FileCache";
     private static FileCache fileCache; // 本类的引用
     final private String FOLDERNAME = "AppBabySH";
-    private String strImgPath, alee; // 图片保存的路径
+    private String strCachePath, strImgBoxPath; // 图片保存的路径
     private String strJsonPath;// Json保存的路径
     private File cacheDir;
+    private File imgBoxDir;
+    private File jsonDir;
+
+    public String getCachePath() {
+        return strCachePath;
+    }
+
+    public String getImgBoxPath() {
+        return strImgBoxPath;
+    }
 
     private FileCache() {
         // this.context = context;
@@ -31,10 +41,17 @@ public class FileCache {
         } else {
             strPathHead = "/data/data/com.app.AppBabySH";
         }
-        strImgPath = strPathHead + "/" + FOLDERNAME + "/cache/";
-        alee = strPathHead + "/" + FOLDERNAME + "/image/";
+        strCachePath = strPathHead + "/" + FOLDERNAME + "/cache/";
+        cacheDir = new File(strCachePath);
+        if (!cacheDir.exists())cacheDir.mkdirs();
+
+        strImgBoxPath = strPathHead + "/" + FOLDERNAME + "/image/";
+        imgBoxDir = new File(strImgBoxPath);
+        if (!imgBoxDir.exists())imgBoxDir.mkdirs();
+
         strJsonPath = strPathHead + "/" + FOLDERNAME + "/json/";
-        cacheDir = new File(strImgPath);
+        jsonDir = new File(strJsonPath);
+        if (!jsonDir.exists())jsonDir.mkdirs();
     }
 
    /* public FileCache(Context context) {
@@ -48,23 +65,18 @@ public class FileCache {
     }*/
 
     public File getFile(String url) {
-        if (!cacheDir.exists())
-            cacheDir.mkdirs();
-        File imgFile = new File(strImgPath);
         //I identify images by hashcode. Not a perfect solution, good for the demo.
-        //System.out.println("zyo------FileCache: get file url - "+url);
+        System.out.println("zyo------FileCache: get file url - " + url + " url.hashCode:" + url.hashCode());
         String filename = String.valueOf(url.hashCode());
         //Another possible solution (thanks to grantland)
         // String filename = URLEncoder.encode(url);
-        //System.out.println("zyo------FileCache: filename - "+filename);
+        //System.out.println("zyo------FileCache: filename - " + filename);
         File f = new File(cacheDir, filename);
-        //System.out.println("zyo------FileCache: get file - "+f);
+        System.out.println("zyo------FileCache: get file - " + f);
         return f;
     }
 
     public void clear() {
-        if (!cacheDir.exists())
-            cacheDir.mkdirs();
         File[] files = cacheDir.listFiles();
         if (files == null)
             return;
@@ -85,16 +97,8 @@ public class FileCache {
         String imgName = imgurl.substring(
                 imgurl.lastIndexOf('/') + 2,
                 imgurl.length());
-        File jsonFile = new File(strJsonPath);
-        File imgFile = new File(strImgPath);
-        if (!jsonFile.exists()) {
-            jsonFile.mkdirs();
-        }
-        if (!imgFile.exists()) {
-            imgFile.mkdirs();
-        }
         File fTXT = new File(strJsonPath + fileName + ".txt");
-        File fImg = new File(strImgPath + imgName);
+        File fImg = new File(strCachePath + imgName);
         this.writeToFile(dataJson, fTXT);
         this.writeToFile(bmp, fImg);
         return true;
@@ -105,10 +109,6 @@ public class FileCache {
      */
     public boolean savaJsonData(String strApiUrl, String dataJson) {
         String fileName = this.toHexString(strApiUrl);
-        File jsonFile = new File(strJsonPath);
-        if (!jsonFile.exists()) {
-            jsonFile.mkdirs();
-        }
         File fTXT = new File(strJsonPath + fileName + ".txt");
         if (fTXT.exists()) {
             fTXT.delete();
@@ -122,11 +122,7 @@ public class FileCache {
         String imgName = imgurl.substring(
                 imgurl.lastIndexOf('/') + 1,
                 imgurl.length());
-        File imgFileDirs = new File(strImgPath);
-        if (!imgFileDirs.exists()) {
-            imgFileDirs.mkdirs();
-        }
-        File fImg = new File(strImgPath + imgName);
+        File fImg = new File(strCachePath + imgName);
         if (fImg.exists()) {
             fImg.delete();
         }
@@ -138,11 +134,7 @@ public class FileCache {
         String imgName = imgurl.substring(
                 imgurl.lastIndexOf('/') + 1,
                 imgurl.length());
-        File imgFileDirs = new File(alee);
-        if (!imgFileDirs.exists()) {
-            imgFileDirs.mkdirs();
-        }
-        File fImg = new File(alee + imgName);
+        File fImg = new File(strImgBoxPath + imgName);
         if (fImg.exists()) {
             fImg.delete();
         }
@@ -152,11 +144,7 @@ public class FileCache {
 
     // 自己给图片命名并保存图片
     public boolean saveBmpDataByName(String bmpName, Bitmap bmp) {
-        File imgFileDirs = new File(strImgPath);
-        if (!imgFileDirs.exists()) {
-            imgFileDirs.mkdirs();
-        }
-        File fImg = new File(strImgPath + bmpName);
+        File fImg = new File(strCachePath + bmpName);
         if (fImg.exists()) {
             fImg.delete();
         }
@@ -200,8 +188,7 @@ public class FileCache {
                 imgurl.lastIndexOf('/') + 1,
                 imgurl.length());
 
-        //Log.v(TAG, "getBmp : URL:" + strImgPath + imgName);
-        File imgFile = new File(strImgPath + imgName);
+        File imgFile = new File(strCachePath + imgName);
         if (imgFile.exists()) {
             FileInputStream fis;
             try {
@@ -221,7 +208,7 @@ public class FileCache {
 
     // 通过图片名字来获得图片
     public Bitmap getBmpByName(String bmpName) {
-        File imgFile = new File(strImgPath + bmpName);
+        File imgFile = new File(strCachePath + bmpName);
         if (imgFile.exists()) {
             FileInputStream fis;
             try {
@@ -244,7 +231,7 @@ public class FileCache {
         String imgName = imgurl.substring(
                 imgurl.lastIndexOf('/') + 2,
                 imgurl.length());
-        File imgFile = new File(strImgPath + imgName);
+        File imgFile = new File(strCachePath + imgName);
         return imgFile;
     }
 
@@ -330,10 +317,22 @@ public class FileCache {
     }
 
     /**
+     * 根据路径删除图片
+     *
+     * @param path
+     */
+    public void deleteTempFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    /**
      * 删除SD卡上的全部缓存
      */
     public int clearAllData() {
-        File imgDir = new File(strImgPath);
+        File imgDir = new File(strCachePath);
         File txtDir = new File(strJsonPath);
         File[] imgFiles = imgDir.listFiles();
         File[] txtFiles = txtDir.listFiles();
@@ -363,6 +362,7 @@ public class FileCache {
         }
         return 0;
     }
+     //  0x表示十六进制
 
     private String toHexString(String s) {
         String str = "";
@@ -394,6 +394,39 @@ public class FileCache {
             e1.printStackTrace();
         }
         return s;
+
+       }
+    //  複製檔案
+    public boolean copyFile(File source, File dest) {
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(source));
+            bos = new BufferedOutputStream(new FileOutputStream(dest, false));
+
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+
+            do {
+                bos.write(buf);
+            } while(bis.read(buf) != -1);
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
+    // 移動檔案 WARNING ! Inefficient if source and dest are on the same filesystem !
+    public boolean moveFile(File source, File dest) {
+        return copyFile(source, dest) && source.delete();
+    }
 }

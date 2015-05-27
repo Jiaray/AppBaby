@@ -1,14 +1,17 @@
 package com.app.AppBabySH.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.app.AppBabySH.GlobalVar;
+import com.app.AppBabySH.R;
 import com.app.AppBabySH.item.MomentsImageItem;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class MomentsImageAdapter extends BaseAdapter {
 
     public interface callBackImgItem {
         public void onImgClick(MomentsImageItem $item);
+        public void onAddClick();
     }
 
     public MomentsImageAdapter(Context $context,
@@ -77,24 +81,38 @@ public class MomentsImageAdapter extends BaseAdapter {
             } else {
                 imageSize = (int) ((double) centerV.windowWidth * 0.175);
             }
+        } else if (strSizeType.equals("preview")) {
+            imageSize = (int) ((double) centerV.windowWidth * 0.3);
         }
 
+        if (strSizeType.equals("preview") && position == list.size() - 1) {
+            View addView = minflater.inflate(R.layout.moments_addnew_additem, null);
+            addView.findViewById(R.id.add).setOnClickListener(
+                    new View.OnClickListener() {
 
-        MomentsImageItem item = list.get(position);
-        ImageView iv;
-        if (convertView == null) {
-            iv = new ImageView(parent.getContext());
-            iv.setLayoutParams(new GridView.LayoutParams(imageSize, imageSize));
-            iv.setAdjustViewBounds(false);
-            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //iv.setPadding(18, 18, 18, 18);
-        } else {
-            iv = (ImageView) convertView;
+                        @Override
+                        public void onClick(View v) {
+                            onImgCallBack.onAddClick();
+                        }
+                    });
+            return addView;
+        }else{
+            MomentsImageItem item = list.get(position);
+            ImageView iv;
+            if (convertView == null) {
+                iv = new ImageView(parent.getContext());
+                iv.setLayoutParams(new GridView.LayoutParams(imageSize, imageSize));
+                iv.setAdjustViewBounds(false);
+                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                //iv.setPadding(18, 18, 18, 18);
+            } else {
+                iv = (ImageView) convertView;
+            }
+            //Log.v(TAG, "CIRCLE_ID:" + item.CIRCLE_ID + "ImageAdapter Url:" + item.URL);
+            ImageLoader.getInstance().DisplayImage(item.URL, iv);
+            iv.setOnClickListener(new openBigPic(item));
+            return iv;
         }
-        //Log.v(TAG, "CIRCLE_ID:" + item.CIRCLE_ID + "ImageAdapter Url:" + item.URL);
-        ImageLoader.getInstance().DisplayImage(item.URL, iv);
-        iv.setOnClickListener(new openBigPic(item));
-        return iv;
     }
 
     class openBigPic implements View.OnClickListener {

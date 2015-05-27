@@ -164,6 +164,10 @@ public class MomentsCustomAdapter extends BaseAdapter {
             public void onImgClick(MomentsImageItem $item) {
                 onCallBack.onImgAdapterClick($item);
             }
+
+            @Override
+            public void onAddClick() {
+            }
         };
         if (item.ATCH.size() > 1) {
             viewHolder.mGdvImages.setNumColumns(2);

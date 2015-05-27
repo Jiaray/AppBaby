@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,11 +44,6 @@ import static com.app.Common.LogUtils.logi;
 public class MomentsFragment extends Fragment {
     private static final String TAG = "MomentsFragment";
     private static final String ForTestClassID = "C201504000002";
-    private MainTabActivity main;
-    private View rootView;
-    private ViewGroup viewG;
-    private PullDownView pullDownView;
-    private ScrollOverListView momentslistView;
     private MomentsAdapter adapter;
     private ProgressDialog pd;
     private AlertDialog.Builder alertD;
@@ -60,6 +56,13 @@ public class MomentsFragment extends Fragment {
     private Toast toast;
 
     private Handler hdrMain;
+    //Main Obj
+    private MainTabActivity main;
+    private View rootView;
+    private ViewGroup viewG;
+    private PullDownView pullDownView;
+    private ScrollOverListView momentslistView;
+    private ImageButton mImgBFilter, mImgBAddNew;
 
     //About Reply
     private View mVReply;
@@ -133,11 +136,11 @@ public class MomentsFragment extends Fragment {
             ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
             ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
             TextView mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
-            mTxtHeaderNews.setText(main.momentPushNum+" 條新消息!");
+            mTxtHeaderNews.setText(main.momentPushNum + " 條新消息!");
             mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Handler tt=new Handler();
+                    Handler tt = new Handler();
                     tt.post(new Runnable() {
                         @Override
                         public void run() {
@@ -152,7 +155,7 @@ public class MomentsFragment extends Fragment {
             //Create ListView
             initListView();
 
-            //Cancel Reply Mode
+            //AddEvent Cancel Reply Mode
             momentslistView.setOnTouchListener(new View.OnTouchListener() {
 
                 @Override
@@ -164,11 +167,49 @@ public class MomentsFragment extends Fragment {
                 }
 
             });
+
+            //Create AddNew Menu
+            mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
+            final AlertDialog mutiItemDialogAddNew = getAddNewDialog();
+            mImgBAddNew.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mutiItemDialogAddNew.show();
+                }
+            });
+
+            //removeCallbacks
             hdrMain.removeCallbacks(runInit);
         }
     };
 
+    //  新增選單
+    public AlertDialog getAddNewDialog() {
+        final String[] items = {"从手机相册选择", "拍照", "取消"};
+        alertD = new AlertDialog.Builder(getActivity());
+        alertD.setTitle("选择内容来源!");
+        //設定對話框內的項目
+        alertD.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which != 2) {
+                    MomentsAddNewFragment addF = new MomentsAddNewFragment();
+                    addF.Class_ID = ForTestClassID;
+                    addF.Add_Type = which == 0 ? "albums" : "camera";
+                    addF.onCallBack = new MomentsAddNewFragment.CallBack() {
+                        @Override
+                        public void onBack() {
+                            initListView();
+                        }
+                    };
+                    main.OpenBottom(addF);
+                }
+            }
+        });
+        return alertD.create();
+    }
 
+    //  初始化
     private void initListView() {
         if (mVReply != null) {
             viewG.removeView(mVReply);
@@ -178,9 +219,7 @@ public class MomentsFragment extends Fragment {
         getData();
     }
 
-    /**
-     * 清除列表
-     */
+    //  清除列表
     private void clearList() {
         if (adapter != null) {
             //adapter.imageLoader.clearCache();
@@ -357,11 +396,11 @@ public class MomentsFragment extends Fragment {
     private void customCircle(String $type) {
         MomentsCustomFragment personalF = new MomentsCustomFragment();
         personalF.Class_ID = ForTestClassID;
-        if($type.equals("personal")){
+        if ($type.equals("personal")) {
             personalF.USER_ID = callBackItem.USER_ID;
             personalF.NIC_NAME = callBackItem.NIC_NAME;
             personalF.USER_AVATAR = callBackItem.USER_AVATAR;
-        }else if($type.equals("news")){
+        } else if ($type.equals("news")) {
             personalF.USER_ID = UserMstr.userData.getUserID();
             personalF.NIC_NAME = "MomentsNews";
             personalF.USER_AVATAR = "";

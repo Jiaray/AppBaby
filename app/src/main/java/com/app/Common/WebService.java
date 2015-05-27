@@ -138,6 +138,32 @@ public class WebService {
         GetJson(id, "Baby_Set_Circle_Reply", map, $callBack);
     }
 
+    //  班級圈新增
+    public static void SetCircleNew(String id, String $userID, String $classID,
+                                    String $description, String $circle_Type, String $latitude,
+                                    String $longitude, String $atch_Cnt, String $atch_Info, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Class_ID", $classID);
+        map.put("Description", $description);
+        map.put("Circle_Type", $circle_Type);
+        map.put("Latitude", $latitude);
+        map.put("Longitude", $longitude);
+        map.put("Atch_Cnt", $atch_Cnt);
+        map.put("Atch_Info", $atch_Info);
+        map.put("CheckKey", "");
+        Log.i(TAG, "map:" + map);
+        GetJson(id, "Baby_Set_Circle_New", map, $callBack);
+    }
+
+    //  UpToken產生
+    public static void GetUpToken(String id, String $bucketName, WebCallback $callBack){
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("bucketName", $bucketName);
+        map.put("key", "");
+        map.put("CheckKey", "");
+        GetStr(id, "Baby_Get_UpToken", map, $callBack);
+    }
 
     /*========  頻道 News  ========*/
     //  取得頻道列表
@@ -227,6 +253,19 @@ public class WebService {
         }).start();
     }
 
+    public static void GetStr(final String id, final String MethodName, final HashMap<String, String> map, final WebCallback callBack) {
+        new Thread(new Runnable() {
+            public void run() {
+                String jsonStr = WebServiceFunc(MethodName, map);
+                final Object Rs = jsonStr;
+                handler.post(new Runnable() {
+                    public void run() {
+                        callBack.CompleteCallback(id, Rs);
+                    }
+                });
+            }
+        }).start();
+    }
     private static String WebServiceFunc(String MethodName, HashMap<String, String> map) {
         String result = null;
         String NameSpace = "http://tempuri.org/";

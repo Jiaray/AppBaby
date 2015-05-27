@@ -16,83 +16,6 @@
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_QQZone_2-1c21476f6f78238f39e34333ef52440f5b6bd918.jar" />
     </item>
     <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_facebook_1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="4c986bca56de40625aea56af38778e6a8405da47">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_facebook_1-b04cd1cb574f07a49bdbf4b9aafba480992f8523.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\umeng_social_sdk.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="857c78387c5b911f5dc9b20b307f0edfd16befed">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\umeng_social_sdk-d74cfcdf422157d85f1442fcf930f03d057dc42b.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_kakao.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="4e995b5df77e35a906376e7a5f30ae7b1bc8d652">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_kakao-1325f65cf8cb915f728a14a87efa9b16118ba66c.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_whatsapp.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="0525a81551645f8197a18f40a2bc72a23698ebf2">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_whatsapp-e1ba608d89314be7dbbc4694f0968797d470d669.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_Sina.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="fd07c18d274be387922d55964e04cb418133c80f">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_Sina-359c23a363045dbef3964363ce9f5a5b6b046669.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_laiwang_2.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="6d0b4d7e24b935fbe93d548eb1ce37d50dc42888">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_laiwang_2-9d1f56aff9740a9f752d994df60b5ae1060a3be3.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_renren_1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="0ca209d760b28d73bbe444888cdd0c20eeaacbc3">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_renren_1-27e4e9d8a1788e4d60a668a041aad79cb973409d.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_sms.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="5cdbc35bf51e70cf589157dea2648dbf8795b062">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_sms-af01eab8e86a1c42b85da93a890195f7444a9da5.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_tumblr.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="82708e32c070e1d6724376b9b8a682f86581c509">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_tumblr-d4f0ea1ed8f721a3d579a7a3f2281a5affbdb600.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_instagram.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="84f8917b9eeabe325b80c3aeec56368c5c143f1d">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_instagram-cf618d86b199d2ab204543ddd2200494b3ff12a8.jar" />
-    </item>
-    <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_flickr.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="f6e6c880de16ed2e988d4ce6e32afc9ab8e24361">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_flickr-66249a344f0f92f5b8da33943665e6f53d332e6a.jar" />
-    </item>
-    <item
         jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_WeiXin_2.jar"
         jumboMode="false"
         revision="22.0.1"
@@ -121,11 +44,18 @@
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_yixin_1-2c13d3512f1d5bfe5c4740d41620e5c0c91cf53f.jar" />
     </item>
     <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_facebook_2.jar"
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\umeng_social_sdk.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="28918c6918ccb1c5db2dd9464f23096d21dc5e47">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_facebook_2-19f75a3162147c8c5c1ce1615a33c867b3cc69d0.jar" />
+        sha1="857c78387c5b911f5dc9b20b307f0edfd16befed">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\umeng_social_sdk-d74cfcdf422157d85f1442fcf930f03d057dc42b.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\android-async-http-1.4.6.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a845a88238be0b5be9d238652c1bc0605ef91f52">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\android-async-http-1.4.6-d6a36b5cbe9601724f4ae5c4557309c64e733595.jar" />
     </item>
     <item
         jar="D:\Jiaray\Keep\Android\AppBaby\app\libs\ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar"
@@ -135,11 +65,11 @@
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\ksoap2-android-assembly-3.0.0-jar-with-dependencies-fc6b269358463618728e0dd61e123c3471db2a05.jar" />
     </item>
     <item
-        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_line.jar"
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_whatsapp.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="575c8fe3b6f01491f5c3ce94ee26eddc83b438ae">
-        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_line-760cbd6b0cdeb9956f7930dd1fc1574c5341045b.jar" />
+        sha1="0525a81551645f8197a18f40a2bc72a23698ebf2">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_whatsapp-e1ba608d89314be7dbbc4694f0968797d470d669.jar" />
     </item>
     <item
         jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_tencentWB_3.jar"
@@ -149,11 +79,32 @@
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_tencentWB_3-65309b34de647d7c2331a8b6d097d1f49d47403f.jar" />
     </item>
     <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_Sina.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="fd07c18d274be387922d55964e04cb418133c80f">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_Sina-359c23a363045dbef3964363ce9f5a5b6b046669.jar" />
+    </item>
+    <item
         jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_QQZone_3.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="d57cae1dcd1eeeec2cd8197fcdd7a0316216481e">
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_QQZone_3-3c3d850ddebf265453f0f08d67db8312b3e9d098.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_laiwang_2.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="6d0b4d7e24b935fbe93d548eb1ce37d50dc42888">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_laiwang_2-9d1f56aff9740a9f752d994df60b5ae1060a3be3.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_renren_1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="0ca209d760b28d73bbe444888cdd0c20eeaacbc3">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_renren_1-27e4e9d8a1788e4d60a668a041aad79cb973409d.jar" />
     </item>
     <item
         jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_laiwang_1.jar"
@@ -168,6 +119,20 @@
         revision="22.0.1"
         sha1="d7c2f29c05b35e8c8713be2b81c41cf18f98b64a">
         <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_WeiXin_1-a7b12913f385d6b14bbb9d3c2fc061fa72028a1c.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\qiniu-android-sdk-7.0.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="7111ff719c8a78a6783e67a68732ed40ea4e8423">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\qiniu-android-sdk-7.0.3-0ba5102f40895530f84dd0fe5d2778b2db08b03e.jar" />
+    </item>
+    <item
+        jar="D:\Jiaray\Keep\Android\AppBaby\app\src\main\libs\SocialSDK_sms.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5cdbc35bf51e70cf589157dea2648dbf8795b062">
+        <dex dex="D:\Jiaray\Keep\Android\AppBaby\app\build\intermediates\pre-dexed\debug\SocialSDK_sms-af01eab8e86a1c42b85da93a890195f7444a9da5.jar" />
     </item>
     <item
         jar="C:\Users\ray\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"

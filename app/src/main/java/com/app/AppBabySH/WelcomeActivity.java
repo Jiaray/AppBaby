@@ -1,7 +1,5 @@
 package com.app.AppBabySH;
 
-
-import com.app.AppBabySH.R;
 import com.app.Common.LocalDB;
 
 import android.app.Activity;
@@ -26,6 +24,5 @@ public class WelcomeActivity extends Activity {
 			}
 		};
 		new Handler().postDelayed(r, 2000);// 2秒
-	
 	}
 }

@@ -154,6 +154,8 @@ public class MomentsAdapter extends BaseAdapter {
             public void onImgClick(MomentsImageItem $item) {
                 onCallBack.onImgAdapterClick($item);
             }
+            @Override
+            public void onAddClick() {}
         };
         //設定顯示列數
         switch (item.ATCH.size()) {
