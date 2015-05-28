@@ -66,7 +66,8 @@ public class MomentsAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView mTxtName, mTxtTitle, mTxtClass, mTxtDate;
         ImageView mImgHeader;
-        ImageButton mImgbCommentFun, mImgbDel, mImgbGood, mImgbFav, mImgbComment;
+        LinearLayout mLyDel,mLySetGood,mLySetFav,mLyToComment;
+        ImageButton mImgbCommentFun;
         GridView mGdvPic;
         LinearLayout mLyComment, mLyGood, mLyReply;
     }
@@ -100,10 +101,10 @@ public class MomentsAdapter extends BaseAdapter {
             viewHolder.mTxtClass = (TextView) convertView.findViewById(R.id.txtMomentsItemClassName);
             viewHolder.mLyComment = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemComment);
             viewHolder.mImgbCommentFun = (ImageButton) convertView.findViewById(R.id.btnMomentsItemCommentFun);
-            viewHolder.mImgbDel = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemDel);
-            viewHolder.mImgbGood = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemGood);
-            viewHolder.mImgbFav = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemFav);
-            viewHolder.mImgbComment = (ImageButton) convertView.findViewById(R.id.imgbMomentsItemComment);
+            viewHolder.mLyDel = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemDel);
+            viewHolder.mLySetGood = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemSetGood);
+            viewHolder.mLySetFav = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemSetFav);
+            viewHolder.mLyToComment = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemToComment);
             viewHolder.mTxtDate = (TextView) convertView.findViewById(R.id.txtMomentsItemDate);
             viewHolder.mLyGood = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemGood);
             viewHolder.mLyReply = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemReply);
@@ -130,10 +131,10 @@ public class MomentsAdapter extends BaseAdapter {
 
             viewHolder.mImgHeader.setOnClickListener(new MyOnClickListener(item));
             viewHolder.mImgbCommentFun.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbDel.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbGood.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbFav.setOnClickListener(new MyOnClickListener(item));
-            viewHolder.mImgbComment.setOnClickListener(new AtReply(item, "", ""));
+            viewHolder.mLyDel.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mLySetGood.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mLySetFav.setOnClickListener(new MyOnClickListener(item));
+            viewHolder.mLyToComment.setOnClickListener(new AtReply(item, "", ""));
         }
         return convertView;
     }
@@ -227,7 +228,7 @@ public class MomentsAdapter extends BaseAdapter {
         while (++i < item.REPLY.size()) {
             Button replyBtn = new Button(convertView.getContext());
             replyBtn.setGravity(Gravity.CENTER | Gravity.LEFT);
-            replyBtn.setBackgroundColor(Color.GREEN);
+            replyBtn.setBackgroundColor(Color.TRANSPARENT);
             replyBtn.setTextSize(16);
             contentStr = "<font color=\"" + replyNameColor + "\">" + item.REPLY.get(i).optString("NIC_NAME") + "</font>";
             if (!item.REPLY.get(i).optString("AT_REPLY_SN").equals("")) {
@@ -294,15 +295,15 @@ public class MomentsAdapter extends BaseAdapter {
                     break;
 
                 //About Comment
-                case R.id.imgbMomentsItemDel://Del Circle
+                case R.id.lyMomentsItemDel://Del Circle
                     if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("del", callBackItem);
                     break;
-                case R.id.imgbMomentsItemGood://Set Circle Good
+                case R.id.lyMomentsItemSetGood://Set Circle Good
                     if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("good", callBackItem);
                     break;
-                case R.id.imgbMomentsItemFav://Fav Circle
+                case R.id.lyMomentsItemSetFav://Fav Circle
                     if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("fav", callBackItem);
                     break;

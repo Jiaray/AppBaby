@@ -47,8 +47,8 @@ public class MainTabActivity extends FragmentActivity {
     private int mImageViewArray[] = {R.drawable.tab_moments, R.drawable.tab_news, R.drawable.tab_profile};
 
     //Tab选项卡的文字
-    //private String mTextviewArray[] = {"Moments", "Chat", "News", "Growth", "Profile"};
-    private String mTextviewArray[] = {"Moments", "News", "Profile"};
+    //private String mTextviewArray[] = {"班级圈", "家校通", "频道", "成长档案", "我"};
+    private String mTextviewArray[] = {"班级圈", "频道", "我"};
 
     private ArrayList<TextView> aryPushText;
     private int i;

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imgTabIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:focusable="false"
         android:padding="3dp" 
         android:src="@drawable/tab_moments"
@@ -24,8 +24,8 @@
         android:id="@+id/txtTabName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" 
-        android:text="tabhost"
-        android:textSize="10sp"
+        android:text="成長紀錄"
+        android:textSize="15sp"
         android:gravity="center"
         android:textColor="#fff"
         android:layout_below="@+id/imgTabIcon"

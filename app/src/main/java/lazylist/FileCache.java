@@ -43,36 +43,25 @@ public class FileCache {
         }
         strCachePath = strPathHead + "/" + FOLDERNAME + "/cache/";
         cacheDir = new File(strCachePath);
-        if (!cacheDir.exists())cacheDir.mkdirs();
+        if (!cacheDir.exists()) cacheDir.mkdirs();
 
         strImgBoxPath = strPathHead + "/" + FOLDERNAME + "/image/";
         imgBoxDir = new File(strImgBoxPath);
-        if (!imgBoxDir.exists())imgBoxDir.mkdirs();
+        if (!imgBoxDir.exists()) imgBoxDir.mkdirs();
 
         strJsonPath = strPathHead + "/" + FOLDERNAME + "/json/";
         jsonDir = new File(strJsonPath);
-        if (!jsonDir.exists())jsonDir.mkdirs();
+        if (!jsonDir.exists()) jsonDir.mkdirs();
     }
-
-   /* public FileCache(Context context) {
-        //Find the dir to save cached images
-        if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
-            cacheDir = new File(android.os.Environment.getExternalStorageDirectory(), "LazyList");
-        else
-            cacheDir = context.getCacheDir();
-        if (!cacheDir.exists())
-            cacheDir.mkdirs();
-    }*/
 
     public File getFile(String url) {
         //I identify images by hashcode. Not a perfect solution, good for the demo.
-        System.out.println("zyo------FileCache: get file url - " + url + " url.hashCode:" + url.hashCode());
-        String filename = String.valueOf(url.hashCode());
-        //Another possible solution (thanks to grantland)
-        // String filename = URLEncoder.encode(url);
-        //System.out.println("zyo------FileCache: filename - " + filename);
+        //Log.i(TAG, "getFile url - " + url);
+        //String filename = String.valueOf(url.hashCode());
+        String filename = url.substring(url.lastIndexOf("/") + 1);
+        //Log.i(TAG, "getFile filename - " + filename);
         File f = new File(cacheDir, filename);
-        System.out.println("zyo------FileCache: get file - " + f);
+        // Log.i(TAG, "getFile File - " + f);
         return f;
     }
 
@@ -192,7 +181,6 @@ public class FileCache {
         if (imgFile.exists()) {
             FileInputStream fis;
             try {
-                //Log.v(TAG, "getBmp : imgFile.exists");
                 fis = new FileInputStream(imgFile);
                 //Log.v(TAG, "getBmp : imgFile : " + fis);
                 return BitmapFactory.decodeStream(fis);
@@ -229,10 +217,14 @@ public class FileCache {
      */
     public File getImgFile(String imgurl) {
         String imgName = imgurl.substring(
-                imgurl.lastIndexOf('/') + 2,
+                imgurl.lastIndexOf('/') + 1,
                 imgurl.length());
         File imgFile = new File(strCachePath + imgName);
-        return imgFile;
+        if(imgFile.exists()){
+            return imgFile;
+        }else{
+            return null;
+        }
     }
 
     private boolean writeToFile(String strData, File file) {
@@ -362,7 +354,7 @@ public class FileCache {
         }
         return 0;
     }
-     //  0x表示十六进制
+    //  0x表示十六进制
 
     private String toHexString(String s) {
         String str = "";
@@ -395,7 +387,8 @@ public class FileCache {
         }
         return s;
 
-       }
+    }
+
     //  複製檔案
     public boolean copyFile(File source, File dest) {
         BufferedInputStream bis = null;
@@ -410,7 +403,7 @@ public class FileCache {
 
             do {
                 bos.write(buf);
-            } while(bis.read(buf) != -1);
+            } while (bis.read(buf) != -1);
         } catch (IOException e) {
             return false;
         } finally {

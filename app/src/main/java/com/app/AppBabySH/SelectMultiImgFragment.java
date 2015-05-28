@@ -282,8 +282,16 @@ public class SelectMultiImgFragment extends BaseFragment implements SelectMultiI
         mImgBEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCallBack.onEnter(mAdapter.mSelectedImage);
-                main.RemoveBottom(thisFragment);
+                mProgressDialog = ProgressDialog.show(getActivity(), null, "载入图档中...");
+                Handler delayHl = new Handler();
+                delayHl.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onCallBack.onEnter(mAdapter.mSelectedImage);
+                        mProgressDialog.cancel();
+                        main.RemoveBottom(thisFragment);
+                    }
+                },100);
             }
         });
         /**

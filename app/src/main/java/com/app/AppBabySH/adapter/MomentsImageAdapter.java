@@ -87,7 +87,6 @@ public class MomentsImageAdapter extends BaseAdapter {
         }
 
         MomentsImageItem item = list.get(position);
-        Log.i(TAG,"item.URL:"+item.URL);
         if (strSizeType.equals("preview") && item.URL == null) {
             View addView = minflater.inflate(R.layout.moments_addnew_additem, null);
             addView.findViewById(R.id.add).setOnClickListener(
@@ -99,7 +98,7 @@ public class MomentsImageAdapter extends BaseAdapter {
                         }
                     });
             return addView;
-        } else if(position < 9) {
+        } else {
             ImageView iv;
             if (convertView == null) {
                 iv = new ImageView(parent.getContext());
@@ -112,10 +111,9 @@ public class MomentsImageAdapter extends BaseAdapter {
             }
             //Log.v(TAG, "CIRCLE_ID:" + item.CIRCLE_ID + "ImageAdapter Url:" + item.URL);
             ImageLoader.getInstance().DisplayImage(item.URL, iv);
+            //ImageLoader.getInstance().DisplayWebUrlImage(item.URL, iv);
             iv.setOnClickListener(new openBigPic(item));
             return iv;
-        }else{
-            return null;
         }
     }
 

@@ -370,7 +370,7 @@ public class MomentsFragment extends Fragment {
             momentsImageFragment.onCallBack = new MomentsImageFragment.imgCallBack() {
                 @Override
                 public void onBack(MomentsItem $item, String $actionType) {
-                    if ($actionType.equals("comment")) {
+                    if ($actionType != null && $actionType.equals("comment")) {
                         onCommentClick($item, "", "");
                     } else {
                         //  取 ID 位置
@@ -412,17 +412,18 @@ public class MomentsFragment extends Fragment {
     //  刪除班級圈
     private void delCircle() {
         alertD = new AlertDialog.Builder(getActivity()); //創建訊息方塊
-        alertD.setTitle("Delete current Circle!");
-        alertD.setMessage("are you Sure?");
+        alertD.setTitle("檢查!");
+        alertD.setMessage("确定要删除该讯息?");
         alertD.setPositiveButton("Yes", new DialogInterface.OnClickListener() { //按"是",則退出應用程式
             public void onClick(DialogInterface dialog, int i) {
+                pd = MyAlertDialog.ShowProgress(getActivity(), "删除中...");
                 WebService.SetCircleDelete(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
                         alertD = new AlertDialog.Builder(getActivity());
-                        alertD.setTitle("班級圈已刪除");
+                        alertD.setTitle("班级圈已删除");
                         alertD.setCancelable(false);
-                        alertD.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                        alertD.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 for (int i = 0; i < momentslist.size(); i++) {
                                     if ("c".equals(momentslist.get(i))) {
@@ -449,9 +450,11 @@ public class MomentsFragment extends Fragment {
 
     //  對班級圈按讚
     private void goodCircle() {
+        pd = MyAlertDialog.ShowProgress(getActivity(), "检查中...");
         WebService.GetCircleHadGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
+                pd.cancel();
                 if (obj == null) {
                     MyAlertDialog.Show(getActivity(), "Error!");
                     return;
@@ -480,9 +483,11 @@ public class MomentsFragment extends Fragment {
 
     //  收藏班級圈
     private void favCircle() {
+        pd = MyAlertDialog.ShowProgress(getActivity(), "检查中...");
         WebService.GetCircleHadKeepToGrow(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
+                pd.cancel();
                 if (obj == null) {
                     MyAlertDialog.Show(getActivity(), "Error!");
                     return;
@@ -495,10 +500,10 @@ public class MomentsFragment extends Fragment {
                         @Override
                         public void CompleteCallback(String id, Object obj) {
                             alertD = new AlertDialog.Builder(getActivity());
-                            alertD.setTitle("檢查"); //設定dialog 的title顯示內容
+                            alertD.setTitle("检查"); //設定dialog 的title顯示內容
                             alertD.setMessage("收藏成功!");
                             alertD.setCancelable(false); //關閉 Android 系統的主要功能鍵(menu,home等...)
-                            alertD.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            alertD.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
