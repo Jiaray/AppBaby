@@ -196,6 +196,10 @@
     </style>
     <!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/values/styles.xml -->
     <eat-comment/>
+    <style name="anim_popup_dir">
+        <item name="android:windowEnterAnimation">@anim/slide_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_out</item>
+    </style>
     <style name="tab_item">
         <item name="android:gravity">center_horizontal</item>  
         <item name="android:layout_width">fill_parent</item>

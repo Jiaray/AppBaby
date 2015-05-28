@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import lazylist.FileCache;
 import lazylist.ImageLoader;
@@ -61,7 +63,6 @@ public class MomentsAddNewFragment extends BaseFragment {
     private GlobalVar centerV;
     private View rootView;
     private MainTabActivity main;
-    private LayoutInflater _inflater;
     private MomentsAddNewFragment thisFragment;
     private Integer i;
     //
@@ -72,7 +73,6 @@ public class MomentsAddNewFragment extends BaseFragment {
     private ArrayList<MomentsImageItem> momentsIMGlist;
     private MomentsImageAdapter adapter;
     private ProgressDialog pd;
-    private Toast toast;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 200;
     //上傳用
@@ -100,7 +100,6 @@ public class MomentsAddNewFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_addnew_fragment, container, false);
         rootView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -144,7 +143,10 @@ public class MomentsAddNewFragment extends BaseFragment {
             imgitem.SEQ = "" + (momentsIMGlist.size() + 1);
             momentsIMGlist.add(imgitem);
         }
-        if (aryPicPath.size() < 9) momentsIMGlist.add(new MomentsImageItem());
+        if (momentsIMGlist.size() < 9) {
+            Log.i(TAG, "Add Empty Item!!!! size:" + momentsIMGlist.size());
+            momentsIMGlist.add(new MomentsImageItem());
+        }
         adapter = new MomentsImageAdapter(rootView.getContext(), momentsIMGlist, "preview");
         adapter.onImgCallBack = new MomentsImageAdapter.callBackImgItem() {
             @Override
@@ -186,39 +188,32 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                try {
-                    tmpPath = mCurrentPhotoPath;
-                    File f = new File(tmpPath);
-                    mCurrentPhotoPath = FileCache.getInstance().getCachePath() + f.getName().substring(4, f.getName().length());
-                    ImageLoader.getInstance().AChangeSmallSizeToB(tmpPath, mCurrentPhotoPath);
-                    FileCache.getInstance().deleteTempFile(tmpPath);
-                    Log.i(TAG, "添加到暫存图库");
-                    aryPicPath.add(mCurrentPhotoPath);
-                    createPreview();
-                } catch (Exception e) {
-                    Log.e(TAG, "error", e);
-                }
-            } else {
-                Log.i(TAG, "取消照相后，删除已经创建的临时文件");
-                // 取消照相后，删除已经创建的临时文件。
-                FileCache.getInstance().deleteTempFile(mCurrentPhotoPath);
-            }
-        } else if (requestCode == PICK_IMAGE_ACTIVITY_REQUEST_CODE) {
-
-        }
-    }
-
-    //打开本地相册
+    //  打开本地相册
     public void openAlbum() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        this.startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
+        SelectMultiImgFragment selectImg = new SelectMultiImgFragment();
+        selectImg.Max_Num = 9 - aryPicPath.size();
+        selectImg.onCallBack = new SelectMultiImgFragment.CallBack() {
+            @Override
+            public void onEnter(List imgList) {
+                pd = MyAlertDialog.ShowProgress(getActivity(), "图片处理中");
+                pd.show();
+                i = -1;
+                while (++i < imgList.size()) {
+                    File f = new File(imgList.get(i).toString());
+                    mCurrentPhotoPath = FileCache.getInstance().getCachePath() + Md5(f.getName() + System.currentTimeMillis(), true) + ".jpg";
+                    ImageLoader.getInstance().AChangeSmallSizeToB(f.getAbsolutePath(), mCurrentPhotoPath);
+                    aryPicPath.add(mCurrentPhotoPath);
+                }
+                pd.cancel();
+                createPreview();
+            }
 
+            @Override
+            public void onBack() {
+                main.RemoveTab();
+            }
+        };
+        main.OpenBottom(selectImg);
     }
 
     //  拍照
@@ -234,8 +229,30 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            try {
+                tmpPath = mCurrentPhotoPath;
+                File f = new File(tmpPath);
+                mCurrentPhotoPath = FileCache.getInstance().getCachePath() + f.getName().substring(4, f.getName().length());
+                ImageLoader.getInstance().AChangeSmallSizeToB(tmpPath, mCurrentPhotoPath);
+                FileCache.getInstance().deleteTempFile(tmpPath);
+                Log.i(TAG, "添加到暫存图库");
+                aryPicPath.add(mCurrentPhotoPath);
+                createPreview();
+            } catch (Exception e) {
+                Log.e(TAG, "error", e);
+            }
+        } else {
+            Log.i(TAG, "取消照相后，删除已经创建的临时文件");
+            // 取消照相后，删除已经创建的临时文件。
+            FileCache.getInstance().deleteTempFile(mCurrentPhotoPath);
+        }
+    }
+
+
     /**
-     *
      * 把程序拍摄的照片放到 SD卡的 AppBabySH/Cache 文件夹中
      * 照片的命名规则为：Ray+系統時間(毫秒).jpg >> MD5轉換
      *
@@ -272,11 +289,8 @@ public class MomentsAddNewFragment extends BaseFragment {
         posPic = ($pos + 1);
         pd = MyAlertDialog.ShowProgress(getActivity(), "图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
         pd.show();
-        Log.i(TAG, "aryPicPath : " + aryPicPath.get($pos));
         data = new File(aryPicPath.get($pos));
         String key = aryPicPath.get($pos).substring(aryPicPath.get($pos).lastIndexOf("/") + 1, aryPicPath.get($pos).length());
-        Log.i(TAG, "key : " + key);
-        //FileCache.getInstance().copyFile(data, new File(FileCache.getInstance().getCachePath() + key));
         String token = strUpToken;
         UploadManager uploadManager = new UploadManager();
         uploadManager.put(data, key, token,

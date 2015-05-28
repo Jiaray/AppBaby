@@ -32,6 +32,7 @@ public class MomentsImageAdapter extends BaseAdapter {
 
     public interface callBackImgItem {
         public void onImgClick(MomentsImageItem $item);
+
         public void onAddClick();
     }
 
@@ -85,7 +86,9 @@ public class MomentsImageAdapter extends BaseAdapter {
             imageSize = (int) ((double) centerV.windowWidth * 0.3);
         }
 
-        if (strSizeType.equals("preview") && position == list.size() - 1) {
+        MomentsImageItem item = list.get(position);
+        Log.i(TAG,"item.URL:"+item.URL);
+        if (strSizeType.equals("preview") && item.URL == null) {
             View addView = minflater.inflate(R.layout.moments_addnew_additem, null);
             addView.findViewById(R.id.add).setOnClickListener(
                     new View.OnClickListener() {
@@ -96,8 +99,7 @@ public class MomentsImageAdapter extends BaseAdapter {
                         }
                     });
             return addView;
-        }else{
-            MomentsImageItem item = list.get(position);
+        } else if(position < 9) {
             ImageView iv;
             if (convertView == null) {
                 iv = new ImageView(parent.getContext());
@@ -112,6 +114,8 @@ public class MomentsImageAdapter extends BaseAdapter {
             ImageLoader.getInstance().DisplayImage(item.URL, iv);
             iv.setOnClickListener(new openBigPic(item));
             return iv;
+        }else{
+            return null;
         }
     }
 
