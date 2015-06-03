@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class GrowthFragment extends Fragment{
+import com.app.AppBabySH.UIBase.BaseFragment;
+
+public class GrowthFragment extends BaseFragment{
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	

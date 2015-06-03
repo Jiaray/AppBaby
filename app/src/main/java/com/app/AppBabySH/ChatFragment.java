@@ -11,13 +11,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.app.AppBabySH.UIBase.BaseFragment;
 import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFragment extends Fragment{
+public class ChatFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.chat_fragment, null);

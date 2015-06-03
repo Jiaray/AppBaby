@@ -2,59 +2,125 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3AB1F"
     android:orientation="vertical"
     android:weightSum="1">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imgLoginLogo"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.13"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="350dp">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/login_appbaby" />
 
-        <TableRow
+    <Button
+        android:id="@+id/btnLoginEnter"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/lyLoginInput"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/login_login_button"
+        android:text="登录"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/btnLoginReg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLoginEnter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="#00000000"
+        android:text="注册宝贝通帐户"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
+
+    <LinearLayout
+        android:id="@+id/lyLoginInput"
+        android:layout_width="320dp"
+        android:layout_height="120dp"
+        android:background="@drawable/login_round_frame"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_below="@+id/imgLoginLogo"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:id="@+id/edtLoginID"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp">
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:hint="手机号或帐号"
+            android:inputType="textPersonName"
+            android:paddingLeft="8dp" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="請輸入帳號"
-                android:id="@+id/l_idTxt" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="5dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="請輸入密碼"
-                android:id="@+id/l_pwTxt" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <Button
-                android:id="@+id/loginBtn"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="登录"
-                android:layout_margin="20dp" />
-        </TableRow>
-
+        <EditText
+            android:id="@+id/edtLoginPW"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/edtLoginID"
+            android:background="#00000000"
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:paddingLeft="8dp" />
     </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp">
+
+        <Button
+            android:id="@+id/btnLoginForget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#00000000"
+            android:text="　　忘记密码？"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#00000000"
+            android:text="或"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+        <Button
+            android:id="@+id/btnLoginGuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#00000000"
+            android:text="以游客身分登录"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/flyLoginContent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1"></FrameLayout>
 </RelativeLayout><!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/login_activity.xml -->

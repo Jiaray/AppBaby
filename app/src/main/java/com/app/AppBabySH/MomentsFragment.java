@@ -20,8 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.AppBabySH.UIBase.BaseFragment;
 import com.app.AppBabySH.UIBase.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
+import com.app.AppBabySH.item.ClassItem;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
 import com.app.Common.PullDownView;
@@ -38,12 +40,10 @@ import java.util.Map;
 
 import lazylist.ImageLoader;
 
-import static com.app.Common.LogUtils.logd;
-import static com.app.Common.LogUtils.logi;
-
-public class MomentsFragment extends Fragment {
+public class MomentsFragment extends BaseFragment {
     private static final String TAG = "MomentsFragment";
     private static final String ForTestClassID = "C201504000002";
+    private String CurrClassID;
     private MomentsAdapter adapter;
     private ProgressDialog pd;
     private AlertDialog.Builder alertD;
@@ -51,7 +51,6 @@ public class MomentsFragment extends Fragment {
     private int listPosition = 0;
     private boolean isInit = true;
     private LayoutInflater _inflater;
-    public ImageLoader imageLoader;
     private MomentsItem callBackItem;
     private Toast toast;
 
@@ -81,7 +80,6 @@ public class MomentsFragment extends Fragment {
                              Bundle savedInstanceState) {
         //共用宣告
         main = (MainTabActivity) getActivity();
-        imageLoader = new ImageLoader();
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
 
@@ -97,9 +95,11 @@ public class MomentsFragment extends Fragment {
             Log.v(TAG, "Moments-Init");
             isInit = true;
             viewG = (ViewGroup) rootView.getParent();
+            CurrClassID = UserMstr.userData.ClassAryList.get(0).CLASS_ID;
 
             //ListView Ready
             pullDownView = (PullDownView) rootView.findViewById(R.id.pdvMomentsContent);
+
             pullDownView.enableAutoFetchMore(true, 0);
             pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
 
@@ -136,20 +136,26 @@ public class MomentsFragment extends Fragment {
             ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
             ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
             TextView mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
-            mTxtHeaderNews.setText(main.momentPushNum + " 條新消息!");
-            mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Handler tt = new Handler();
-                    tt.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            customCircle("news");
-                        }
-                    });
-                }
-            });
-            imageLoader.DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
+            if (main.momentPushNum.equals("0")) {
+                mTxtHeaderNews.setVisibility(View.GONE);
+            } else {
+                mTxtHeaderNews.setVisibility(View.VISIBLE);
+                mTxtHeaderNews.setText(main.momentPushNum + " 條新消息!");
+                mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Handler tt = new Handler();
+                        tt.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                customCircle("news");
+                            }
+                        });
+                    }
+                });
+            }
+
+            ImageLoader.getInstance().DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
             momentslistView.addHeaderView(mVgHeader, null, false);
 
             //Create ListView
@@ -168,9 +174,19 @@ public class MomentsFragment extends Fragment {
 
             });
 
+            //Create Filter Menu
+            mImgBFilter = (ImageButton) rootView.findViewById(R.id.imgbMomentsFilter);
+            final AlertDialog mutiItemDialogFilter = createFilterDialog();
+            mImgBFilter.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mutiItemDialogFilter.show();
+                }
+            });
+
             //Create AddNew Menu
             mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
-            final AlertDialog mutiItemDialogAddNew = getAddNewDialog();
+            final AlertDialog mutiItemDialogAddNew = createAddNewDialog();
             mImgBAddNew.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -183,8 +199,34 @@ public class MomentsFragment extends Fragment {
         }
     };
 
+    //  過濾選單
+    public AlertDialog createFilterDialog() {
+        final String[] items = new String[UserMstr.userData.ClassAryList.size() + 2];
+        items[0] = "全部班级";
+        int i = -1;
+        while (++i < UserMstr.userData.ClassAryList.size()) {
+            ClassItem tmpClassitem = UserMstr.userData.ClassAryList.get(i);
+            if (tmpClassitem.SCHOOL_NAME.equals("")) {
+                items[i + 1] = tmpClassitem.CLASS_NAME;
+            } else {
+                items[i + 1] = tmpClassitem.STUDENT_NAME + "(" + tmpClassitem.SCHOOL_NAME + "-" + tmpClassitem.CLASS_NAME + ")";
+            }
+        }
+        items[UserMstr.userData.ClassAryList.size() + 1] = "取消";
+        alertD = new AlertDialog.Builder(getActivity());
+        alertD.setTitle("选择班级");
+        //設定對話框內的項目
+        alertD.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        return alertD.create();
+    }
+
     //  新增選單
-    public AlertDialog getAddNewDialog() {
+    public AlertDialog createAddNewDialog() {
         final String[] items = {"从手机相册选择", "拍照", "取消"};
         alertD = new AlertDialog.Builder(getActivity());
         alertD.setTitle("选择内容来源!");
@@ -194,7 +236,7 @@ public class MomentsFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (which != 2) {
                     MomentsAddNewFragment addF = new MomentsAddNewFragment();
-                    addF.Class_ID = ForTestClassID;
+                    addF.Class_ID = CurrClassID;
                     addF.Add_Type = which == 0 ? "albums" : "camera";
                     addF.onCallBack = new MomentsAddNewFragment.CallBack() {
                         @Override
@@ -222,7 +264,7 @@ public class MomentsFragment extends Fragment {
     //  清除列表
     private void clearList() {
         if (adapter != null) {
-            //adapter.imageLoader.clearCache();
+            adapter.imageLoader.clearCache();
             adapter.notifyDataSetChanged();
         }
         if (momentslist != null) {
@@ -240,7 +282,7 @@ public class MomentsFragment extends Fragment {
     private void getData() {
         pd = MyAlertDialog.ShowProgress(getActivity(), "Loading...");
         pd.show();
-        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), ForTestClassID, new WebService.WebCallback() {
+        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -395,7 +437,7 @@ public class MomentsFragment extends Fragment {
     //  條件顯示班級圈頁面
     private void customCircle(String $type) {
         MomentsCustomFragment personalF = new MomentsCustomFragment();
-        personalF.Class_ID = ForTestClassID;
+        personalF.Class_ID = CurrClassID;
         if ($type.equals("personal")) {
             personalF.USER_ID = callBackItem.USER_ID;
             personalF.NIC_NAME = callBackItem.NIC_NAME;

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
@@ -55,6 +56,7 @@ public class MainTabActivity extends FragmentActivity {
     public String momentPushNum, chatPushNum, newsPushNum, growthPushNum,strTmpJsonName;
 
     public void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maintab_layout);
         Log.v(TAG, "onCreate");
@@ -73,7 +75,7 @@ public class MainTabActivity extends FragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (UserMstr.userData == null) {
+        if (!UserMstr.closeApp && UserMstr.userData == null) {
             Log.v(TAG, "onResume : (UserMstr.userData = null)");
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
@@ -93,6 +95,7 @@ public class MainTabActivity extends FragmentActivity {
     public void onStop() {
         super.onStop();
         isActive = isBackground(this);
+        UserMstr.closeApp = false;
         Log.v(TAG, "onStop : isActive : " + isActive);
     }
 
@@ -144,6 +147,10 @@ public class MainTabActivity extends FragmentActivity {
      * 刷新新訊息數量
      */
     public void refreshPush() {
+        if(UserMstr.closeApp || UserMstr.userData == null){
+            this.finish();
+            return;
+        }
         Log.i(TAG,"refreshPush");
         momentPushNum = chatPushNum = newsPushNum = growthPushNum = "0";
         i = -1;

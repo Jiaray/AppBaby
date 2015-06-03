@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
@@ -33,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ImageLoader {
-    final private String TAG = "ImageLoader";
+    final private String TAG = "IMGLoader";
     final int stub_id = R.drawable.doroto_loadimag;
     final int THUMBIMG_SIZE = 200;
     final int VIEWIMG_SIZE = 400;
@@ -69,9 +71,9 @@ public class ImageLoader {
                 imageView.setImageResource(stub_id);
             }
         } else {
-            if (bitmap != null)
+            if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
-            else {
+            }else {
                 PhotoToLoad p = new PhotoToLoad(url, imageView);
                 executorService.submit(new PhotosLoader(p));
             }
@@ -85,9 +87,10 @@ public class ImageLoader {
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
         //Log.i(TAG, "DisplayRoundedCornerImage url:" + url + " bitmap:" + bitmap);
-        if (bitmap != null)
+        //imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        if (bitmap != null) {
             imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
-        else {
+        }else {
             PhotoToLoad p = new PhotoToLoad(url, imageView);
             p.roundedCorner = true;
             executorService.submit(new PhotosLoader(p));
@@ -241,7 +244,6 @@ public class ImageLoader {
 
     //  載入網路圖片並存入緩存資料夾中
     public void DisplayWebUrlImage(String $url, ImageView $imageView) {
-        // $imageView.setImageResource(stub_id);
         File fileFromSD = FileCache.getInstance().getImgFile($url);
         Bitmap bmpFromSD;
         if (null != fileFromSD) {
@@ -279,15 +281,10 @@ public class ImageLoader {
         }
     }
 
-
-
-
-
     //  清除緩存
     public void clearCache() {
         memoryCache.clear();
     }
-
 
     //  圓角轉換函式，帶入Bitmap圖片及圓角數值則回傳圓角圖，回傳Bitmap再置入ImageView
     private Bitmap getRoundedCornerBitmap(Bitmap bmp, int radius) {
@@ -361,5 +358,45 @@ public class ImageLoader {
         }
 
         return inSampleSize;
+    }
+
+    // 旋轉圖片
+    public static void checkRotateBeforeSetImage(String $url,ImageView $imgV,Bitmap $bmp){
+        int degree = readPictureDegree($url);
+        if (degree <= 0) {
+            $imgV.setImageBitmap($bmp);
+        } else {
+            Matrix matrix = new Matrix();//创建操作图片是用的matrix对象
+            matrix.postRotate(degree);//旋转图片动作
+            Bitmap resizedBitmap = Bitmap.createBitmap($bmp, 0, 0, $bmp.getWidth(), $bmp.getHeight(), matrix, true);//创建新图片
+            $imgV.setImageBitmap(resizedBitmap);
+        }
+    }
+
+    /**
+     * 读取照片exif信息中的旋转角度
+     * @param path 照片路径
+     * @return角度
+     */
+    public static int readPictureDegree(String path) {
+        int degree  = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
     }
 }

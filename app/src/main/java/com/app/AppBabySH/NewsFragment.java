@@ -3,12 +3,12 @@ package com.app.AppBabySH;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.app.AppBabySH.UIBase.BaseFragment;
 import com.app.AppBabySH.adapter.NewsAdapter;
 import com.app.AppBabySH.item.NewsItem;
 import com.app.AppBabySH.UIBase.MyAlertDialog;
@@ -21,7 +21,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends BaseFragment {
     private static final String TAG = "NewsFragment";
     private View rootView;
     private PullDownView pullDownView;
@@ -38,7 +38,7 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         main = (MainTabActivity) getActivity();
         rootView = inflater.inflate(R.layout.news_fragment, container, false);
-        pullDownView = (PullDownView) rootView.findViewById(R.id.news_pulldownview);
+        pullDownView = (PullDownView) rootView.findViewById(R.id.pdwNewsContent);
         pullDownView.enableAutoFetchMore(true, 0);
         newslistView = pullDownView.getListView();
         isInit = true;
@@ -47,7 +47,7 @@ public class NewsFragment extends Fragment {
 
             @Override
             public void run() {
-                Log.v(TAG, "頻道初始化");
+                Log.i(TAG, "頻道初始化");
                 initListView();
             }
         }, 500);
@@ -61,7 +61,7 @@ public class NewsFragment extends Fragment {
 
                     @Override
                     public void run() {
-                        Log.v(TAG, "頻道刷新");
+                        Log.i(TAG, "頻道刷新");
                         initListView();
                     }
                 }, 100);
@@ -74,7 +74,7 @@ public class NewsFragment extends Fragment {
 
                     @Override
                     public void run() {
-                        Log.v(TAG, "頻道加載更多");
+                        Log.i(TAG, "頻道加載更多");
                         adapter.notifyDataSetChanged();
                         pullDownView.notifyDidLoadMore(newslist.isEmpty());
                     }
@@ -113,7 +113,7 @@ public class NewsFragment extends Fragment {
                     MyAlertDialog.Show(getActivity(), "沒有任何資訊！");
                     return;
                 }
-                Log.v(TAG, "頻道資料取得成功 json:" + json.toString());
+                Log.i(TAG, "頻道資料取得成功 json:" + json.toString());
 
                 // TODO 塞值進陣列中
                 if (newslist == null) {
@@ -157,7 +157,7 @@ public class NewsFragment extends Fragment {
         newslistView.setSelection(listPosition);
         parent.addView(rootView);
         setPullView();
-        Log.v(TAG, "頻道畫面產生完畢!");
+        Log.i(TAG, "頻道畫面產生完畢!");
     }
 
     private void setPullView(){
@@ -211,6 +211,6 @@ public class NewsFragment extends Fragment {
         newsItemFragment.GOOD_CNT = _item.GOOD_CNT;
         newsItemFragment.FAVORITE_CNT = _item.FAVORITE_CNT;
         main.OpenBottom(newsItemFragment);
-        Log.v(TAG, "點擊頻道 :" + _item.CHANNEL_ID.toString());
+        Log.i(TAG, "點擊頻道 :" + _item.CHANNEL_ID.toString());
     }
 }

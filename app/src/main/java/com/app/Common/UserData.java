@@ -1,7 +1,11 @@
 package com.app.Common;
 
 
+import com.app.AppBabySH.item.ClassItem;
+
 import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 public class UserData {
     public String UserName;
@@ -44,25 +48,7 @@ public class UserData {
         BaseInfoAry = $BaseInfoAry;
     }
 
-    private JSONArray ChildinfoAry;
-
-    public JSONArray getChildinfoAry() {
-        return ChildinfoAry;
-    }
-
-    public void setChildinfoAry(JSONArray $Childinfo) {
-        ChildinfoAry = $Childinfo;
-    }
-
-    private JSONArray ClassInfoAry;
-
-    public JSONArray getClassInfoAry() {
-        return ClassInfoAry;
-    }
-
-    public void setClassInfoAry(JSONArray $ClassInfo) {
-        ClassInfoAry = $ClassInfo;
-    }
+    public ArrayList<ClassItem> ClassAryList;
 
     private JSONArray PushInfoAry;
 

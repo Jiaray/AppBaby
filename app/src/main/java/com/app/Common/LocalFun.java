@@ -17,10 +17,13 @@ public class LocalFun {
 	private SQLiteDatabase Database;
 	private Cursor cursor;
 	private Handler mHandler = new Handler();
-	private Context ctx = null;
 
-	public LocalFun(Context ctx) {
-		this.ctx = ctx;
+	private static LocalFun LocalF; // 本类的引用
+	public static LocalFun getInstance() {
+		if (null == LocalF) {
+			LocalF = new LocalFun();
+		}
+		return LocalF;
 	}
 
 	/**
@@ -46,12 +49,7 @@ public class LocalFun {
 		return RS;
 	}
 
-	/**
-	 * 
-	 * @param ����SQL��O
-	 *            �L�^��
-	 * 
-	 */
+	//	執行 SQL 指令
 	public void RunSqlNoQuery(String sql) {
 		//Log.v(TAG, "執行SQL:" + sql);
 		Database = LocalDB.GetOpenHelper().getWritableDatabase();
@@ -63,21 +61,13 @@ public class LocalFun {
 		}
 	}
 
-	/**
-	 * 
-	 * @param �P�_��Ʈw�O�_�s�b
-	 * @return True/False
-	 */
+	//	確認資料庫存在
 	public boolean CheckDB(File dataBase) {
 		Log.v(TAG, "LocalFun : CheckDB");
 		return dataBase.exists();
 	}
 
-	/**
-	 * 
-	 * @param �P�_��O�_�s�b
-	 * @return True/False
-	 */
+	//	檢查資料表
 	public boolean CheckTable(String _tablename) {
 		boolean result = false;
 		if (_tablename == null) {
@@ -108,11 +98,7 @@ public class LocalFun {
 
 	}
 
-	/**
-	 * @param ����SQL��O
-	 *            -��o��ƪ�ϥ�
-	 * @return ��^List<Map<Integer,String>>
-	 */
+	//	帶入 SQL 指令取得資料列表
 	public List<Map<String, String>> RunSqlDataTable(String sql) {
 		Database = LocalDB.GetOpenHelper().getWritableDatabase();
 		List<Map<String, String>> list = null;
@@ -143,9 +129,7 @@ public class LocalFun {
 		}
 	}
 
-	/**
-	 * ������Ʈw����
-	 */
+	//	關閉資料庫
 	public void closeDB() {
 		mHandler.removeCallbacks(runnable);
 		mHandler.postDelayed(runnable, 3000);

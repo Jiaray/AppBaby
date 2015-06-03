@@ -9,27 +9,27 @@ public class LocalSQLCode {
 
     /**
      * 創建會員表
-     *
      * @return Creat MSTR
      */
     public static String SQLite_CreatMSTR() {
-        // ASC_MSTR --> �򥻸��  ( KEY_ID (����)  | USER_NAME | USER_PSWD | USER_PMS<�v��>  )
+        // ASC_MSTR --> �򥻸��  ( KEY_ID (PRIMARY)  | USER_NAME | USER_PSWD | AGREEMENT | USER_PMS<�v��>  )
         String sql = "CREATE TABLE IF NOT EXISTS ASC_MSTR " + " ( " +
                 KEY_ID + " INTEGER PRIMARY KEY, " +
                 " USER_NAME TEXT, " +
                 " USER_PSWD TEXT,  " +
+                " AGREEMENT TEXT,  " +
                 " USER_PMS TEXT) ";
         Log.v(TAG, "組合 創建 本地資料庫SQL:" + sql);
         return sql;
     }
 
     /**
-     * ��s��ƪ�
-     * @param _table       (��ƪ�W��)
-     * @param _idfield     (�������)
-     * @param _id          (���ޭ�)
-     * @param _changefield (�������)
-     * @param _changevaule (���ܭ�)
+     * 更新數據
+     * @param _table       表名
+     * @param _idfield     條件欄位
+     * @param _id          條件
+     * @param _changefield 改變欄位
+     * @param _changevaule 改變數值
      * @return
      */
     public static String SQLite_UpdateTableData(String _table, String _idfield, String _id, String _changefield, String _changevaule) {
@@ -60,20 +60,19 @@ public class LocalSQLCode {
      * @param _pms
      * @return
      */
-    public static String SQLite_InsertMSTR(String _id, String _psd, String _pms) {
-        String sql = "Insert Into ASC_MSTR (   USER_NAME, USER_PSWD , USER_PMS ) Values ( " +
+    public static String SQLite_InsertMSTR(String _id, String _psd, String _enter, String _pms) {
+        String sql = "Insert Into ASC_MSTR (   USER_NAME, USER_PSWD , AGREEMENT , USER_PMS ) Values ( " +
                 "'" + _id + "'" + " , " +
                 "'" + _psd + "'" + " , " +
+                "'" + _enter + "'" + " , " +
                 "'" + _pms + "'" + " ) ";
         Log.v(TAG, "組合 新增 本地資料庫SQL:" + sql);
         return sql;
     }
 
-    /**
-     * ��o  ASC_MSTR �M�� ��O  �ϥΪ�ID �ϥΪ̱K�X  �ϥΪ��v��
-     */
+    //  取得使用者資料列
     public static String SQLite_GetMSTRList() {
-        String sql = "Select  USER_NAME, USER_PSWD, USER_PMS From ASC_MSTR ";
+        String sql = "Select  USER_NAME, USER_PSWD, AGREEMENT, USER_PMS From ASC_MSTR ";
         return sql;
     }
 

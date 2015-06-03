@@ -298,6 +298,7 @@ public class PullDownView extends LinearLayout implements ScrollOverListView.OnS
 		mListView.addFooterView(mFooterView);
 		mListView.setOnScrollOverListener(this);
 		mListView.setOnScrollListener(this);
+		mListView.setDividerHeight(0);
 		
 		// 因为2.3之后的某些ListView控件自己实现了pull阴影动画效果
 		// 所以我们在这里屏蔽他们

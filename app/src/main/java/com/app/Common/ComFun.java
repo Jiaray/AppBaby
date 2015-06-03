@@ -417,6 +417,21 @@ public class ComFun {
         return GetNowDate(format2, date);
     }
 
+    //  將日期8碼換成使用者要看的樣式
+    public static String date2UserSee(String $date,String $addsyl){
+        String _year = $date.substring(0,4);
+        String _month = $date.substring(4,6);
+        String _date = $date.substring(6,8);
+        return  _year + $addsyl + _month + $addsyl + _date;
+    }
+
+    //  將時間6碼換成使用者要看的樣式
+    public static String time2UserSee(String $time,String $addsyl){
+        String _h = $time.substring(0,2);
+        String _m = $time.substring(2,4);
+        String _s = $time.substring(4,6);
+        return  _h + $addsyl + _m + $addsyl + _s;
+    }
 //
 //    /**
 //     * Drawable 转换Bitmap

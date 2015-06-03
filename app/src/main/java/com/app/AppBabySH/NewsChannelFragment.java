@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.AppBabySH.UIBase.BaseFragment;
@@ -68,9 +70,11 @@ public class NewsChannelFragment extends BaseFragment {
     public String CHANNEL_ID, CHANNEL_TITLE, THUMB_URL, MEDIA_TYPE, MEDIA_CONTENT, GOOD_CNT, FAVORITE_CNT;
 
     /*本頁面Layout*/
-    private ImageButton backBtn, shareBtn, goodBtn, favBtn;
-    private WebView themeWebv;
-    private TextView goodTxt, favTxt;
+    private ImageButton mImgBBack, mImgBShare;
+    private ImageView mImgGood, mImgFav;
+    private LinearLayout mLyGood,mLyFav;
+    private WebView mWvContent;
+    private TextView mTxtGoodNum, mTxtFavNum;
     private UMSocialService mController;
 
     /*收藏、按讚狀態*/
@@ -106,51 +110,48 @@ public class NewsChannelFragment extends BaseFragment {
      * 產生主畫面
      */
     private void creatRootView() {
-        backBtn = (ImageButton) rootView.findViewById(R.id.newsitem_backBtn);
-        shareBtn = (ImageButton) rootView.findViewById(R.id.newsitem_shareBtn);
-        favBtn = (ImageButton) rootView.findViewById(R.id.newsitem_favBtn);
-        goodBtn = (ImageButton) rootView.findViewById(R.id.newsitem_goodBtn);
-        themeWebv = (WebView) rootView.findViewById(R.id.newsitem_themeWebView);
-        goodTxt = (TextView) rootView.findViewById(R.id.newsitem_goodTxt);
-        favTxt = (TextView) rootView.findViewById(R.id.newsitem_favTxt);
-        goodTxt.setText(GOOD_CNT);
-        favTxt.setText(FAVORITE_CNT);
+        mLyGood = (LinearLayout) rootView.findViewById(R.id.lyNewsGood);
+        mLyFav = (LinearLayout) rootView.findViewById(R.id.lyNewsFav);
+        mImgBBack = (ImageButton) rootView.findViewById(R.id.btnNewsBack);
+        mImgBShare = (ImageButton) rootView.findViewById(R.id.btnNewsShare);
+        mImgFav = (ImageView) rootView.findViewById(R.id.btnNewsFav);
+        mImgGood = (ImageView) rootView.findViewById(R.id.imgNewsGood);
+        mWvContent = (WebView) rootView.findViewById(R.id.wvNewsContent);
+        mTxtGoodNum = (TextView) rootView.findViewById(R.id.txtNewsGoodNum);
+        mTxtFavNum = (TextView) rootView.findViewById(R.id.txtNewsFavNum);
+        mTxtGoodNum.setText(GOOD_CNT);
+        mTxtFavNum.setText(FAVORITE_CNT);
         Log.v(TAG, "開起網頁 Url = " + MEDIA_CONTENT);
-        themeWebv.getSettings().setJavaScriptEnabled(true);
-        themeWebv.requestFocus();
-        themeWebv.setWebViewClient(new MyWebViewClient());
-        themeWebv.loadUrl(MEDIA_CONTENT);
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                main.RemoveBottom(thisFragment);
-            }
-        });
-
-        shareBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                addCustomPlatforms();
-            }
-        });
-
-        goodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setGoodState();
-            }
-        });
-
-        favBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFavState();
-            }
-        });
+        mWvContent.getSettings().setJavaScriptEnabled(true);
+        mWvContent.requestFocus();
+        mWvContent.setWebViewClient(new MyWebViewClient());
+        mWvContent.loadUrl(MEDIA_CONTENT);
+        mImgBBack.setOnClickListener(new onClick());
+        mImgBShare.setOnClickListener(new onClick());
+        mLyGood.setOnClickListener(new onClick());
+        mLyFav.setOnClickListener(new onClick());
         getGoodState();
         getFavState();
+    }
+
+    private class onClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.btnNewsBack:
+                    main.RemoveBottom(thisFragment);
+                break;
+                case R.id.btnNewsShare:
+                    addCustomPlatforms();
+                    break;
+                case R.id.lyNewsGood:
+                    setGoodState();
+                    break;
+                case R.id.lyNewsFav:
+                    setFavState();
+                    break;
+            }
+        }
     }
 
     private class MyWebViewClient extends WebViewClient {
@@ -181,7 +182,7 @@ public class NewsChannelFragment extends BaseFragment {
                 if (JsonisEmpty(json, "沒有取得收藏的任何資訊！")) return;
                 isFav = json.optString("FAVORITE_CNT").equals("1");
                 Log.v(TAG, "已設定為收藏:" + isFav);
-                setImgBtnContent(isFav ? "@mipmap/news_favoriteicon" : "@mipmap/global_backicon", favBtn);
+                setImgBtnContent(isFav ? "@drawable/news_content_favbiged" : "@drawable/news_content_favbig", mImgFav);
             }
         });
     }
@@ -197,8 +198,8 @@ public class NewsChannelFragment extends BaseFragment {
                 if (ObjisNull(obj, "已設定收藏")) return;
                 isFav = obj.equals("1");
                 Log.v(TAG, "已設定為收藏:" + isFav);
-                setImgBtnContent(isFav ? "@mipmap/news_favoriteicon" : "@mipmap/global_backicon", favBtn);
-                favTxt.setText(String.valueOf(Integer.valueOf(FAVORITE_CNT) + 1));
+                setImgBtnContent(isFav ? "@drawable/news_content_favbiged" : "@drawable/news_content_favbig", mImgFav);
+                mTxtFavNum.setText(String.valueOf(Integer.valueOf(FAVORITE_CNT) + 1));
             }
         });
     }
@@ -216,7 +217,7 @@ public class NewsChannelFragment extends BaseFragment {
                 if (JsonisEmpty(json, "沒有取得喜歡的任何資訊！")) return;
                 isGood = json.optString("GOOD_CNT").equals("1");
                 Log.v(TAG, "已設定為喜歡:" + isGood);
-                setImgBtnContent(isGood ? "@mipmap/news_good" : "@mipmap/global_backicon", goodBtn);
+                setImgBtnContent(isGood ? "@drawable/news_goodbiged" : "@drawable/news_goodbig", mImgGood);
             }
         });
     }
@@ -232,8 +233,8 @@ public class NewsChannelFragment extends BaseFragment {
                 if (ObjisNull(obj, "已設定喜歡")) return;
                 isGood = obj.equals("1");
                 Log.v(TAG, "已設定為喜歡:" + isGood);
-                setImgBtnContent(isGood ? "@mipmap/news_good" : "@mipmap/global_backicon", goodBtn);
-                goodTxt.setText(String.valueOf(Integer.valueOf(GOOD_CNT) + 1));
+                setImgBtnContent(isGood ? "@drawable/news_goodbiged" : "@drawable/news_goodbig", mImgGood);
+                mTxtGoodNum.setText(String.valueOf(Integer.valueOf(GOOD_CNT) + 1));
             }
         });
     }
@@ -276,7 +277,7 @@ public class NewsChannelFragment extends BaseFragment {
      * @param $uri
      * @param $currImgBtn
      */
-    private void setImgBtnContent(String $uri, ImageButton $currImgBtn) {
+    private void setImgBtnContent(String $uri, ImageView $currImgBtn) {
         int imageResource = getResources().getIdentifier($uri, null, getActivity().getPackageName());
         Drawable image = getResources().getDrawable(imageResource);
         $currImgBtn.setImageDrawable(image);

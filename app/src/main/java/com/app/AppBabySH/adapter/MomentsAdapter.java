@@ -20,6 +20,7 @@ import com.app.AppBabySH.GlobalVar;
 import com.app.AppBabySH.R;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
+import com.app.Common.ComFun;
 
 import java.util.ArrayList;
 
@@ -66,7 +67,7 @@ public class MomentsAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView mTxtName, mTxtTitle, mTxtClass, mTxtDate;
         ImageView mImgHeader;
-        LinearLayout mLyDel,mLySetGood,mLySetFav,mLyToComment;
+        LinearLayout mLyDel, mLySetGood, mLySetFav, mLyToComment;
         ImageButton mImgbCommentFun;
         GridView mGdvPic;
         LinearLayout mLyComment, mLyGood, mLyReply;
@@ -119,7 +120,7 @@ public class MomentsAdapter extends BaseAdapter {
             viewHolder.mTxtName.setText(item.NIC_NAME);
             viewHolder.mTxtTitle.setText(item.DESCRIPTION);
             viewHolder.mTxtClass.setText(item.SCHOOL_NAME + item.CLASS_NAME);
-            viewHolder.mTxtDate.setText(item.ENTRY_DATE + item.ENTRY_TIME);
+            viewHolder.mTxtDate.setText(ComFun.date2UserSee(item.ENTRY_DATE, "/") + " " + ComFun.time2UserSee(item.ENTRY_TIME, ":").substring(0, 5));
             // TODO 創建圖片
             createImage(item, convertView);
 
@@ -149,14 +150,16 @@ public class MomentsAdapter extends BaseAdapter {
             momentsIMGlist = new ArrayList<MomentsImageItem>();
         }
         viewHolder.mGdvPic.setAdapter(null);
-        adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist , "normal");
+        adapter = new MomentsImageAdapter(convertView.getContext(), momentsIMGlist, "normal");
         adapter.onImgCallBack = new MomentsImageAdapter.callBackImgItem() {
             @Override
             public void onImgClick(MomentsImageItem $item) {
                 onCallBack.onImgAdapterClick($item);
             }
+
             @Override
-            public void onAddClick() {}
+            public void onAddClick() {
+            }
         };
         //設定顯示列數
         switch (item.ATCH.size()) {
@@ -280,7 +283,7 @@ public class MomentsAdapter extends BaseAdapter {
             switch (v.getId()) {
                 //Open Personal Page
                 case R.id.imgMomentsItemHeader:
-                    if (targetV != null)  targetV.setVisibility(View.GONE);
+                    if (targetV != null) targetV.setVisibility(View.GONE);
                     onCallBack.onClick("personal", callBackItem);
                     break;
                 //Open Comment

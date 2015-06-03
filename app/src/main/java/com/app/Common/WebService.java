@@ -41,6 +41,58 @@ public class WebService {
         GetJson(id, "Baby_Get_User_Info ", map, callBack);
     }
 
+    /*========  註冊  ========*/
+    //  激活
+    public static void GetActivate(String id, String $activity, String $classID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Activity_No", $activity);
+        map.put("Mobile_No", $classID);
+        map.put("Validate_Type", "");
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Activate", map, $callBack);
+    }
+
+    //  驗證
+    public static void GetValidate(String id, String $activity, String $validateNo, String $validatetype, String $password, String $nickName, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Activity_No", $activity);
+        map.put("Validate_No", $validateNo);
+        map.put("Validate_Type", $validatetype);
+        map.put("Password", $password);
+        map.put("Nick_Name", $nickName);
+        map.put("CheckKey", "");
+        Log.i(TAG, "map:" + map);
+        GetJson(id, "Baby_Get_Validate", map, $callBack);
+    }
+
+    //  註冊 (parent only)
+    public static void SetRegister(String id, String $activity, String $relationship, String $password, String $nickName, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Activity_No", $activity);
+        map.put("Relationship", $relationship);
+        map.put("Password", $password);
+        map.put("Nick_Name", $nickName);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Register", map, $callBack);
+    }
+
+    //  忘記密碼驗證
+    public static void GetPasswordValidate(String id, String $mobile_No, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Mobile_No", $mobile_No);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Password_Validate", map, $callBack);
+    }
+
+    //  密碼重置
+    public static void SetPasswordReset(String id, String $mobile_No, String $validateNo, String $password, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Mobile_No", $mobile_No);
+        map.put("Validate_No", $validateNo);
+        map.put("Password", $password);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Password_Reset", map, $callBack);
+    }
 
     /*========  班級圈 Moments  ========*/
     //  取得班級圈列表-依班級
@@ -191,6 +243,22 @@ public class WebService {
 
 
     /*========  共用 Common  ========*/
+
+    //  短信接口
+    public static void SendMessage(String id, String $mobile_No, String $message, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Mobile_No", $mobile_No);
+        map.put("Message", $message);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Send_Message", map, $callBack);
+    }
+
+    //  查詢家長與學生關係代碼
+    public static void GetParentRelation(String id, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Parent_Relation", map, $callBack);
+    }
 
     /**
      * 處理Json

@@ -24,12 +24,10 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_weight="0.77"
             android:singleLine="false"
             android:text="9/9"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF"
-            android:textSize="30dp" />
+            android:textSize="30sp" />
 
     </RelativeLayout>
 
@@ -48,120 +46,113 @@
         android:id="@+id/lyMomentsImageFun"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
-        android:layout_gravity="bottom"
         android:background="@drawable/bg2">
+
         <LinearLayout
-            android:id="@+id/lyMomentsImageGood"
-            android:layout_width="120dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="2dip"
-            android:background="@drawable/news_conerround"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="40dp"
+            <LinearLayout
+                android:id="@+id/lyMomentsImageGood"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:cropToPadding="false"
-                android:scaleType="centerInside"
-                android:src="@mipmap/news_good" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dip"
-                android:layout_marginTop="6dip"
-                android:autoText="true"
-                android:text="讚"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF"></TextView>
-
-            <TextView
-                android:id="@+id/txtMomentsImageGood"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginTop="6dip"
-                android:text="999"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF">
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1.1"
+                android:background="@drawable/news_content_bgc"
                 android:gravity="center"
-            </TextView>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/lyMomentsImageFav"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dip"
-            android:layout_toLeftOf="@+id/lyMomentsImageComment"
-            android:layout_toRightOf="@+id/lyMomentsImageGood"
-            android:background="@drawable/news_conerround"
-            android:orientation="horizontal">
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="40dp"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:layout_weight="1"
+                    android:src="@drawable/news_goodbig" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="讚"
+                    android:textColor="#FFFFFF"
+                    android:layout_weight="1"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/txtMomentsImageGood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:text="999"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyMomentsImageFav"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:cropToPadding="false"
-                android:scaleType="centerInside"
-                android:src="@mipmap/news_favoriteicon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dip"
-                android:layout_marginTop="6dip"
-                android:autoText="true"
-                android:text="收藏"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF"></TextView>
-
-            <TextView
-                android:id="@+id/txtMomentsImageFav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginTop="6dip"
-                android:autoText="true"
-                android:text="999"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF">
+                android:layout_weight="1"
+                android:background="@drawable/news_content_bgc"
                 android:gravity="center"
-            </TextView>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/lyMomentsImageComment"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right|center_vertical"
-            android:layout_marginTop="2dip"
-            android:background="@drawable/news_conerround"
-            android:orientation="horizontal">
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="40dp"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/news_content_favbig" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="收藏"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/txtMomentsImageFav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:text="999"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyMomentsImageComment"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:cropToPadding="false"
-                android:scaleType="centerInside"
-                android:src="@mipmap/news_favoriteicon" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1.1"
+                android:background="@drawable/news_content_bgc"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dip"
-                android:layout_marginTop="6dip"
-                android:text="評論"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF"></TextView>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/moments_msgbox_comment_normal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="評論"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 
@@ -169,19 +160,11 @@
         android:id="@+id/txtMomentsImageContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Content"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
         android:layout_alignBottom="@+id/vpMomentsImageContent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
-
-    <!--<ProgressBar
-        android:id="@+id/proBarMomentsLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />-->
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="Content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FFFFFF" />
 </RelativeLayout>

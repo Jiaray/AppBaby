@@ -65,13 +65,13 @@ public class NewsAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = minflater.inflate(R.layout.news_item, null);
-            viewHolder.titleTxt = (TextView) convertView.findViewById(R.id.news_titleTxt);
+            viewHolder.titleTxt = (TextView) convertView.findViewById(R.id.txtNewsTitle);
             viewHolder.goodTxt = (TextView) convertView.findViewById(R.id.news_goodTxt);
             viewHolder.favTxt = (TextView) convertView.findViewById(R.id.news_favTxt);
             viewHolder.mainIMGIMG = (ImageView) convertView.findViewById(R.id.news_imageImg);
             viewHolder.goodIMG = (ImageView) convertView.findViewById(R.id.news_goodImg);
             viewHolder.favIMG = (ImageView) convertView.findViewById(R.id.news_favImg);
-            viewHolder.newIMG = (ImageView) convertView.findViewById(R.id.news_newImg);
+            viewHolder.newIMG = (ImageView) convertView.findViewById(R.id.imgNewsNewLogo);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

@@ -17,7 +17,6 @@ import java.io.Reader;
 
 public class FileCache {
     final private String TAG = "FileCache";
-    private static FileCache fileCache; // 本类的引用
     final private String FOLDERNAME = "AppBabySH";
     private String strCachePath, strImgBoxPath; // 图片保存的路径
     private String strJsonPath;// Json保存的路径
@@ -25,12 +24,25 @@ public class FileCache {
     private File imgBoxDir;
     private File jsonDir;
 
+    private static FileCache fileCache; // 本类的引用
+
+    public static FileCache getInstance() {
+        if (null == fileCache) {
+            fileCache = new FileCache();
+        }
+        return fileCache;
+    }
+
     public String getCachePath() {
         return strCachePath;
     }
 
     public String getImgBoxPath() {
         return strImgBoxPath;
+    }
+
+    public String getJsonPath() {
+        return strJsonPath;
     }
 
     private FileCache() {
@@ -73,14 +85,6 @@ public class FileCache {
             f.delete();
     }
 
-
-    public static FileCache getInstance() {
-        if (null == fileCache) {
-            fileCache = new FileCache();
-        }
-        return fileCache;
-    }
-
     public boolean saveData(String strApiUrl, String dataJson, String imgurl, Bitmap bmp) {
         String fileName = this.toHexString(strApiUrl);
         String imgName = imgurl.substring(
@@ -96,8 +100,11 @@ public class FileCache {
     /**
      * 保存json数据
      */
-    public boolean savaJsonData(String strApiUrl, String dataJson) {
-        String fileName = this.toHexString(strApiUrl);
+    public boolean savaJsonData(String strApiUrl, String dataJson, boolean toHex) {
+        String fileName = strApiUrl;
+        if (toHex) {
+            fileName = this.toHexString(strApiUrl);
+        }
         File fTXT = new File(strJsonPath + fileName + ".txt");
         if (fTXT.exists()) {
             fTXT.delete();
@@ -220,9 +227,9 @@ public class FileCache {
                 imgurl.lastIndexOf('/') + 1,
                 imgurl.length());
         File imgFile = new File(strCachePath + imgName);
-        if(imgFile.exists()){
+        if (imgFile.exists()) {
             return imgFile;
-        }else{
+        } else {
             return null;
         }
     }
@@ -308,6 +315,11 @@ public class FileCache {
         return false;
     }
 
+    public boolean checkFileExistsByPath(String path){
+        File file = new File(path);
+        return file.exists();
+    }
+
     /**
      * 根据路径删除图片
      *
@@ -324,6 +336,7 @@ public class FileCache {
      * 删除SD卡上的全部缓存
      */
     public int clearAllData() {
+        Log.i(TAG, "clearAllData : 删除SD卡上的全部缓存");
         File imgDir = new File(strCachePath);
         File txtDir = new File(strJsonPath);
         File[] imgFiles = imgDir.listFiles();

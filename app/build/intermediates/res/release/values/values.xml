@@ -71,6 +71,9 @@
     <string name="com_facebook_usersettingsfragment_log_in_button">Log in…</string>
     <string name="com_facebook_usersettingsfragment_logged_in">Logged in</string>
     <string name="com_facebook_usersettingsfragment_not_logged_in">Not logged in</string>
+    <!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="db_name">baby_sh</string>
     <!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/values/umeng_socialize_flickr_strings.xml -->
     <eat-comment/>
     <string name="flickr_content">Flickr只支持图片分享</string>
