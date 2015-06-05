@@ -8,14 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.Common.LocalFun;
-import com.app.Common.LocalSQLCode;
-import com.app.Common.UserMstr;
-
-import org.w3c.dom.Text;
+import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.base.BaseFragment;
 
 /**
  * Created by ray on 2015/5/29.
@@ -28,7 +23,6 @@ public class AccountAgreeFragment extends BaseFragment {
     private CheckBox mCkbOK;
     private Button mBtnOK;
     private ImageButton mBtnBack;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.login_agree_fragment, container, false);

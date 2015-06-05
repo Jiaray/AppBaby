@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -25,6 +27,8 @@ public class AccountForgetPWFragment extends BaseFragment {
     private View rootView;
     private AccountForgetPWFragment thisFragment;
     private LoginActivity loginA;
+    private MainTabActivity mainA;
+    private String actName;
 
     private Button mBtnCommit, mBtnSendCaptcha;
     private EditText mEdtPhone, mEdtCaptcha, mEdtNewPW, mEdtCheckPW;
@@ -41,7 +45,13 @@ public class AccountForgetPWFragment extends BaseFragment {
                 return true;
             }
         });
-        loginA = (LoginActivity) getActivity();
+        if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
+            loginA = (LoginActivity) getActivity();
+            actName = "LoginActivity";
+        } else {
+            mainA = (MainTabActivity) getActivity();
+            actName = "MainTabActivity";
+        }
         thisFragment = this;
         initView();
         return rootView;
@@ -67,7 +77,11 @@ public class AccountForgetPWFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgbForgetPWBack:
-                    loginA.RemoveBottom(thisFragment);
+                    if(actName.equals("MainTabActivity")){
+                        mainA.RemoveBottomNotAddTab(thisFragment);
+                    }else{
+                        loginA.RemoveBottom(thisFragment);
+                    }
                     break;
                 case R.id.btnForgetPWSendCaptcha:
                     if (mEdtPhone.equals("")) {
@@ -153,7 +167,11 @@ public class AccountForgetPWFragment extends BaseFragment {
                         return;
                     }else{
                         MyAlertDialog.Show(getActivity(), "密码重置完成！");
-                        loginA.RemoveBottom(thisFragment);
+                        if(actName.equals("MainTabActivity")){
+                            mainA.RemoveBottomNotAddTab(thisFragment);
+                        }else{
+                            loginA.RemoveBottom(thisFragment);
+                        }
                     }
                 }
             });

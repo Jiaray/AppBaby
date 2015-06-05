@@ -1,13 +1,17 @@
 package com.app.Common;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
@@ -432,6 +436,35 @@ public class ComFun {
         String _s = $time.substring(4,6);
         return  _h + $addsyl + _m + $addsyl + _s;
     }
+
+    //  取得 APP 版本 Code
+    public static String getVersionCode(Activity $act){
+        try {
+            PackageInfo packageInfo = $act.getPackageManager().getPackageInfo($act.getPackageName(), 0);
+            return String.valueOf(packageInfo.versionCode);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "Cannot load Version!";
+        }
+    }
+
+    //  取得 APP 版本 Name
+    public static String getVersionName(Activity $act){
+        try {
+            PackageInfo packageInfo = $act.getPackageManager().getPackageInfo($act.getPackageName(), 0);
+            return packageInfo.versionName;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "Cannot load Version!";
+        }
+    }
+
+
+
 //
 //    /**
 //     * Drawable 转换Bitmap

@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 public class ImageLoader {
     final private String TAG = "IMGLoader";
     final int stub_id = R.drawable.doroto_loadimag;
+    final int HeadPreset_id = R.drawable.user_default_avatar;
     final int THUMBIMG_SIZE = 200;
     final int VIEWIMG_SIZE = 400;
     MemoryCache memoryCache = new MemoryCache();
@@ -46,12 +47,14 @@ public class ImageLoader {
     private AsyncImageLoader asyncImageLoader;
 
     private static ImageLoader imageLoader; // 本类的引用
+
     public static ImageLoader getInstance() {
         if (null == imageLoader) {
             imageLoader = new ImageLoader();
         }
         return imageLoader;
     }
+
     public ImageLoader() {
         executorService = Executors.newFixedThreadPool(3);
     }
@@ -73,7 +76,7 @@ public class ImageLoader {
         } else {
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
-            }else {
+            } else {
                 PhotoToLoad p = new PhotoToLoad(url, imageView);
                 executorService.submit(new PhotosLoader(p));
             }
@@ -84,17 +87,20 @@ public class ImageLoader {
 
     //  圖像載入後顯示圓角
     public void DisplayRoundedCornerImage(String url, ImageView imageView) {
+        if(url.equals("")){
+            imageView.setImageResource(HeadPreset_id);
+        }
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
         //Log.i(TAG, "DisplayRoundedCornerImage url:" + url + " bitmap:" + bitmap);
         //imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         if (bitmap != null) {
             imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
-        }else {
+        } else {
             PhotoToLoad p = new PhotoToLoad(url, imageView);
             p.roundedCorner = true;
             executorService.submit(new PhotosLoader(p));
-            imageView.setImageResource(stub_id);
+            imageView.setImageResource(HeadPreset_id);
         }
     }
 
@@ -247,18 +253,19 @@ public class ImageLoader {
         File fileFromSD = FileCache.getInstance().getImgFile($url);
         Bitmap bmpFromSD;
         if (null != fileFromSD) {
-            bmpFromSD = compressionImgFile(fileFromSD,VIEWIMG_SIZE);
+            bmpFromSD = compressionImgFile(fileFromSD, VIEWIMG_SIZE);
             $imageView.setImageBitmap(bmpFromSD);
         } else {
             asyncImageLoader = new AsyncImageLoader();
             Drawable cachedImage = asyncImageLoader.loaDrawable($url, new AsyncImageCallBack($url, $imageView));
             if (cachedImage != null) {
                 fileFromSD = FileCache.getInstance().getImgFile($url);
-                bmpFromSD = compressionImgFile(fileFromSD,VIEWIMG_SIZE);
+                bmpFromSD = compressionImgFile(fileFromSD, VIEWIMG_SIZE);
                 $imageView.setImageBitmap(bmpFromSD);
             }
         }
     }
+
     class AsyncImageCallBack implements AsyncImageLoader.ImageCallBack {
         private String strUrl;
         private ImageView imgV;
@@ -361,7 +368,7 @@ public class ImageLoader {
     }
 
     // 旋轉圖片
-    public static void checkRotateBeforeSetImage(String $url,ImageView $imgV,Bitmap $bmp){
+    public static void checkRotateBeforeSetImage(String $url, ImageView $imgV, Bitmap $bmp) {
         int degree = readPictureDegree($url);
         if (degree <= 0) {
             $imgV.setImageBitmap($bmp);
@@ -375,11 +382,12 @@ public class ImageLoader {
 
     /**
      * 读取照片exif信息中的旋转角度
+     *
      * @param path 照片路径
      * @return角度
      */
     public static int readPictureDegree(String path) {
-        int degree  = 0;
+        int degree = 0;
         try {
             ExifInterface exifInterface = new ExifInterface(path);
             int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);

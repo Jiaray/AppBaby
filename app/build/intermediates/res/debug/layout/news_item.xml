@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffe3e3e3">
+    android:background="#ffefefef">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -13,7 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_corners_white"
+        android:background="@drawable/common_bg_corners_white"
         android:orientation="vertical">
 
         <ImageView

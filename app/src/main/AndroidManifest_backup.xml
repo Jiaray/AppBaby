@@ -31,7 +31,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.app.AppBabySH.MainTabActivity"
+            android:name="com.app.AppBabySH.activity.MainTabActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,11 +39,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.AppBabySH.WelcomeActivity"
+            android:name="com.app.AppBabySH.activity.WelcomeActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.app.AppBabySH.LoginActivity"
+            android:name="com.app.AppBabySH.activity.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,8 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
 import com.app.AppBabySH.item.ClassItem;
 import com.app.AppBabySH.item.MomentsImageItem;
@@ -42,7 +42,6 @@ import lazylist.ImageLoader;
 
 public class MomentsFragment extends BaseFragment {
     private static final String TAG = "MomentsFragment";
-    private static final String ForTestClassID = "C201504000002";
     private String CurrClassID;
     private MomentsAdapter adapter;
     private ProgressDialog pd;

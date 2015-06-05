@@ -1,7 +1,6 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,11 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 /**

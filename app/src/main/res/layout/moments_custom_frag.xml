@@ -8,7 +8,7 @@
         android:id="@+id/milinearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg2">
+        android:background="@drawable/common_bg2">
 
         <ImageButton
             android:id="@+id/imgbtnMomentsPersonalBack"

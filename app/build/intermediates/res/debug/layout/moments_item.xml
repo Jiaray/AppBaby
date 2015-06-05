@@ -5,21 +5,31 @@
     android:background="#FFFFFF"
     android:paddingTop="20dp">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_column="0"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/moments_head_bg_cricle" />
 
     <ImageView
         android:id="@+id/imgMomentsItemHeader"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_column="0"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/moments_listview_avatar"
-        android:scaleType="centerCrop" />
+        android:layout_marginTop="2dp"
+        android:layout_alignLeft="@+id/imageView4"
+        android:layout_alignTop="@+id/imageView4"
+        android:scaleType="centerCrop"
+        android:src="@drawable/user_default_avatar" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/imgMomentsItemHeader"
         android:orientation="vertical">
 
@@ -74,7 +84,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/btn_moment_comment" />
+                android:background="@drawable/moments_comment_btn" />
 
             <LinearLayout
                 android:id="@+id/lyMomentsItemComment"
@@ -84,7 +94,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignWithParentIfMissing="false"
                 android:layout_marginRight="50dp"
-                android:background="@drawable/bg_moments_item_comment"
+                android:background="@drawable/moments_commentfun_bg"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp">

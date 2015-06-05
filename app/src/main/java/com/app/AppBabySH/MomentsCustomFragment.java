@@ -13,8 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsCustomAdapter;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;

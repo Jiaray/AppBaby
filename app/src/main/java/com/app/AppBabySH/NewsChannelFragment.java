@@ -14,8 +14,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -112,7 +113,7 @@ public class NewsChannelFragment extends BaseFragment {
     private void creatRootView() {
         mLyGood = (LinearLayout) rootView.findViewById(R.id.lyNewsGood);
         mLyFav = (LinearLayout) rootView.findViewById(R.id.lyNewsFav);
-        mImgBBack = (ImageButton) rootView.findViewById(R.id.btnNewsBack);
+        mImgBBack = (ImageButton) rootView.findViewById(R.id.imgbSetAccBack);
         mImgBShare = (ImageButton) rootView.findViewById(R.id.btnNewsShare);
         mImgFav = (ImageView) rootView.findViewById(R.id.btnNewsFav);
         mImgGood = (ImageView) rootView.findViewById(R.id.imgNewsGood);
@@ -138,7 +139,7 @@ public class NewsChannelFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
-                case R.id.btnNewsBack:
+                case R.id.imgbSetAccBack:
                     main.RemoveBottom(thisFragment);
                 break;
                 case R.id.btnNewsShare:
@@ -539,7 +540,7 @@ public class NewsChannelFragment extends BaseFragment {
         whatsAppHandler.addToSocialSDK();
         WhatsAppShareContent whatsAppShareContent = new WhatsAppShareContent();
 //        whatsAppShareContent.setShareContent("share test");
-        whatsAppShareContent.setShareImage(new UMImage(getActivity(), R.drawable.icon));
+        whatsAppShareContent.setShareImage(new UMImage(getActivity(), R.drawable.user_default_avatar));
         mController.setShareMedia(whatsAppShareContent);
 //        mController.openShare(getActivity(), false);
     }

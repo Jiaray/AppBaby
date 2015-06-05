@@ -14,7 +14,7 @@
         android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-        android:background="@drawable/bg2">
+        android:background="@drawable/common_bg2">
 
         <FrameLayout
             android:id="@android:id/tabcontent"

@@ -40,7 +40,7 @@
         android:textSize="20sp"
         android:gravity="center"
         android:textColor="#fff"
-        android:background="@drawable/bg_cricle"
+        android:background="@drawable/tab_news_bg_cricle"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/imgTabIcon">
 </TextView>

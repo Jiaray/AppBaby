@@ -239,8 +239,36 @@ public class WebService {
 
 
 
-
-
+    /*========  我 Profile (設置)  ========*/
+    //  查詢家長所有之學生清單
+    public static void GetParentChilds(String id, String $parent_ID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Parent_ID", $parent_ID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Parent_Childs", map, $callBack);
+    }
+    //  查詢教師教學清單
+    public static void GetTeacherTeaching(String id, String $teacher_ID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Teacher_ID", $teacher_ID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Teacher_Teaching", map, $callBack);
+    }
+    //  查詢學生歷史清單
+    public static void GetStudentHistory(String id, String $school_ID, String $student_ID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("School_ID", $school_ID);
+        map.put("Student_ID", $student_ID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Student_History", map, $callBack);
+    }
+    //  我的频道收藏
+    public static void GetFavoriteList(String id, String $user_ID, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $user_ID);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Favorite_List", map, $callBack);
+    }
 
     /*========  共用 Common  ========*/
 

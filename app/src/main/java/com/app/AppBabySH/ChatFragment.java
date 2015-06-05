@@ -1,22 +1,11 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.Common.PullDownView;
-import com.app.Common.ScrollOverListView;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.app.AppBabySH.base.BaseFragment;
 
 public class ChatFragment extends BaseFragment {
 	@Override

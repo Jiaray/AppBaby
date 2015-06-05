@@ -5,10 +5,10 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
     <RelativeLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/rlySetAccTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg2" >
+        android:background="@drawable/common_bg2" >
         <TextView
             android:id="@+id/txtMomentsAddNewCancel"
             android:layout_width="wrap_content"

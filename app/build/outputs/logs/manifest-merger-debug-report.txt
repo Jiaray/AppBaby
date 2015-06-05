@@ -129,7 +129,7 @@ ADDED from AndroidManifest.xml:37:5
 		ADDED from AndroidManifest.xml:42:9
 	android:name
 		ADDED from AndroidManifest.xml:38:9
-activity#com.app.AppBabySH.MainTabActivity
+activity#com.app.AppBabySH.activity.MainTabActivity
 ADDED from AndroidManifest.xml:43:9
 	android:windowSoftInputMode
 		ADDED from AndroidManifest.xml:45:13
@@ -149,13 +149,13 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:50:17
 	android:name
 		ADDED from AndroidManifest.xml:50:27
-activity#com.app.AppBabySH.WelcomeActivity
+activity#com.app.AppBabySH.activity.WelcomeActivity
 ADDED from AndroidManifest.xml:53:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:55:13
 	android:name
 		ADDED from AndroidManifest.xml:54:13
-activity#com.app.AppBabySH.LoginActivity
+activity#com.app.AppBabySH.activity.LoginActivity
 ADDED from AndroidManifest.xml:56:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:58:13

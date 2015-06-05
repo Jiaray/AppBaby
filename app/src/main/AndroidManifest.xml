@@ -41,7 +41,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.app.AppBabySH.MainTabActivity"
+            android:name=".activity.MainTabActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
             android:label="@string/app_name">
@@ -51,10 +51,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.AppBabySH.WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.app.AppBabySH.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"></activity>
 
         <meta-data

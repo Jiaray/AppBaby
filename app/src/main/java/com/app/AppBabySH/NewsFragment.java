@@ -8,10 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
 import com.app.AppBabySH.adapter.NewsAdapter;
 import com.app.AppBabySH.item.NewsItem;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.Common.MyAlertDialog;
 import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
 import com.app.Common.UserMstr;

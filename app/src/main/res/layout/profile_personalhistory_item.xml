@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/test"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1.4"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtProfileHistorySchoolName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上海MAX校"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtProfileHistoryClassName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="大班"
+            android:textColor="#bb0000"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtProfileHistoryStudentName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="陳MAX"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtProfileHistoryTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="2015/05/26 - 2016/05/26"
+            android:textColor="#bb0000"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

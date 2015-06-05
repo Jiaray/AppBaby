@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
-import com.app.AppBabySH.UIBase.MyAlertDialog;
+import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -24,6 +26,8 @@ public class AccountRegistFragment extends BaseFragment {
     private View rootView;
     private AccountRegistFragment thisFragment;
     private LoginActivity loginA;
+    private MainTabActivity mainA;
+    private String actName;
 
     private EditText mEdtActivation, mEdtPhone, mEdtCaptcha;
     private Button mBtnNext, mBtnSendCaptcha;
@@ -31,6 +35,12 @@ public class AccountRegistFragment extends BaseFragment {
 
     private Boolean activated = false;
     private String userType, validateNo;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(actName.equals("MainTabActivity"))mainA.AddTabHost();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +51,13 @@ public class AccountRegistFragment extends BaseFragment {
                 return true;
             }
         });
-        loginA = (LoginActivity) getActivity();
+        if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
+            loginA = (LoginActivity) getActivity();
+            actName = "LoginActivity";
+        } else {
+            mainA = (MainTabActivity) getActivity();
+            actName = "MainTabActivity";
+        }
         thisFragment = this;
         initView();
         return rootView;
@@ -76,7 +92,11 @@ public class AccountRegistFragment extends BaseFragment {
                     checkActivation();
                     break;
                 case R.id.imgbRegBack:
-                    loginA.RemoveBottom(thisFragment);
+                    if(actName.equals("MainTabActivity")){
+                        mainA.RemoveBottom(thisFragment);
+                    }else{
+                        loginA.RemoveBottom(thisFragment);
+                    }
                     break;
                 case R.id.btnRegNext:
                     checkCaptcha();

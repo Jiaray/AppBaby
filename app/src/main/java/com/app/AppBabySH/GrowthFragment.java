@@ -1,12 +1,11 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.app.AppBabySH.UIBase.BaseFragment;
+import com.app.AppBabySH.base.BaseFragment;
 
 public class GrowthFragment extends BaseFragment{
 
