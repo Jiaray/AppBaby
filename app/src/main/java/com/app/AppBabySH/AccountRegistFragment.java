@@ -30,7 +30,7 @@ public class AccountRegistFragment extends BaseFragment {
     private String actName;
 
     private EditText mEdtActivation, mEdtPhone, mEdtCaptcha;
-    private Button mBtnNext, mBtnSendCaptcha;
+    private Button mBtnNext, mBtnSendCaptcha,mBtnHowtoGet;
     private ImageButton mBtnBack;
 
     private Boolean activated = false;
@@ -67,9 +67,11 @@ public class AccountRegistFragment extends BaseFragment {
         mEdtActivation = (EditText) rootView.findViewById(R.id.edtRegActivation);
         mEdtPhone = (EditText) rootView.findViewById(R.id.edtRegPhone);
         mEdtCaptcha = (EditText) rootView.findViewById(R.id.edtRegCaptcha);
+        mBtnHowtoGet = (Button) rootView.findViewById(R.id.btnRegHowToGet);
         mBtnBack = (ImageButton) rootView.findViewById(R.id.imgbRegBack);
         mBtnNext = (Button) rootView.findViewById(R.id.btnRegNext);
         mBtnSendCaptcha = (Button) rootView.findViewById(R.id.btnRegSendCaptcha);
+        mBtnHowtoGet.setOnClickListener(new RegistPonClick());
         mBtnBack.setOnClickListener(new RegistPonClick());
         mBtnNext.setOnClickListener(new RegistPonClick());
         mBtnSendCaptcha.setOnClickListener(new RegistPonClick());
@@ -100,6 +102,14 @@ public class AccountRegistFragment extends BaseFragment {
                     break;
                 case R.id.btnRegNext:
                     checkCaptcha();
+                    break;
+                case R.id.btnRegHowToGet:
+                    AccountRegistHowToGetFragment feedbackF = new AccountRegistHowToGetFragment();
+                    if (actName.equals("MainTabActivity")) {
+                        mainA.OpenBottom(feedbackF);
+                    } else {
+                        loginA.OpenBottom(feedbackF);
+                    }
                     break;
             }
         }

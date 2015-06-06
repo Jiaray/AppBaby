@@ -1,6 +1,8 @@
 package com.app.AppBabySH;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.UserMstr;
 
 public class SetAccountMenuFragment extends BaseFragment {
     final private String TAG = "setAccountF";
@@ -21,6 +24,7 @@ public class SetAccountMenuFragment extends BaseFragment {
     private ImageButton mImgbBack;
     private LinearLayout mLyNickName, mLyPW, mLyHead;
     private TextView mTxtCurrNickName;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,18 +42,20 @@ public class SetAccountMenuFragment extends BaseFragment {
         return rootView;
     }
 
+
     private void initView() {
         mImgbBack = (ImageButton) rootView.findViewById(R.id.imgbSetAccBack);
         mLyNickName = (LinearLayout) rootView.findViewById(R.id.lySetAccNickName);
         mLyPW = (LinearLayout) rootView.findViewById(R.id.lySetAccPW);
         mLyHead = (LinearLayout) rootView.findViewById(R.id.lySetAccHead);
         mTxtCurrNickName = (TextView) rootView.findViewById(R.id.txtSetAccCurrNickName);
-        mTxtCurrNickName.setText("");
+        mTxtCurrNickName.setText("" + UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
         mImgbBack.setOnClickListener(new onClick());
         mLyNickName.setOnClickListener(new onClick());
         mLyPW.setOnClickListener(new onClick());
         mLyHead.setOnClickListener(new onClick());
     }
+
     class onClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -59,6 +65,12 @@ public class SetAccountMenuFragment extends BaseFragment {
                     break;
                 case R.id.lySetAccNickName:
                     SetAccountNickNameFragment setNickNameF = new SetAccountNickNameFragment();
+                    setNickNameF.onCallBack = new SetAccountNickNameFragment.CallBack() {
+                        @Override
+                        public void onBack() {
+                            mTxtCurrNickName.setText("" + UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
+                        }
+                    };
                     main.OpenBottom(setNickNameF);
                     break;
                 case R.id.lySetAccPW:

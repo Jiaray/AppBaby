@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 public class MomentsFragment extends BaseFragment {
     private static final String TAG = "MomentsFragment";
@@ -79,6 +79,7 @@ public class MomentsFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         //共用宣告
         main = (MainTabActivity) getActivity();
+        main.setSoftInputMode("adjustResize");
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
 

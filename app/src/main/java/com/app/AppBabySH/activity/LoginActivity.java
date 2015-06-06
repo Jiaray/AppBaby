@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lazylist.FileCache;
+import com.app.Common.FileCache;
 
 public class LoginActivity extends FragmentActivity implements OnClickListener {
     private static final String TAG = "LoginA";
@@ -121,9 +121,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
             getCheckBaseTable = LocalFun.getInstance().CheckTable("ASC_MSTR");
             getCheckTableList = getUserData();
             if (getCheckBaseTable && getCheckTableList) {// 自動登錄
-                if(Agreement){
+                if (Agreement) {
                     checkLoginData();
-                }else{
+                } else {
                     pd.cancel();
                 }
             } else {
@@ -155,9 +155,6 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                 mTxtName.setText(wLocal_Data.get(0).get("USER_NAME"));
                 mTxtPW.setText(wLocal_Data.get(0).get("USER_PSWD"));
             }
-            Log.i(TAG, "User Name = " + mTxtName.getText());
-            Log.i(TAG, "User PW = " + mTxtPW.getText());
-            Log.i(TAG, "Agreement = " + Agreement);
             return true;
         } else {
             DisplayToast("null");
@@ -200,6 +197,10 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
             DisplayToast("请输入密码");
             return;
         } else {
+            Log.i(TAG, "User Name = " + mTxtName.getText());
+            Log.i(TAG, "User PW = " + mTxtPW.getText());
+            Log.i(TAG, "Agreement = " + Agreement);
+
             pd = MyAlertDialog.ShowProgress(this, "登陆中...");
             pd.show();
 
@@ -224,7 +225,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
             return;
         }
 
-        WebService.Login(null, UserMstr.userData.getUserName(), UserMstr.userData.getUserPW(),
+        WebService.Login(null, mTxtName.getText().toString(), mTxtPW.getText().toString(),
                 "Android", "1234", "1234", "1234", "1234", new WebService.WebCallback() {
 
                     @Override
@@ -242,6 +243,8 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                             pd.cancel();
                             return;
                         }
+                        UserMstr.userData.setUserName(mTxtName.getText().toString());
+                        UserMstr.userData.setUserPW(mTxtPW.getText().toString());
                         UserMstr.userData.setUserID(json.optJSONObject(0).optString("USER_ID"));
                         Log.i(TAG, "User ID = " + UserMstr.userData.getUserID());
                         getUserInfo();
@@ -338,7 +341,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     }
 
     //  確認該帳號同意協議
-    public void changeData2DB(){
+    public void changeData2DB() {
         LocalFun.getInstance().RunSqlNoQuery(
                 LocalSQLCode.SQLite_UpdateTableData(
                         "ASC_MSTR",

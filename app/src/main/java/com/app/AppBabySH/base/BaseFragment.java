@@ -65,6 +65,16 @@ public class BaseFragment extends Fragment {
 			return;
 		}
 	}
+
+	/**
+	 * 確認對話視窗
+	 * @param context
+	 * @param message
+	 */
+	protected void showOKDiaLog(Context context, String message) {
+		new AlertDialog.Builder(context).setTitle("检查").setMessage(message)
+				.setPositiveButton("确定", null).show();
+	}
 	
 	/**
 	 * 關閉對話視窗

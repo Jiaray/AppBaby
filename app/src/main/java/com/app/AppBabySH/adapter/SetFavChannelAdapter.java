@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.AppBabySH.R;
@@ -13,7 +14,7 @@ import com.app.AppBabySH.item.NewsItem;
 
 import java.util.ArrayList;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 /**
  * 收藏頻道 - 主畫面 ListView 的 Adapter
@@ -65,6 +66,7 @@ public class SetFavChannelAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = minflater.inflate(R.layout.profile_set_favchannel_item, null);
+            viewHolder.hLyAll = (LinearLayout) convertView.findViewById(R.id.lySetFavChannel);
             viewHolder.hImgPic = (ImageView) convertView.findViewById(R.id.imgSetFavChannelPic);
             viewHolder.hTxtTitle = (TextView) convertView.findViewById(R.id.imgSetFavChannelTitle);
             convertView.setTag(viewHolder);
@@ -76,7 +78,7 @@ public class SetFavChannelAdapter extends BaseAdapter {
             viewHolder.hTxtTitle.setText(item.CHANNEL_TITLE);
             viewHolder.item = item;
             imageLoader.DisplayImage(item.THUMB_URL, viewHolder.hImgPic);
-            viewHolder.hImgPic.setOnClickListener(new View.OnClickListener() {
+            viewHolder.hLyAll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onCallBack.onClick(item);
@@ -87,6 +89,7 @@ public class SetFavChannelAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        LinearLayout hLyAll;
         TextView hTxtTitle;
         ImageView hImgPic;
         NewsItem item;

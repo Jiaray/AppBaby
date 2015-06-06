@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
@@ -26,6 +27,8 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
     private View rootView;
     private AccountRegistDetailTeacherFragment thisFragment;
     private LoginActivity loginA;
+    private MainTabActivity mainA;
+    private String actName;
 
     private EditText mEdtNickname, mEdtPW, mEdtCheckPW;
     private Button mBtnCommit;
@@ -42,7 +45,13 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                 return true;
             }
         });
-        loginA = (LoginActivity) getActivity();
+        if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
+            loginA = (LoginActivity) getActivity();
+            actName = "LoginActivity";
+        } else {
+            mainA = (MainTabActivity) getActivity();
+            actName = "MainTabActivity";
+        }
         thisFragment = this;
         initView();
         return rootView;
@@ -68,7 +77,7 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgbRegInfoTBack:
-                    loginA.RemoveBottom(thisFragment);
+                    onBack();
                     break;
                 case R.id.btnRegInfoTCommit:
                     commitData();
@@ -103,9 +112,17 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                     }
 
                     MyAlertDialog.Show(getActivity(), "提交完成");
-                    loginA.RemoveBottom(thisFragment);
+                    onBack();
                 }
             });
+        }
+    }
+
+    private void onBack(){
+        if(actName.equals("MainTabActivity")){
+            mainA.RemoveBottomNotAddTab(thisFragment);
+        }else {
+            loginA.RemoveBottom(thisFragment);
         }
     }
 }

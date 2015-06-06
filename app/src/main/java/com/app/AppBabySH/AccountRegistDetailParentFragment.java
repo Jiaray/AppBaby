@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
@@ -41,6 +42,8 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
     private EditText mEdtNickname, mEdtPW, mEdtCheckPW;
     private Button mBtnCommit, mBtnRelationship;
     private ImageButton mBtnBack;
+    private MainTabActivity mainA;
+    private String actName;
 
     private ArrayList<relationshipItem> relationshipAryList;
     private AlertDialog adRelationship;
@@ -58,7 +61,13 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                 return true;
             }
         });
-        loginA = (LoginActivity) getActivity();
+        if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
+            loginA = (LoginActivity) getActivity();
+            actName = "LoginActivity";
+        } else {
+            mainA = (MainTabActivity) getActivity();
+            actName = "MainTabActivity";
+        }
         thisFragment = this;
         getRelationshipData();
         initView();
@@ -161,7 +170,7 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgbRegInfoBack:
-                    loginA.RemoveBottom(thisFragment);
+                    onBack();
                     break;
                 case R.id.btnRegInfoCommit:
                     regist();
@@ -198,5 +207,13 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
 
     static class relationshipItem {
         public String CODE, NAME;
+    }
+
+    private void onBack(){
+        if(actName.equals("MainTabActivity")){
+            mainA.RemoveBottomNotAddTab(thisFragment);
+        }else {
+            loginA.RemoveBottom(thisFragment);
+        }
     }
 }

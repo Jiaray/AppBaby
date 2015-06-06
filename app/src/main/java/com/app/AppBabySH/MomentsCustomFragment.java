@@ -27,7 +27,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 /**
  * Created by ray on 2015/5/22.

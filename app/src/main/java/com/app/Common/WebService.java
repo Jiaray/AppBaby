@@ -94,6 +94,27 @@ public class WebService {
         GetJson(id, "Baby_Set_Password_Reset", map, $callBack);
     }
 
+    //  無法註冊反饋提交
+    public static void SetFeedback(String id,
+                                   String $source, String $name, String $mobile_No,
+                                   String $school, String $class, String $email,
+                                   String $student, String $activity_No, String $content, String $user_ID,
+                                   WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Source:", $source);
+        map.put("Name:", $name);
+        map.put("Mobile_No:", $mobile_No);
+        map.put("School:", $school);
+        map.put("Class:", $class);
+        map.put("Email:", $email);
+        map.put("Student:", $student);
+        map.put("Activity_No:", $activity_No);
+        map.put("Content:", $content);
+        map.put("User_ID:", $user_ID);
+        map.put("CheckKey:", "");
+        GetJson(id, "Baby_Set_Feedback", map, $callBack);
+    }
+
     /*========  班級圈 Moments  ========*/
     //  取得班級圈列表-依班級
     public static void GetCircleListClass(String id, String $userID, String $classID, WebCallback $callBack) {
@@ -209,7 +230,7 @@ public class WebService {
     }
 
     //  UpToken產生
-    public static void GetUpToken(String id, String $bucketName, WebCallback $callBack){
+    public static void GetUpToken(String id, String $bucketName, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("bucketName", $bucketName);
         map.put("key", "");
@@ -237,8 +258,6 @@ public class WebService {
     }
 
 
-
-
     /*========  我 Profile (設置)  ========*/
     //  查詢家長所有之學生清單
     public static void GetParentChilds(String id, String $parent_ID, WebCallback $callBack) {
@@ -247,6 +266,7 @@ public class WebService {
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Parent_Childs", map, $callBack);
     }
+
     //  查詢教師教學清單
     public static void GetTeacherTeaching(String id, String $teacher_ID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
@@ -254,6 +274,7 @@ public class WebService {
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Teacher_Teaching", map, $callBack);
     }
+
     //  查詢學生歷史清單
     public static void GetStudentHistory(String id, String $school_ID, String $student_ID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
@@ -262,12 +283,32 @@ public class WebService {
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Student_History", map, $callBack);
     }
+
     //  我的频道收藏
     public static void GetFavoriteList(String id, String $user_ID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $user_ID);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Favorite_List", map, $callBack);
+    }
+
+    //  修改暱稱
+    public static void SetChangeNick(String id, String $user_ID, String $mobile_No, String $nick_Name, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $user_ID);
+        map.put("Mobile_No", $mobile_No);
+        map.put("Nick_Name", $nick_Name);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Change_Nick", map, $callBack);
+    }
+
+    //  修改頭像
+    public static void SetChangeAvatar(String id, String $user_ID, String $user_Avatar, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $user_ID);
+        map.put("User_Avatar", $user_Avatar);
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Set_Change_Avatar", map, $callBack);
     }
 
     /*========  共用 Common  ========*/
@@ -362,6 +403,7 @@ public class WebService {
             }
         }).start();
     }
+
     private static String WebServiceFunc(String MethodName, HashMap<String, String> map) {
         String result = null;
         String NameSpace = "http://tempuri.org/";

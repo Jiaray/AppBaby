@@ -10,11 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
+import com.app.Common.SQLite.LocalFun;
+import com.app.Common.SQLite.LocalSQLCode;
+import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -30,11 +35,13 @@ public class AccountForgetPWFragment extends BaseFragment {
     private MainTabActivity mainA;
     private String actName;
 
+    private LinearLayout mLyPhone, mLyCaptcha, mLySendCaptcha, mLyNewPw, mLyCheckNewPw;
+    private TextView mTxtTitle;
     private Button mBtnCommit, mBtnSendCaptcha;
     private EditText mEdtPhone, mEdtCaptcha, mEdtNewPW, mEdtCheckPW;
     private ImageButton mBtnBack;
 
-    private String validateNo,strPw, strCheckPw;
+    private String validateNo, strPw, strCheckPw;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +65,12 @@ public class AccountForgetPWFragment extends BaseFragment {
     }
 
     private void initView() {
+        mLyPhone = (LinearLayout) rootView.findViewById(R.id.lyForgetPWPhone);
+        mLyCaptcha = (LinearLayout) rootView.findViewById(R.id.lyForgetPWCaptcha);
+        mLySendCaptcha = (LinearLayout) rootView.findViewById(R.id.lyForgetPWSendCaptcha);
+        mLyNewPw = (LinearLayout) rootView.findViewById(R.id.lyForgetPWNewPw);
+        mLyCheckNewPw = (LinearLayout) rootView.findViewById(R.id.lyForgetPWCheckNewPw);
+        mTxtTitle = (TextView) rootView.findViewById(R.id.txtForgetPWTitle);
         mEdtPhone = (EditText) rootView.findViewById(R.id.edtForgetPWPhone);
         mEdtCaptcha = (EditText) rootView.findViewById(R.id.edtForgetPWCaptcha);
         mEdtNewPW = (EditText) rootView.findViewById(R.id.edtForgetPWNewPw);
@@ -70,6 +83,18 @@ public class AccountForgetPWFragment extends BaseFragment {
         mBtnBack.setOnClickListener(new ForGetPwonClick());
         mBtnSendCaptcha.setOnClickListener(new ForGetPwonClick());
         mBtnCommit.setOnClickListener(new ForGetPwonClick());
+        if (actName.equals("LoginActivity")) {
+            mTxtTitle.setText("忘记密码");
+            mLyPhone.setVisibility(View.VISIBLE);
+            mLyCaptcha.setVisibility(View.VISIBLE);
+            mLySendCaptcha.setVisibility(View.VISIBLE);
+        } else {
+            mTxtTitle.setText("设置新密码");
+            mEdtPhone.setText(UserMstr.userData.getUserName());
+            mLyPhone.setVisibility(View.GONE);
+            mLyCaptcha.setVisibility(View.GONE);
+            mLySendCaptcha.setVisibility(View.GONE);
+        }
     }
 
     class ForGetPwonClick implements View.OnClickListener {
@@ -77,9 +102,9 @@ public class AccountForgetPWFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgbForgetPWBack:
-                    if(actName.equals("MainTabActivity")){
+                    if (actName.equals("MainTabActivity")) {
                         mainA.RemoveBottomNotAddTab(thisFragment);
-                    }else{
+                    } else {
                         loginA.RemoveBottom(thisFragment);
                     }
                     break;
@@ -92,7 +117,7 @@ public class AccountForgetPWFragment extends BaseFragment {
                     break;
 
                 case R.id.btnForgetPWCommit:
-                    Log.i(TAG,"Commit ForgetPW");
+                    Log.i(TAG, "Commit ForgetPW");
                     strPw = mEdtNewPW.getText().toString();
                     strCheckPw = mEdtCheckPW.getText().toString();
                     if (mEdtCaptcha.getText().equals("")) {
@@ -103,8 +128,12 @@ public class AccountForgetPWFragment extends BaseFragment {
                     } else if (!strPw.equals(strCheckPw)) {
                         DisplayToast("密码不一致!");
                         return;
-                    }else{
-                        checkCaptcha();
+                    } else {
+                        if (actName.equals("LoginActivity")) {
+                            checkCaptcha();
+                        } else {
+                            getCaptcha();
+                        }
                     }
                     break;
             }
@@ -113,20 +142,28 @@ public class AccountForgetPWFragment extends BaseFragment {
 
     //  取得驗證碼
     private void getCaptcha() {
-        showLoadingDiaLog(getActivity(), "验证码短信发送中,请稍后");
+        if (actName.equals("LoginActivity")) {
+            showLoadingDiaLog(getActivity(), "验证码短信发送中,请稍后...");
+        } else {
+            showLoadingDiaLog(getActivity(), "设置新密码中,请稍后...");
+        }
         WebService.GetPasswordValidate(null, mEdtPhone.getText().toString(), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                if (actName.equals("LoginActivity")) cancleDiaLog();
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "发送失败！");
+                    MyAlertDialog.Show(getActivity(), "取得验证码失败！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
                 validateNo = json.optJSONObject(0).optString("VALID_NO");
-                SendCaptcha();
+                if (actName.equals("LoginActivity")) {
+                    SendCaptcha();
+                } else {
+                    checkCaptcha();
+                }
             }
         });
     }
@@ -155,8 +192,7 @@ public class AccountForgetPWFragment extends BaseFragment {
 
     //  確認驗證碼
     private void checkCaptcha() {
-        if (validateNo.equals(mEdtCaptcha.getText().toString())) {
-
+        if (validateNo.equals(mEdtCaptcha.getText().toString()) || !actName.equals("LoginActivity")) {
             WebService.SetPasswordReset(null, mEdtPhone.getText().toString(), validateNo, strPw, new WebService.WebCallback() {
 
                 @Override
@@ -165,11 +201,17 @@ public class AccountForgetPWFragment extends BaseFragment {
                     if (obj == null || !obj.equals("1")) {
                         MyAlertDialog.Show(getActivity(), "密码重置错误！");
                         return;
-                    }else{
+                    } else {
                         MyAlertDialog.Show(getActivity(), "密码重置完成！");
-                        if(actName.equals("MainTabActivity")){
+                        LocalFun.getInstance().RunSqlNoQuery(
+                                LocalSQLCode.SQLite_UpdateTableData(
+                                        "ASC_MSTR",
+                                        "USER_PSWD", UserMstr.userData.getUserPW(),
+                                        "USER_PSWD", strPw));
+
+                        if (actName.equals("MainTabActivity")) {
                             mainA.RemoveBottomNotAddTab(thisFragment);
-                        }else{
+                        } else {
                             loginA.RemoveBottom(thisFragment);
                         }
                     }

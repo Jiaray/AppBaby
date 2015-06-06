@@ -5,10 +5,10 @@
     android:id="@+id/momentsLayout">
 
     <RelativeLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/rlySetAccTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg2" >
+        android:background="@drawable/common_bg2" >
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -22,12 +22,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="班级圈"
             android:textColor="#FFFFFF"
             android:singleLine="false"
-            android:textSize="30dp"
-            android:layout_weight="0.77"
+            android:textSize="30sp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
@@ -45,6 +43,6 @@
         android:id="@+id/pdvMomentsContent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/rlySetAccTitle"
         android:layout_alignParentLeft="true" />
 </RelativeLayout><!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/moments_fragment.xml -->

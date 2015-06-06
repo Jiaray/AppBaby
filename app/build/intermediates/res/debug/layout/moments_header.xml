@@ -24,13 +24,12 @@
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginLeft="300dp"
         android:layout_marginTop="50dp"
-        android:scaleType="centerInside"
-        android:background="@drawable/moments_userhead_bg_cricle" />
+        android:background="@drawable/moments_userhead_bg_cricle" />-->
     <ImageView
         android:id="@+id/imgMomentsHeaderUserHead"
         android:layout_width="90dp"
@@ -38,6 +37,6 @@
         android:layout_marginLeft="300dp"
         android:layout_marginTop="50dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/user_default_avatar" />
 </RelativeLayout>
 <!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/moments_header.xml -->

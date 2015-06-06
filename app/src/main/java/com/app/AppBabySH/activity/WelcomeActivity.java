@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import lazylist.FileCache;
+import com.app.Common.FileCache;
+import com.app.Common.SQLite.LocalFun;
 
 public class WelcomeActivity extends Activity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     final private String TAG = "WelcomeA";

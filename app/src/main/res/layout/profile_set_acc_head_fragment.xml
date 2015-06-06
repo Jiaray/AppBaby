@@ -39,20 +39,21 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView3"
-            android:src="@drawable/user_default_avatar"/>
+            android:id="@+id/imgSetAccHeadPic"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/user_default_avatar" />
+
         <Button
-            android:layout_marginLeft="40dp"
+            android:id="@+id/btnSetAccHeadChoose"
             android:layout_width="160dp"
             android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="40dp"
             android:background="@drawable/accommon_btnbg_corners_blue"
-            android:textColor="#FFFFFF"
-            android:textSize="26sp"
             android:text="选择新头像"
-            android:id="@+id/btnSetAccHeadChoose"
-            android:layout_gravity="center" />
+            android:textColor="#FFFFFF"
+            android:textSize="26sp" />
 
 
     </LinearLayout>

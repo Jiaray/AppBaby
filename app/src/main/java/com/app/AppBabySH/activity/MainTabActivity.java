@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
@@ -264,6 +265,18 @@ public class MainTabActivity extends FragmentActivity {
     public void RemoveTab() {
         if (mTabHostParent != null) {
             mTabHostParent.removeView(mTabHost);
+        }
+    }
+
+    /**
+     * 软键盘的状态設定
+     * @param $type
+     */
+    public void setSoftInputMode(String $type){
+        if($type.equals("adjustPan")){
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        }else if($type.equals("adjustResize")){
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.ImageLoader;
 import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
@@ -24,12 +25,14 @@ public class ProfileFragment extends BaseFragment {
     private LayoutInflater _inflater;
 
     private LinearLayout mLyRegOther, mLySet, mLyFavChannel;
+    private ImageView mImgPic;
     private TableLayout mTblPersonalInfo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //共用宣告
         main = (MainTabActivity) getActivity();
+        main.setSoftInputMode("adjustPan");
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.profile_fragment, container, false);
         initView();
@@ -43,10 +46,13 @@ public class ProfileFragment extends BaseFragment {
         mLyRegOther = (LinearLayout) rootView.findViewById(R.id.lyProfileRegOther);
         mLySet = (LinearLayout) rootView.findViewById(R.id.lyProfileSet);
         mLyFavChannel = (LinearLayout) rootView.findViewById(R.id.lyProfileFavChannel);
+        mImgPic = (ImageView) rootView.findViewById(R.id.imgProfilePic);
 
         mLyRegOther.setOnClickListener(new onClick());
         mLySet.setOnClickListener(new onClick());
         mLyFavChannel.setOnClickListener(new onClick());
+        ImageLoader.getInstance().DisplayRoundedCornerImage(
+                UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"),mImgPic);
     }
     //  取得數據
     private void getData() {

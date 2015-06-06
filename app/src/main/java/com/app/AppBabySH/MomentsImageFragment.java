@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 /**
  * Created by ray on 2015/5/20.

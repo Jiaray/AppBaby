@@ -17,7 +17,7 @@ import com.app.Common.SQLite.LocalFun;
 import com.app.Common.SQLite.LocalSQLCode;
 import com.app.Common.UserMstr;
 
-import lazylist.FileCache;
+import com.app.Common.FileCache;
 
 public class SetMenuFragment extends BaseFragment {
     final private String TAG = "setF";
@@ -90,6 +90,9 @@ public class SetMenuFragment extends BaseFragment {
                     }
                     break;
                 case R.id.lySetMenuFeedback:
+                    AccountRegistFeedbackFragment feedbackF = new AccountRegistFeedbackFragment();
+                    feedbackF.TYPE = "other";
+                    main.OpenBottom(feedbackF);
                     break;
                 case R.id.lySetMenuAbout:
                     SetAccountAboutFragment setAboutF = new SetAccountAboutFragment();

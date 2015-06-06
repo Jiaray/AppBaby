@@ -1,26 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="#ffefefef">
 
-
-    <Button
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="登出"
-        android:id="@+id/btnProfileLogout"
+        android:background="@drawable/common_bg2">
+
+        <TextView
+            android:id="@+id/txtNewsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:singleLine="false"
+            android:text="我"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:layout_alignParentRight="true" />
+        android:layout_below="@+id/relativeLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/relativeLayout"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF">
+
+                <ImageView
+                    android:id="@+id/imgProfilePic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/user_default_avatar" />
+
+                <TableLayout
+                    android:id="@+id/tblProfilePersonalInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/imgProfilePic"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/user_default_avatar" />
+                </TableLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/lyProfileRegOther"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="20dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_bindingicon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:text="绑定您宝贝的其他学校"
+                    android:textColor="@drawable/common_textcolor_black"
+                    android:textSize="26sp" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_entericon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyProfileSet"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="20dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_settingicon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:text="设置"
+                    android:textColor="@drawable/common_textcolor_black"
+                    android:textSize="26sp" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_entericon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyProfileFavChannel"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="20dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_favoriteicon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:text="频道文章收藏"
+                    android:textColor="@drawable/common_textcolor_black"
+                    android:textSize="26sp" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_entericon" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 
     <Button
+        android:id="@+id/btnSetAccHeadCommit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="清除緩存"
+        android:layout_below="@+id/scrollView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="78dp"
+        android:text="登出" />
+
+    <Button
         android:id="@+id/btnProfileClearCache"
-        android:layout_below="@+id/btnProfileLogout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSetAccHeadCommit"
+        android:layout_centerHorizontal="true"
+        android:text="清除緩存" />
+
+
 </RelativeLayout><!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/profile_fragment.xml -->

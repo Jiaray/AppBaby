@@ -1,14 +1,12 @@
 package com.app.AppBabySH.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.app.AppBabySH.GlobalVar;
 import com.app.AppBabySH.R;
@@ -16,7 +14,7 @@ import com.app.AppBabySH.item.MomentsImageItem;
 
 import java.util.ArrayList;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 /**
  * Created by ray on 2015/5/13.

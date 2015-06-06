@@ -43,7 +43,7 @@
                 android:background="#FFFFFF">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/imgProfilePic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="10dp"
@@ -53,7 +53,7 @@
                     android:id="@+id/tblProfilePersonalInfo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@+id/imageView2"
+                    android:layout_toRightOf="@+id/imgProfilePic"
                     android:background="#FFFFFF"
                     android:orientation="vertical">
 

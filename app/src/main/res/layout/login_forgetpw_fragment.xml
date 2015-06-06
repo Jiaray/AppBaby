@@ -5,7 +5,7 @@
     android:background="@drawable/common_register_bg_orange">
 
     <RelativeLayout
-        android:id="@+id/milinearLayout2"
+        android:id="@+id/rlyRegFeedBackTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/common_bg2">
@@ -20,21 +20,20 @@
             android:src="@drawable/head_back" />
 
         <TextView
+            android:id="@+id/txtForgetPWTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_weight="0.77"
             android:singleLine="false"
             android:text="忘记密码"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF"
-            android:textSize="30dp" />
+            android:textSize="30sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/rlyRegFeedBackFooter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -58,9 +57,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout3"
+        android:layout_above="@+id/rlyRegFeedBackFooter"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/milinearLayout2"
+        android:layout_below="@+id/rlyRegFeedBackTitle"
         android:layout_margin="10dp"
         android:background="@drawable/common_bg_corners_white"
         android:orientation="vertical">
@@ -73,10 +72,10 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/lyForgetPWPhone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
 
@@ -94,10 +93,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lyForgetPWSendCaptcha"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <Button
@@ -116,10 +115,10 @@
 
 
             <LinearLayout
+                android:id="@+id/lyForgetPWCaptcha"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <EditText
@@ -136,10 +135,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lyForgetPWNewPw"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <EditText
@@ -156,10 +155,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lyForgetPWCheckNewPw"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <EditText

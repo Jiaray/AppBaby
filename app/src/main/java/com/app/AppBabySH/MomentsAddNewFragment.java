@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,8 +37,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lazylist.FileCache;
-import lazylist.ImageLoader;
+import com.app.Common.FileCache;
+import com.app.Common.ImageLoader;
 
 import static com.app.Common.ComFun.Md5;
 
@@ -61,7 +62,6 @@ public class MomentsAddNewFragment extends BaseFragment {
     //
     private ArrayList<MomentsImageItem> momentsIMGlist;
     private MomentsImageAdapter adapter;
-    private ProgressDialog pd;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 200;
     //上傳用
@@ -182,10 +182,11 @@ public class MomentsAddNewFragment extends BaseFragment {
         SelectMultiImgFragment selectImg = new SelectMultiImgFragment();
         selectImg.Max_Num = 9 - aryPicPath.size();
         selectImg.onCallBack = new SelectMultiImgFragment.CallBack() {
+            private List _list;
             @Override
             public void onEnter(List imgList) {
-                pd = MyAlertDialog.ShowProgress(getActivity(), "图片处理中");
-                pd.show();
+                _list = imgList;
+                showLoadingDiaLog(getActivity(), "图片处理中");
                 i = -1;
                 while (++i < imgList.size()) {
                     File f = new File(imgList.get(i).toString());
@@ -193,7 +194,7 @@ public class MomentsAddNewFragment extends BaseFragment {
                     ImageLoader.getInstance().AChangeSmallSizeToB(f.getAbsolutePath(), mCurrentPhotoPath);
                     aryPicPath.add(mCurrentPhotoPath);
                 }
-                pd.cancel();
+                cancleDiaLog();
                 createPreview();
             }
 
@@ -276,8 +277,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     //  開始上傳照片
     private void uploadPic(int $pos) {
         posPic = ($pos + 1);
-        pd = MyAlertDialog.ShowProgress(getActivity(), "图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
-        pd.show();
+        showLoadingDiaLog(getActivity(), "图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
         data = new File(aryPicPath.get($pos));
         String key = aryPicPath.get($pos).substring(aryPicPath.get($pos).lastIndexOf("/") + 1, aryPicPath.get($pos).length());
         String token = strUpToken;
@@ -289,7 +289,7 @@ public class MomentsAddNewFragment extends BaseFragment {
                         JSONObject jsonObj = new JSONObject();
                         try {
                             jsonObj.put("MEDIA_TYPE", "P");
-                            jsonObj.put("URL", "http://img.appbaby.net/" + key);
+                            jsonObj.put("URL", getResources().getString(R.string.BaseWebUrl) + key);
                             jsonObj.put("SEQ", "" + posPic);
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -319,7 +319,7 @@ public class MomentsAddNewFragment extends BaseFragment {
                             MyAlertDialog.Show(getActivity(), "SetCircleNew Error!");
                             return;
                         }
-                        pd.cancel();
+                        cancleDiaLog();
                         main.RemoveBottom(thisFragment);
                     }
                 });

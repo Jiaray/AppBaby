@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/common_register_bg_orange">
+
+    <RelativeLayout
+        android:id="@+id/rlyRegHowToGetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/common_bg2">
+
+        <ImageButton
+            android:id="@+id/imgbRegHowToGetBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:src="@drawable/head_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:singleLine="false"
+            android:text="怎样获得学校激活码"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlyRegHowToGetFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_gravity="bottom"
+        android:background="@drawable/common_bg2">
+
+        <Button
+            android:id="@+id/btnRegHowToGetFeedBack"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/common_btnbg_corners_gray"
+            android:text="我有激活码，但无法注册"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rlyRegHowToGetFooter"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rlyRegHowToGetTitle"
+        android:layout_margin="10dp"
+        android:background="@drawable/common_bg_corners_white"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="当前宝贝通激活码采用与学校绑定方式，由所在学校进行发放。各位家长请联系所在老师进行激活码的发放。"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+</RelativeLayout>

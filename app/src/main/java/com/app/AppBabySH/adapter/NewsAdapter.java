@@ -13,7 +13,7 @@ import com.app.AppBabySH.item.NewsItem;
 
 import java.util.ArrayList;
 
-import lazylist.ImageLoader;
+import com.app.Common.ImageLoader;
 
 /**
  * 頻道 - 主畫面 ListView 的 Adapter

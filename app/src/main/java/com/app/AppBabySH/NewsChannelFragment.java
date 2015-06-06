@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
@@ -71,6 +72,7 @@ public class NewsChannelFragment extends BaseFragment {
     public String CHANNEL_ID, CHANNEL_TITLE, THUMB_URL, MEDIA_TYPE, MEDIA_CONTENT, GOOD_CNT, FAVORITE_CNT;
 
     /*本頁面Layout*/
+    private RelativeLayout mRlyInteractiveArea;
     private ImageButton mImgBBack, mImgBShare;
     private ImageView mImgGood, mImgFav;
     private LinearLayout mLyGood,mLyFav;
@@ -111,6 +113,7 @@ public class NewsChannelFragment extends BaseFragment {
      * 產生主畫面
      */
     private void creatRootView() {
+        mRlyInteractiveArea = (RelativeLayout) rootView.findViewById(R.id.rlyRegFeedBackFooter);
         mLyGood = (LinearLayout) rootView.findViewById(R.id.lyNewsGood);
         mLyFav = (LinearLayout) rootView.findViewById(R.id.lyNewsFav);
         mImgBBack = (ImageButton) rootView.findViewById(R.id.imgbSetAccBack);
@@ -120,8 +123,13 @@ public class NewsChannelFragment extends BaseFragment {
         mWvContent = (WebView) rootView.findViewById(R.id.wvNewsContent);
         mTxtGoodNum = (TextView) rootView.findViewById(R.id.txtNewsGoodNum);
         mTxtFavNum = (TextView) rootView.findViewById(R.id.txtNewsFavNum);
-        mTxtGoodNum.setText(GOOD_CNT);
-        mTxtFavNum.setText(FAVORITE_CNT);
+        if(GOOD_CNT.equals("null") || FAVORITE_CNT.equals("null")){
+            mRlyInteractiveArea.setVisibility(View.GONE);
+        }else{
+            mRlyInteractiveArea.setVisibility(View.VISIBLE);
+            mTxtGoodNum.setText(GOOD_CNT);
+            mTxtFavNum.setText(FAVORITE_CNT);
+        }
         Log.v(TAG, "開起網頁 Url = " + MEDIA_CONTENT);
         mWvContent.getSettings().setJavaScriptEnabled(true);
         mWvContent.requestFocus();
@@ -140,7 +148,11 @@ public class NewsChannelFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.imgbSetAccBack:
-                    main.RemoveBottom(thisFragment);
+                    if(mRlyInteractiveArea.getVisibility() == View.VISIBLE){
+                        main.RemoveBottom(thisFragment);
+                    }else{
+                        main.RemoveBottomNotAddTab(thisFragment);
+                    }
                 break;
                 case R.id.btnNewsShare:
                     addCustomPlatforms();

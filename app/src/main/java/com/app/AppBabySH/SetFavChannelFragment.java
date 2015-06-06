@@ -1,6 +1,7 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
+import com.app.AppBabySH.adapter.NewsAdapter;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.SetFavChannelAdapter;
@@ -60,6 +62,13 @@ public class SetFavChannelFragment extends BaseFragment {
         mImgbBack = (ImageButton) rootView.findViewById(R.id.imgbSetFavChannelBack);
         mLvContent = (ListView) rootView.findViewById(R.id.lvSetFavChannelContent);
         adapter = new SetFavChannelAdapter(getActivity(), favlist);
+        adapter.onCallBack = new SetFavChannelAdapter.CallBack() {
+
+            @Override
+            public void onClick(NewsItem _item) {
+                clickTheme(_item);
+            }
+        };
         mLvContent.setAdapter(adapter);
         mImgbBack.setOnClickListener(new onClick());
     }
@@ -86,10 +95,10 @@ public class SetFavChannelFragment extends BaseFragment {
                     item.CHANNEL_ID = json.optJSONObject(i).optString("CHANNEL_ID");
                     item.CHANNEL_TITLE = json.optJSONObject(i).optString("CHANNEL_TITLE");
                     item.THUMB_URL = json.optJSONObject(i).optString("THUMB_URL");
-                    item.MEDIA_TYPE = json.optJSONObject(i).optString("MEDIA_TYPE");
+                    item.MEDIA_TYPE = json.optJSONObject(i) .optString("MEDIA_TYPE");
                     item.MEDIA_CONTENT = json.optJSONObject(i).optString("MEDIA_CONTENT");
-                    item.GOOD_CNT = "0";
-                    item.FAVORITE_CNT = "0";
+                    item.GOOD_CNT = "null";
+                    item.FAVORITE_CNT = "null";
                     favlist.add(item);
                 }
                 mLvContent.setAdapter(adapter);
@@ -107,5 +116,28 @@ public class SetFavChannelFragment extends BaseFragment {
                     break;
             }
         }
+    }
+
+    /**
+     * 開啟主題
+     *
+     * @param _item
+     */
+    private void clickTheme(final NewsItem _item) {
+        NewsChannelFragment newsItemFragment = new NewsChannelFragment();
+        newsItemFragment.onCallBack = new NewsChannelFragment.itmeCallBack() {
+            @Override
+            public void onBack() {
+            }
+        };
+        newsItemFragment.CHANNEL_ID = _item.CHANNEL_ID;
+        newsItemFragment.CHANNEL_TITLE = _item.CHANNEL_TITLE;
+        newsItemFragment.THUMB_URL = _item.THUMB_URL;
+        newsItemFragment.MEDIA_TYPE = _item.MEDIA_TYPE;
+        newsItemFragment.MEDIA_CONTENT = _item.MEDIA_CONTENT;
+        newsItemFragment.GOOD_CNT = _item.GOOD_CNT;
+        newsItemFragment.FAVORITE_CNT = _item.FAVORITE_CNT;
+        main.OpenBottom(newsItemFragment);
+        Log.i(TAG, "點擊頻道 :" + _item.CHANNEL_ID.toString());
     }
 }

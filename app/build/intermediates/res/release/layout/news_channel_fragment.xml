@@ -1,116 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <RelativeLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/rlySetAccTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg2" >
+        android:background="@drawable/common_bg2">
 
         <ImageButton
+            android:id="@+id/imgbSetAccBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/newsitem_backBtn"
-            android:src="@drawable/head_back"
-            android:background="#00000000"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true" />
+            android:background="#00000000"
+            android:src="@drawable/head_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:singleLine="false"
             android:text="频道"
             android:textColor="#FFFFFF"
-            android:singleLine="false"
-            android:textSize="30dp"
-            android:layout_weight="0.77"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:textSize="30sp" />
 
         <ImageButton
+            android:id="@+id/btnNewsShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/newsitem_shareBtn"
-            android:src="@drawable/head_filter"
-            android:background="#00000000"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" />
+            android:background="#00000000"
+            android:src="@drawable/head_filter" />
     </RelativeLayout>
 
 
-
     <WebView
+        android:id="@+id/wvNewsContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#000000"
-        android:id="@+id/newsitem_themeWebView"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_above="@+id/rlyRegFeedBackFooter"
+        android:layout_alignParentBottom="false"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/linearLayout3"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="false"
-        android:layout_alignWithParentIfMissing="false" />
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_below="@+id/rlySetAccTitle" />
 
 
     <RelativeLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/rlyRegFeedBackFooter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bg2" >
-        <TableRow
+        android:layout_gravity="bottom"
+        android:background="@drawable/common_bg2"
+        android:gravity="center_vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:weightSum="1">
+            android:orientation="horizontal">
 
-
-            <ImageButton
-                android:scaleType="centerInside"
-                android:layout_width="40dp"
+            <LinearLayout
+                android:id="@+id/lyNewsGood"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:cropToPadding="false"
-                android:background="@android:color/transparent"
-                android:id="@+id/newsitem_goodBtn"
-                android:src="@mipmap/news_good" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/news_content_bgc"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:text="999"
-                android:id="@+id/newsitem_goodTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginTop="6dip"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF">
-            </TextView>
+                <ImageView
+                    android:id="@+id/imgNewsGood"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/news_goodbig" />
 
-            <ImageButton
-                android:scaleType="centerInside"
-                android:layout_width="40dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="赞"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/txtNewsGoodNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lyNewsFav"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:cropToPadding="false"
-                android:background="@android:color/transparent"
-                android:id="@+id/newsitem_favBtn"
-                android:src="@mipmap/news_favoriteicon"
-                />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/news_content_bgc"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView android:text="999"
-                android:id="@+id/newsitem_favTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginTop="6dip"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF">
-            </TextView>
-        </TableRow>
+                <ImageView
+                    android:id="@+id/btnNewsFav"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/news_content_favbig" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="收藏"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/txtNewsFavNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 

@@ -12,8 +12,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import lazylist.FileCache;
-
 public class AsyncImageLoader {
 
 	public Map<String, SoftReference<Drawable>> imageCache;
