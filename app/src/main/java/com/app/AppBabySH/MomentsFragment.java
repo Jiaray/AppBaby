@@ -201,25 +201,27 @@ public class MomentsFragment extends BaseFragment {
 
     //  過濾選單
     public AlertDialog createFilterDialog() {
-        final String[] items = new String[UserMstr.userData.ClassAryList.size() + 2];
-        items[0] = "全部班级";
+        final String[] items = new String[UserMstr.userData.ClassAryList.size() + 1];
         int i = -1;
         while (++i < UserMstr.userData.ClassAryList.size()) {
             ClassItem tmpClassitem = UserMstr.userData.ClassAryList.get(i);
             if (tmpClassitem.SCHOOL_NAME.equals("")) {
-                items[i + 1] = tmpClassitem.CLASS_NAME;
+                items[i] = tmpClassitem.CLASS_NAME;
             } else {
-                items[i + 1] = tmpClassitem.STUDENT_NAME + "(" + tmpClassitem.SCHOOL_NAME + "-" + tmpClassitem.CLASS_NAME + ")";
+                items[i] = tmpClassitem.STUDENT_NAME + "(" + tmpClassitem.SCHOOL_NAME + "-" + tmpClassitem.CLASS_NAME + ")";
             }
         }
-        items[UserMstr.userData.ClassAryList.size() + 1] = "取消";
+        items[UserMstr.userData.ClassAryList.size()] = "取消";
         alertD = new AlertDialog.Builder(getActivity());
         alertD.setTitle("选择班级");
         //設定對話框內的項目
         alertD.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                if (which != (UserMstr.userData.ClassAryList.size())) {
+                    CurrClassID = UserMstr.userData.ClassAryList.get(which).CLASS_ID;
+                    initListView();
+                }
             }
         });
         return alertD.create();
@@ -287,8 +289,12 @@ public class MomentsFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 pd.cancel();
+                Log.i(TAG, "obj : " + obj);
                 if (obj == null) {
                     MyAlertDialog.Show(getActivity(), "Error!");
+                    return;
+                }else if(obj.equals("Success! No Data Return!")){
+                    MyAlertDialog.Show(getActivity(), "此班级查无资料!");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;

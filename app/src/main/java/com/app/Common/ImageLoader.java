@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -36,7 +37,6 @@ import java.util.concurrent.Executors;
 public class ImageLoader {
     final private String TAG = "IMGLoader";
     final int stub_id = R.drawable.doroto_loadimag;
-    final int HeadPreset_id = R.drawable.user_default_avatar;
     final int THUMBIMG_SIZE = 200;
     final int VIEWIMG_SIZE = 400;
     MemoryCache memoryCache = new MemoryCache();
@@ -59,52 +59,50 @@ public class ImageLoader {
     }
 
     //  圖像載入
-    public Bitmap DisplayImage(String url, ImageView imageView) {
-        if(url.equals("")){
-            Log.i(TAG,"DisplayImage url is empty!");
-            return null;
+    public void DisplayImage(String url, ImageView imageView) {
+        if (url.equals("")) {
+            Log.i(TAG, "DisplayImage url is empty!");
+            return;
         }
         String geturltitle = url.substring(0, 4);
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
-        //Log.i(TAG, "DisplayImage url:" + url + " geturltitle:" + geturltitle + " bitmap:" + bitmap);
+
         if (geturltitle.equals("http") || geturltitle.equals("Http")) {
-            if (bitmap != null)
-                imageView.setImageBitmap(bitmap);
-            else {
+            if (bitmap != null) {
+                redressPicRotate(FileCache.getInstance().getFile(url).getAbsolutePath(), imageView, bitmap);
+                //imageView.setImageBitmap(bitmap);
+            } else {
                 PhotoToLoad p = new PhotoToLoad(url, imageView);
                 executorService.submit(new PhotosLoader(p));
                 imageView.setImageResource(stub_id);
             }
         } else {
             if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
+                redressPicRotate(FileCache.getInstance().getFile(url).getAbsolutePath(), imageView, bitmap);
+                //imageView.setImageBitmap(bitmap);
             } else {
                 PhotoToLoad p = new PhotoToLoad(url, imageView);
                 executorService.submit(new PhotosLoader(p));
             }
         }
-
-        return bitmap;
     }
 
     //  圖像載入後顯示圓角
     public void DisplayRoundedCornerImage(String url, ImageView imageView) {
-        if(url.equals("")){
+        if (url.equals("")) {
             Log.i(TAG, "DisplayRoundedCornerImage url is empty!");
             return;
         }
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
-        //Log.i(TAG, "DisplayRoundedCornerImage url:" + url + " bitmap:" + bitmap);
-        //imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         if (bitmap != null) {
-            imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
+            redressPicRotate(FileCache.getInstance().getFile(url).getAbsolutePath(), imageView, toRoundBitmap(bitmap));
+            //imageView.setImageBitmap(toRoundBitmap(bitmap));
         } else {
             PhotoToLoad p = new PhotoToLoad(url, imageView);
             p.roundedCorner = true;
             executorService.submit(new PhotosLoader(p));
-            imageView.setImageResource(HeadPreset_id);
         }
     }
 
@@ -135,11 +133,9 @@ public class ImageLoader {
             try {
                 if (imageViewReused(photoToLoad)) return;
                 Bitmap bmp = getBitmap(photoToLoad.url);
-                //Log.i(TAG, "PhotosLoader run bmp:" + bmp);
                 memoryCache.put(photoToLoad.url, bmp);
                 if (imageViewReused(photoToLoad)) return;
                 BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
-                //Log.i(TAG, "PhotosLoader run bd:" + bd);
                 handler.post(bd);
             } catch (Throwable th) {
                 th.printStackTrace();
@@ -166,14 +162,14 @@ public class ImageLoader {
         public void run() {
             if (imageViewReused(photoToLoad)) return;
             if (bitmap != null) {
-                //Log.i(TAG, "BitmapDisplayer run bitmap != null");
                 if (photoToLoad.roundedCorner) {
-                    photoToLoad.imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, 300));
+                    redressPicRotate(FileCache.getInstance().getFile(photoToLoad.url).getAbsolutePath(), photoToLoad.imageView, toRoundBitmap(bitmap));
+                    //photoToLoad.imageView.setImageBitmap(toRoundBitmap(bitmap));
                 } else {
-                    photoToLoad.imageView.setImageBitmap(bitmap);
+                    redressPicRotate(FileCache.getInstance().getFile(photoToLoad.url).getAbsolutePath(), photoToLoad.imageView, bitmap);
+                    //photoToLoad.imageView.setImageBitmap(bitmap);
                 }
             } else {
-                //Log.i(TAG, "BitmapDisplayer run bitmap = null");
                 photoToLoad.imageView.setImageResource(stub_id);
             }
         }
@@ -254,7 +250,7 @@ public class ImageLoader {
 
     //  載入網路圖片並存入緩存資料夾中
     public void DisplayWebUrlImage(String $url, ImageView $imageView) {
-        if($url.equals("")){
+        if ($url.equals("")) {
             Log.i(TAG, "DisplayWebUrlImage url is empty!");
             return;
         }
@@ -262,14 +258,16 @@ public class ImageLoader {
         Bitmap bmpFromSD;
         if (null != fileFromSD) {
             bmpFromSD = compressionImgFile(fileFromSD, VIEWIMG_SIZE);
-            $imageView.setImageBitmap(bmpFromSD);
+            //$imageView.setImageBitmap(bmpFromSD);
+            redressPicRotate(fileFromSD.getAbsolutePath(),$imageView,bmpFromSD);
         } else {
             asyncImageLoader = new AsyncImageLoader();
             Drawable cachedImage = asyncImageLoader.loaDrawable($url, new AsyncImageCallBack($url, $imageView));
             if (cachedImage != null) {
                 fileFromSD = FileCache.getInstance().getImgFile($url);
                 bmpFromSD = compressionImgFile(fileFromSD, VIEWIMG_SIZE);
-                $imageView.setImageBitmap(bmpFromSD);
+                redressPicRotate(fileFromSD.getAbsolutePath(),$imageView,bmpFromSD);
+                //$imageView.setImageBitmap(bmpFromSD);
             }
         }
     }
@@ -301,27 +299,66 @@ public class ImageLoader {
         memoryCache.clear();
     }
 
+
+    private static final int STROKE_WIDTH = 4;
+
     //  圓角轉換函式，帶入Bitmap圖片及圓角數值則回傳圓角圖，回傳Bitmap再置入ImageView
-    private Bitmap getRoundedCornerBitmap(Bitmap bmp, int radius) {
-        Bitmap sbmp;
-        if (bmp.getWidth() != radius || bmp.getHeight() != radius) {
-            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
+    public static Bitmap toRoundBitmap(Bitmap bmp) {
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        float roundPx;
+        float left, top, right, bottom, dst_left, dst_top, dst_right, dst_bottom;
+        if (width <= height) {
+            roundPx = width / 2;
+            top = 0;
+            left = 0;
+            bottom = width;
+            right = width;
+            height = width;
+            dst_left = 0;
+            dst_top = 0;
+            dst_right = width;
+            dst_bottom = width;
         } else {
-            sbmp = bmp;
+            roundPx = height / 2;
+            float clip = (width - height) / 2;
+            left = clip;
+            right = width - clip;
+            top = 0;
+            bottom = height;
+            width = height;
+            dst_left = 0;
+            dst_top = 0;
+            dst_right = height;
+            dst_bottom = height;
         }
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(), sbmp.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Bitmap output = Bitmap.createBitmap(width,
+                height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        final int color = 0xffa19774;
+
+        final int color = 0xff424242;
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
+        final Rect src = new Rect((int) left, (int) top, (int) right, (int) bottom);
+        final Rect dst = new Rect((int) dst_left, (int) dst_top, (int) dst_right, (int) dst_bottom);
+        final RectF rectF = new RectF(dst);
+
         paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
+
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f, sbmp.getHeight() / 2 + 0.7f, sbmp.getWidth() / 2 + 0.1f, paint);
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(4);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(sbmp, rect, rect, paint);
+        canvas.drawBitmap(bmp, src, dst, paint);
+
+        //画白色圆圈
+        paint.reset();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(STROKE_WIDTH);
+        paint.setAntiAlias(true);
+        canvas.drawCircle(width / 2, width / 2, width / 2 - STROKE_WIDTH / 2, paint);
         return output;
     }
 
@@ -336,7 +373,7 @@ public class ImageLoader {
         }
     }
 
-    //  根據路徑獲得突破並壓縮返回 bitmap 用於顯示
+    //  根據路徑獲得圖檔，將其壓縮後返回 bitmap
     private Bitmap getSmallBitmap(String filePath) {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -376,7 +413,7 @@ public class ImageLoader {
     }
 
     // 旋轉圖片
-    public static void checkRotateBeforeSetImage(String $url, ImageView $imgV, Bitmap $bmp) {
+    public void redressPicRotate(String $url, ImageView $imgV, Bitmap $bmp) {
         int degree = readPictureDegree($url);
         if (degree <= 0) {
             $imgV.setImageBitmap($bmp);
@@ -390,11 +427,10 @@ public class ImageLoader {
 
     /**
      * 读取照片exif信息中的旋转角度
-     *
      * @param path 照片路径
      * @return角度
      */
-    public static int readPictureDegree(String path) {
+    public int readPictureDegree(String path) {
         int degree = 0;
         try {
             ExifInterface exifInterface = new ExifInterface(path);

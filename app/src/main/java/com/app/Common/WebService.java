@@ -101,17 +101,17 @@ public class WebService {
                                    String $student, String $activity_No, String $content, String $user_ID,
                                    WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
-        map.put("Source:", $source);
-        map.put("Name:", $name);
-        map.put("Mobile_No:", $mobile_No);
-        map.put("School:", $school);
-        map.put("Class:", $class);
-        map.put("Email:", $email);
-        map.put("Student:", $student);
-        map.put("Activity_No:", $activity_No);
-        map.put("Content:", $content);
-        map.put("User_ID:", $user_ID);
-        map.put("CheckKey:", "");
+        map.put("Source", $source);
+        map.put("Name", $name);
+        map.put("Mobile_No", $mobile_No);
+        map.put("School", $school);
+        map.put("Class", $class);
+        map.put("Email", $email);
+        map.put("Student", $student);
+        map.put("Activity_No", $activity_No);
+        map.put("Content", $content);
+        map.put("User_ID", $user_ID);
+        map.put("CheckKey", "");
         GetJson(id, "Baby_Set_Feedback", map, $callBack);
     }
 
@@ -122,6 +122,7 @@ public class WebService {
         map.put("User_ID", $userID);
         map.put("Class_ID", $classID);
         map.put("CheckKey", "");
+        Log.i(TAG, "GetCircleListClass map : " + map);
         GetJson(id, "Baby_Get_Circle_List_Class", map, $callBack);
     }
 
@@ -348,7 +349,7 @@ public class WebService {
 
                     String error = JsonObj.optJSONObject("errors").optString(
                             "error");
-                    if (error.equals("10200")) {
+                    if (error.equals("10200")) {//  访问数据库成功
 
                         JSONObject values = JsonObj.optJSONObject("values");
                         JSONArray valuesAry = JsonObj.optJSONArray("values");
@@ -369,6 +370,8 @@ public class WebService {
                             jsonValue = valuesAry;
                         }
                         //System.out.println(">>>>>>>>>>>>>>>JsonObj:" + jsonValue);
+                    }else if (error.equals("10300")) {//    访问数据库成功-无数据返回
+                        jsonValue = "Success! No Data Return!";
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

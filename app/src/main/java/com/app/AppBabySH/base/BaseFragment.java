@@ -192,7 +192,7 @@ public class BaseFragment extends Fragment {
 
 	public interface DialogCallBack{
 		public void onEnter();
-		public void onCancle();
+		public void onCancel();
 	}
 	/**
 	 * 打開對話框
@@ -212,7 +212,7 @@ public class BaseFragment extends Fragment {
 		builder.setPositiveButton(noMsg, new DialogInterface.OnClickListener() {
 		       public void onClick(DialogInterface dialog, int id) {
 		    	   dialog.cancel();
-		    	   onCallbck.onCancle();
+		    	   onCallbck.onCancel();
 		       }
 		   });
 		builder.setNegativeButton(yesMsg, new DialogInterface.OnClickListener() {

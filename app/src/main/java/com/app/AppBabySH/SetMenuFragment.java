@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.ImageLoader;
 import com.app.Common.SQLite.LocalFun;
 import com.app.Common.SQLite.LocalSQLCode;
 import com.app.Common.UserMstr;
@@ -72,19 +73,31 @@ public class SetMenuFragment extends BaseFragment {
                     main.RemoveBottom(thisFragment);
                     break;
                 case R.id.btnSetAccHeadCommit:
-                    LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
-                    //getActivity().setContentView(R.layout.login_activity);
-                    //Switch to config page
-                    UserMstr.userData = null;
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), LoginActivity.class);
-                    startActivity(intent);
+                    showDialog("确认", "确定要退出登录此帐号？", "确定", "取消", getActivity(), new DialogCallBack() {
+                        @Override
+                        public void onEnter() {
+                            LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
+                            //getActivity().setContentView(R.layout.login_activity);
+                            //Switch to config page
+                            UserMstr.userData = null;
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), LoginActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
+
                     break;
                 case R.id.lySetMenuSetAcc:
                     SetAccountMenuFragment setAccF = new SetAccountMenuFragment();
                     main.OpenBottom(setAccF);
                     break;
                 case R.id.lySetMenuClearCache:
+                    ImageLoader.getInstance().clearCache();
                     if (FileCache.getInstance().clearAllData() == 1) {
                         DisplayToast("清除緩存!");
                     }
