@@ -154,7 +154,7 @@ public class AccountForgetPWFragment extends BaseFragment {
                 if (actName.equals("LoginActivity")) cancleDiaLog();
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "取得验证码失败！");
+                    showOKDiaLog(getActivity(), "取得验证码失败！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -172,7 +172,7 @@ public class AccountForgetPWFragment extends BaseFragment {
     private void SendCaptcha() {
         if (mEdtPhone.length() < 11) {
             cancleDiaLog();
-            MyAlertDialog.Show(getActivity(), "<测试> 验证码为:" + validateNo);
+            showOKDiaLog(getActivity(), "<测试> 验证码为:" + validateNo);
         } else {
             WebService.SendMessage(null, mEdtPhone.getText().toString(), validateNo, new WebService.WebCallback() {
 
@@ -182,7 +182,7 @@ public class AccountForgetPWFragment extends BaseFragment {
                     Log.v(TAG, "obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "短信接口错误！");
+                        showOKDiaLog(getActivity(), "短信接口错误！");
                         return;
                     }
                 }
@@ -199,10 +199,10 @@ public class AccountForgetPWFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     // TODO Auto-generated method stub
                     if (obj == null || !obj.equals("1")) {
-                        MyAlertDialog.Show(getActivity(), "密码重置错误！");
+                        showOKDiaLog(getActivity(), "密码重置错误！");
                         return;
                     } else {
-                        MyAlertDialog.Show(getActivity(), "密码重置完成！");
+                        showOKDiaLog(getActivity(), "密码重置完成！");
                         LocalFun.getInstance().RunSqlNoQuery(
                                 LocalSQLCode.SQLite_UpdateTableData(
                                         "ASC_MSTR",
@@ -218,7 +218,7 @@ public class AccountForgetPWFragment extends BaseFragment {
                 }
             });
         } else {
-            MyAlertDialog.Show(getActivity(), "验证码錯誤！");
+            showOKDiaLog(getActivity(), "验证码錯誤！");
         }
     }
 }

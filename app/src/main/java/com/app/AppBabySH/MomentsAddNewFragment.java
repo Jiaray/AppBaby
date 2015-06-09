@@ -82,6 +82,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        main.AddTabHost();
         if (onCallBack != null) onCallBack.onBack();
     }
 
@@ -121,7 +122,6 @@ public class MomentsAddNewFragment extends BaseFragment {
     }
 
     private void createPreview() {
-        mGdvPreview.setAdapter(null);
         momentsIMGlist = new ArrayList<MomentsImageItem>();
         i = -1;
         while (++i < aryPicPath.size()) {
@@ -177,8 +177,16 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
     }
 
+    private void clearGridView(){
+        ImageLoader.getInstance().clearCache();
+        momentsIMGlist.clear();
+        mGdvPreview.setAdapter(null);
+        System.gc();
+    }
+
     //  打开本地相册
     public void openAlbum() {
+        clearGridView();
         SelectMultiImgFragment selectImg = new SelectMultiImgFragment();
         selectImg.Max_Num = 9 - aryPicPath.size();
         selectImg.onCallBack = new SelectMultiImgFragment.CallBack() {
@@ -208,6 +216,7 @@ public class MomentsAddNewFragment extends BaseFragment {
 
     //  拍照
     private void openCamera() {
+        clearGridView();
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             // 指定存放拍摄照片的位置
@@ -263,13 +272,18 @@ public class MomentsAddNewFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "GetUpToken Error!");
+                    showOKDiaLog(getActivity(), "GetUpToken Error!");
                     return;
                 }
                 strUpToken = obj.toString();
                 posPic = 0;
                 jsonAryPic = new JSONArray();
-                uploadPic(posPic);
+                if (aryPicPath.size() == 0) {
+                    showLoadingDiaLog(getActivity(), "提交中...");
+                    connectWeb();
+                } else {
+                    uploadPic(posPic);
+                }
             }
         });
     }
@@ -309,17 +323,18 @@ public class MomentsAddNewFragment extends BaseFragment {
 
     //  更新資料庫數據
     private void connectWeb() {
+        String Atch_Info = jsonAryPic.length() == 0 ? "" : jsonAryPic.toString();
         WebService.SetCircleNew(null,
                 UserMstr.userData.getUserID(),
                 Class_ID, mEdtContent.getText().toString(),
-                UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE"), "", "", String.valueOf(jsonAryPic.length()), jsonAryPic.toString(), new WebService.WebCallback() {
+                UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE"), "", "", String.valueOf(jsonAryPic.length()), Atch_Info, new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
+                        cancleDiaLog();
                         if (obj == null) {
-                            MyAlertDialog.Show(getActivity(), "SetCircleNew Error!");
+                            showOKDiaLog(getActivity(), "SetCircleNew Error!");
                             return;
                         }
-                        cancleDiaLog();
                         main.RemoveBottom(thisFragment);
                     }
                 });

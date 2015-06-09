@@ -389,7 +389,6 @@ public class SelectMultiImgLoader
 		// 使用獲取到的inSampleSize值再次解析圖片
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
-
 		return bitmap;
 	}
 

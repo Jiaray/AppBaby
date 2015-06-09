@@ -95,11 +95,11 @@ public class SetAccountNickNameFragment extends BaseFragment {
             public void CompleteCallback(String id, Object obj)  {
                 cancleDiaLog();
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "设置昵称错误！");
+                    showOKDiaLog(getActivity(), "设置昵称错误！");
                     return;
                 }
                 if(obj.toString().equals("1")){
-                    MyAlertDialog.Show(getActivity(), "设置昵称完成！");
+                    showOKDiaLog(getActivity(), "设置昵称完成！");
                     JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
                     try {
                         tmpObj.put("NIC_NAME",mEdtNew.getText().toString());
@@ -108,7 +108,7 @@ public class SetAccountNickNameFragment extends BaseFragment {
                     }
                     main.RemoveBottomNotAddTab(thisFragment);
                 }else{
-                    MyAlertDialog.Show(getActivity(), "设置昵称失败！");
+                    showOKDiaLog(getActivity(), "设置昵称失败！");
                 }
             }
         });

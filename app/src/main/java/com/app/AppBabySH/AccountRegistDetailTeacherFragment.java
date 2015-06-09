@@ -107,11 +107,11 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                     Log.i(TAG, "obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "提交失败！");
+                        showOKDiaLog(getActivity(), "提交失败！");
                         return;
                     }
 
-                    MyAlertDialog.Show(getActivity(), "提交完成");
+                    showOKDiaLog(getActivity(), "提交完成");
                     onBack();
                 }
             });

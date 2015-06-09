@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <RelativeLayout
+        android:id="@+id/lySelectMultiImg_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000">
+
+        <Button
+            android:id="@+id/btnSelectMultiImgEnter"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:text="確定"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="0.77"
+            android:singleLine="false"
+            android:text="選擇圖片"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
+            android:textSize="30dp" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gdvSelectMultiImgImgs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/lySelectMultiImgChooseDir"
+        android:layout_below="@+id/lySelectMultiImg_title"
+        android:cacheColorHint="@android:color/transparent"
+        android:clipChildren="true"
+        android:gravity="center"
+        android:horizontalSpacing="3dip"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="3dip"></GridView>
+
+    <RelativeLayout
+        android:id="@+id/lySelectMultiImgChooseDir"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:background="#e0000000"
+        android:clickable="true">
+
+        <TextView
+            android:id="@+id/txtSelectMultiImgDirItemName"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="/所有圖片"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="选择其他相册"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/txtSelectMultiImgNum"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="共 0 张"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</RelativeLayout>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/selectmultiimg_fragment.xml -->

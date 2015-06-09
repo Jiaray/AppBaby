@@ -1,12 +1,10 @@
 package com.app.AppBabySH;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +15,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsAdapter;
 import com.app.AppBabySH.item.ClassItem;
 import com.app.AppBabySH.item.MomentsImageItem;
@@ -41,29 +37,31 @@ import java.util.Map;
 import com.app.Common.ImageLoader;
 
 public class MomentsFragment extends BaseFragment {
-    private static final String TAG = "MomentsFragment";
-    private String CurrClassID;
-    private MomentsAdapter adapter;
-    private ProgressDialog pd;
+    private static final String TAG = "MomentsF";
+    private MomentsCommonFun comF;
+    public MomentsAdapter adapter;
     private AlertDialog.Builder alertD;
-    private ArrayList<MomentsItem> momentslist;
-    private int listPosition = 0;
-    private boolean isInit = true;
-    private LayoutInflater _inflater;
-    private MomentsItem callBackItem;
-    private Toast toast;
-
+    public ArrayList<MomentsItem> momentslist;
     private Handler hdrMain;
+
     //Main Obj
+    private LayoutInflater _inflater;
     private MainTabActivity main;
     private View rootView;
     private ViewGroup viewG;
     private PullDownView pullDownView;
-    private ScrollOverListView momentslistView;
+    private ScrollOverListView mSlvContent;
     private ImageButton mImgBFilter, mImgBAddNew;
 
+    //values
+    public String CurrClassID;
+    private int MOMENTS_COUNT;
+    private int pageIndex;
+    private boolean isInit = true;
+    public MomentsItem callBackItem;
+
     //About Reply
-    private View mVReply;
+    public View mVReply;
     private LinearLayout mLyReply;
     private EditText mEdtReplyTo;
     private Button mBtnReplySend;
@@ -80,60 +78,102 @@ public class MomentsFragment extends BaseFragment {
         //共用宣告
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustResize");
+        comF = new MomentsCommonFun(this, rootView);
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
+        initView();
+        return rootView;
+    }
 
-        //Start
+    private void initView() {
+        Log.v(TAG, "Moments-Init");
+        isInit = true;
+        CurrClassID = UserMstr.userData.ClassAryList.get(0).CLASS_ID;
+        pageIndex = 1;
+
+        //ListView Ready
+        pullDownView = (PullDownView) rootView.findViewById(R.id.pdvMomentsContent);
+        pullDownView.enableAutoFetchMore(true, 0);
+        pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
+
+            @Override
+            public void onRefresh() {//Refresh
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "Moments-Refresh");
+                        refreshListView();
+                    }
+                }, 100);
+            }
+
+            @Override
+            public void onLoadMore() {//LoadMore
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "Moments-LoadMore");
+                        pageIndex++;
+                        getData();
+                        pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                    }
+                }, 1000);
+            }
+        });
+
+
+        mSlvContent = pullDownView.getListView();
+        momentslist = new ArrayList<MomentsItem>();
+        adapter = new MomentsAdapter(getActivity(), momentslist);
+        adapter.onCallBack = new AdapterCallBack();
+        mSlvContent.setAdapter(adapter);
+        mSlvContent.setOnTouchListener(new View.OnTouchListener() {//AddEvent Cancel Reply Mode
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                    toViewMode();
+                }
+                return false;
+            }
+
+        });
+
+        //Create Filter Menu
+        mImgBFilter = (ImageButton) rootView.findViewById(R.id.imgbMomentsFilter);
+        final AlertDialog mutiItemDialogFilter = createFilterDialog();
+        mImgBFilter.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mutiItemDialogFilter.show();
+            }
+        });
+
+        //Create AddNew Menu
+        mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
+        final AlertDialog mutiItemDialogAddNew = createAddNewDialog();
+        mImgBAddNew.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mutiItemDialogAddNew.show();
+            }
+        });
+
+        //ListView Add Header
         hdrMain = new Handler();
         hdrMain.post(runInit);
-        return rootView;
     }
 
     private Runnable runInit = new Runnable() {
         @Override
         public void run() {
-            Log.v(TAG, "Moments-Init");
-            isInit = true;
+
             viewG = (ViewGroup) rootView.getParent();
-            CurrClassID = UserMstr.userData.ClassAryList.get(0).CLASS_ID;
-
-            //ListView Ready
-            pullDownView = (PullDownView) rootView.findViewById(R.id.pdvMomentsContent);
-
-            pullDownView.enableAutoFetchMore(true, 0);
-            pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
-
-                @Override
-                public void onRefresh() {//Refresh
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Log.v(TAG, "Moments-Refresh");
-                            initListView();
-                        }
-                    }, 100);
-                }
-
-                @Override
-                public void onLoadMore() {//LoadMore
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Log.v(TAG, "Moments-LoadMore");
-                            adapter.notifyDataSetChanged();
-                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
-                        }
-                    }, 1000);
-                }
-            });
-
-            //ListView Add Header
-            momentslistView = pullDownView.getListView();
-            ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, momentslistView, false);
+            ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, mSlvContent, false);
             ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
             TextView mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
             if (main.momentPushNum.equals("0")) {
@@ -148,52 +188,16 @@ public class MomentsFragment extends BaseFragment {
                         tt.post(new Runnable() {
                             @Override
                             public void run() {
-                                customCircle("news");
+                                comF.customCircle("news");
                             }
                         });
                     }
                 });
             }
-
             ImageLoader.getInstance().DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
-            momentslistView.addHeaderView(mVgHeader, null, false);
+            mSlvContent.addHeaderView(mVgHeader, null, false);
 
-            //Create ListView
-            initListView();
-
-            //AddEvent Cancel Reply Mode
-            momentslistView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-                        toViewMode();
-                    }
-                    return false;
-                }
-
-            });
-
-            //Create Filter Menu
-            mImgBFilter = (ImageButton) rootView.findViewById(R.id.imgbMomentsFilter);
-            final AlertDialog mutiItemDialogFilter = createFilterDialog();
-            mImgBFilter.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mutiItemDialogFilter.show();
-                }
-            });
-
-            //Create AddNew Menu
-            mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
-            final AlertDialog mutiItemDialogAddNew = createAddNewDialog();
-            mImgBAddNew.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mutiItemDialogAddNew.show();
-                }
-            });
-
+            getData();
             //removeCallbacks
             hdrMain.removeCallbacks(runInit);
         }
@@ -220,7 +224,7 @@ public class MomentsFragment extends BaseFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (which != (UserMstr.userData.ClassAryList.size())) {
                     CurrClassID = UserMstr.userData.ClassAryList.get(which).CLASS_ID;
-                    initListView();
+                    refreshListView();
                 }
             }
         });
@@ -243,7 +247,7 @@ public class MomentsFragment extends BaseFragment {
                     addF.onCallBack = new MomentsAddNewFragment.CallBack() {
                         @Override
                         public void onBack() {
-                            initListView();
+                            refreshListView();
                         }
                     };
                     main.OpenBottom(addF);
@@ -253,48 +257,22 @@ public class MomentsFragment extends BaseFragment {
         return alertD.create();
     }
 
-    //  初始化
-    private void initListView() {
-        if (mVReply != null) {
-            viewG.removeView(mVReply);
-            mVReply = null;
-        }
-        clearList();
-        getData();
-    }
-
-    //  清除列表
-    private void clearList() {
-        if (adapter != null) {
-            adapter.imageLoader.clearCache();
-            adapter.notifyDataSetChanged();
-        }
-        if (momentslist != null) {
-            momentslist.clear();
-        } else {
-            momentslist = new ArrayList<MomentsItem>();
-        }
-        listPosition = 0;
-        momentslistView.setAdapter(null);
-        adapter = new MomentsAdapter(getActivity(), momentslist);
-        System.gc();
-    }
-
     //  取得 Web 資料
     private void getData() {
-        pd = MyAlertDialog.ShowProgress(getActivity(), "Loading...");
-        pd.show();
-        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, new WebService.WebCallback() {
+        showLoadingDiaLog(getActivity(), "Loading...");
+        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, String.valueOf(pageIndex), "3", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                pd.cancel();
+                cancleDiaLog();
                 Log.i(TAG, "obj : " + obj);
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "Error!");
+                    showOKDiaLog(getActivity(), "Error!");
                     return;
-                }else if(obj.equals("Success! No Data Return!")){
-                    MyAlertDialog.Show(getActivity(), "此班级查无资料!");
+                } else if (obj.equals("Success! No Data Return!")) {
+                    showOKDiaLog(getActivity(), "此班级查无资料!");
+                    momentslist.clear();
+                    adapter.notifyDataSetChanged();
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -303,7 +281,7 @@ public class MomentsFragment extends BaseFragment {
                 JSONArray replyAry = json.optJSONObject(0).optJSONArray("CIRCLE_REPLY");
                 JSONArray goodAry = json.optJSONObject(0).optJSONArray("CIRCLE_GOOD");
                 if (infoAry.length() == 0) {
-                    MyAlertDialog.Show(getActivity(), "Empty!");
+                    showOKDiaLog(getActivity(), "Empty!");
                     return;
                 }
 
@@ -345,32 +323,42 @@ public class MomentsFragment extends BaseFragment {
                     }
                     momentslist.add(item);
                 }
-                createListView();
+                MOMENTS_COUNT = Integer.valueOf(infoAry.optJSONObject(0).optString("COUNT"));
+                adapter.notifyDataSetChanged();
+                refreshPullView();
             }
         });
     }
 
-    //  創建內容
-    private void createListView() {
-        // TODO 移除當前畫面
-        Log.v(TAG, "ViewG : createListView : " + viewG);
-        viewG.removeView(rootView);
-        // TODO 依取得的資料創建 ListView
-        momentslistView = pullDownView.getListView();
-        momentslistView.setAdapter(adapter);
-        momentslistView.setSelection(listPosition);
-        adapter.onCallBack = new AdapterCallBack();
-        viewG.addView(rootView);
-        adapter.notifyDataSetChanged();
+    //  刷新列表
+    private void refreshListView() {
+        pageIndex = 1;
+        if (mVReply != null) {
+            viewG.removeView(mVReply);
+            mVReply = null;
+        }
+        momentslist.clear();
+        ImageLoader.getInstance().clearCache();
+        System.gc();
+        getData();
+    }
+
+    //  刷新外框View
+    private void refreshPullView() {
         if (isInit) {
             isInit = false;
             adapter.notifyDataSetChanged();
-            pullDownView.notifyDidDataLoad(false);
         } else {
             adapter.notifyDataSetChanged();
             pullDownView.notifyDidRefresh(momentslist.isEmpty());
         }
-        Log.v(TAG, "Moments Load Complete!");
+
+        if (momentslist.size() == MOMENTS_COUNT) {
+            pullDownView.notifyDidDataLoad(true);
+        } else {
+            pullDownView.notifyDidDataLoad(false);
+        }
+        //Log.i(TAG, "班級圈畫面產生完畢!");
     }
 
     // MomentsAdapterCallBack 班級圈各個 Item 的功能(刪除、按讚、收藏、回覆、圖示放大瀏覽)
@@ -383,13 +371,13 @@ public class MomentsFragment extends BaseFragment {
             Log.v(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID);
             Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
             if ($actiontype.equals("del")) {
-                delCircle();
+                comF.delCircle();
             } else if ($actiontype.equals("good")) {
-                goodCircle();
+                comF.goodCircle();
             } else if ($actiontype.equals("fav")) {
-                favCircle();
+                comF.favCircle();
             } else if ($actiontype.equals("personal")) {
-                customCircle("personal");
+                comF.customCircle("personal");
             }
         }
 
@@ -414,25 +402,11 @@ public class MomentsFragment extends BaseFragment {
             }
             momentsImageFragment.openFunBar = true;
             momentsImageFragment.SEQ = $item.SEQ;
-            //  MomentsImageFragmentCallBack
             momentsImageFragment.onCallBack = new MomentsImageFragment.imgCallBack() {
                 @Override
                 public void onBack(MomentsItem $item, String $actionType) {
                     if ($actionType != null && $actionType.equals("comment")) {
                         onCommentClick($item, "", "");
-                    } else {
-                        //  取 ID 位置
-                        int i = -1;
-                        getI:
-                        while (++i < momentslist.size()) {
-                            if (momentslist.get(i).CIRCLE_ID.equals($item.CIRCLE_ID)) break getI;
-                        }
-                        //  清除畫面
-                        clearList();
-
-                        //  設定進入前的 ID 位置
-                        listPosition = (i + 1);//有 header 所以+1
-                        getData();
                     }
                 }
             };
@@ -440,135 +414,12 @@ public class MomentsFragment extends BaseFragment {
         }
     }
 
-    //  條件顯示班級圈頁面
-    private void customCircle(String $type) {
-        MomentsCustomFragment personalF = new MomentsCustomFragment();
-        personalF.Class_ID = CurrClassID;
-        if ($type.equals("personal")) {
-            personalF.USER_ID = callBackItem.USER_ID;
-            personalF.NIC_NAME = callBackItem.NIC_NAME;
-            personalF.USER_AVATAR = callBackItem.USER_AVATAR;
-        } else if ($type.equals("news")) {
-            personalF.USER_ID = UserMstr.userData.getUserID();
-            personalF.NIC_NAME = "MomentsNews";
-            personalF.USER_AVATAR = "";
-        }
-
-        main.OpenBottom(personalF);
-    }
-
-    //  刪除班級圈
-    private void delCircle() {
-        alertD = new AlertDialog.Builder(getActivity()); //創建訊息方塊
-        alertD.setTitle("檢查!");
-        alertD.setMessage("确定要删除该讯息?");
-        alertD.setPositiveButton("Yes", new DialogInterface.OnClickListener() { //按"是",則退出應用程式
-            public void onClick(DialogInterface dialog, int i) {
-                pd = MyAlertDialog.ShowProgress(getActivity(), "删除中...");
-                WebService.SetCircleDelete(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-                    @Override
-                    public void CompleteCallback(String id, Object obj) {
-                        alertD = new AlertDialog.Builder(getActivity());
-                        alertD.setTitle("班级圈已删除");
-                        alertD.setCancelable(false);
-                        alertD.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (int i = 0; i < momentslist.size(); i++) {
-                                    if ("c".equals(momentslist.get(i))) {
-                                        momentslist.remove(i);
-                                    }
-                                }
-                                initListView();
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                        alertD.show();
-                    }
-                });
-            }
-        });
-
-        alertD.setNegativeButton("No", new DialogInterface.OnClickListener() { //按"否",則不執行任何操作
-            public void onClick(DialogInterface dialog, int i) {
-
-            }
-        });
-        alertD.show();//顯示訊息視窗
-    }
-
-    //  對班級圈按讚
-    private void goodCircle() {
-        pd = MyAlertDialog.ShowProgress(getActivity(), "检查中...");
-        WebService.GetCircleHadGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-            @Override
-            public void CompleteCallback(String id, Object obj) {
-                pd.cancel();
-                if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "Error!");
-                    return;
-                }
-                JSONObject json = (JSONObject) obj;
-                if (json.optString("GOOD_CNT").equals("1")) {
-                    DisplayToast("已按讚!");
-                } else {
-                    WebService.SetCircleGood(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-                        @Override
-                        public void CompleteCallback(String id, Object obj) {
-                            Map map = new HashMap();
-                            map.put("CIRCLE_ID", callBackItem.CIRCLE_ID);
-                            map.put("USER_ID", UserMstr.userData.getUserID());
-                            map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
-                            JSONObject newJsonObj = new JSONObject(map);
-                            // 按下"收到"以後要做的事情
-                            callBackItem.GOOD.add(newJsonObj);
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    //  收藏班級圈
-    private void favCircle() {
-        pd = MyAlertDialog.ShowProgress(getActivity(), "检查中...");
-        WebService.GetCircleHadKeepToGrow(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-            @Override
-            public void CompleteCallback(String id, Object obj) {
-                pd.cancel();
-                if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "Error!");
-                    return;
-                }
-                JSONObject json = (JSONObject) obj;
-                if (json.optString("GROW_CNT").equals("1")) {
-                    DisplayToast("已收藏!");
-                } else {
-                    WebService.SetCircleKeepToGrow(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-                        @Override
-                        public void CompleteCallback(String id, Object obj) {
-                            alertD = new AlertDialog.Builder(getActivity());
-                            alertD.setTitle("检查"); //設定dialog 的title顯示內容
-                            alertD.setMessage("收藏成功!");
-                            alertD.setCancelable(false); //關閉 Android 系統的主要功能鍵(menu,home等...)
-                            alertD.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-                            alertD.show();
-                        }
-                    });
-                }
-            }
-        });
-    }
 
     //  回覆班級圈
     private void commentCircle() {
         main.mTabHost.setVisibility(View.GONE);
         if (mVReply == null) {
-            mVReply = _inflater.inflate(R.layout.moments_reply, momentslistView, false);
+            mVReply = _inflater.inflate(R.layout.moments_reply, mSlvContent, false);
             viewG.addView(mVReply);
             mEdtReplyTo = (EditText) mVReply.findViewById(R.id.txtMomentsReplyTo);
             mBtnReplySend = (Button) mVReply.findViewById(R.id.btnMomentsReplySend);
@@ -593,7 +444,7 @@ public class MomentsFragment extends BaseFragment {
                         break getI;
                     }
                 }
-                momentslistView.setSelection(intReplyPosition + 1);
+                mSlvContent.setSelection(intReplyPosition + 1);
                 intAdjustH = mVReply.getMeasuredHeight();
                 main.OpenInput();
             }
@@ -611,8 +462,8 @@ public class MomentsFragment extends BaseFragment {
             } else {
                 hdrMain.removeCallbacks(checkValue);
                 intListViewH = pullDownView.getMeasuredHeight();
-                intAdjustH = intListViewH - momentslistView.getChildAt(0).getHeight() - mLyReply.getMeasuredHeight();
-                momentslistView.setSelectionFromTop(intReplyPosition + 1, intAdjustH);
+                intAdjustH = intListViewH - mSlvContent.getChildAt(0).getHeight() - mLyReply.getMeasuredHeight();
+                mSlvContent.setSelectionFromTop(intReplyPosition + 1, intAdjustH);
             }
         }
     };
@@ -649,16 +500,5 @@ public class MomentsFragment extends BaseFragment {
             mVReply.setVisibility(View.GONE);
             main.mTabHost.setVisibility(View.VISIBLE);
         }
-    }
-
-    protected void DisplayToast(String Msg) {
-        if (toast == null) {
-            toast = Toast.makeText(getActivity(), Msg, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-        } else {
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setText(Msg);
-        }
-        toast.show();
     }
 }

@@ -125,7 +125,7 @@ public class AccountRegistFragment extends BaseFragment {
                 cancleDiaLog();
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "激活失败！");
+                    showOKDiaLog(getActivity(), "激活失败！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -139,16 +139,16 @@ public class AccountRegistFragment extends BaseFragment {
                     Integer STATE = Integer.valueOf(json.optJSONObject(0).optString("STATE"));
                     switch (STATE) {
                         case 1:
-                            MyAlertDialog.Show(getActivity(), "無效電話！");
+                            showOKDiaLog(getActivity(), "無效電話！");
                             break;
                         case 2:
-                            MyAlertDialog.Show(getActivity(), "無效激活！");
+                            showOKDiaLog(getActivity(), "無效激活！");
                             break;
                         case 3:
-                            MyAlertDialog.Show(getActivity(), "已激活！");
+                            showOKDiaLog(getActivity(), "已激活！");
                             break;
                         case 4:
-                            MyAlertDialog.Show(getActivity(), "沒有建班級！");
+                            showOKDiaLog(getActivity(), "沒有建班級！");
                             break;
                     }
                 }
@@ -160,7 +160,7 @@ public class AccountRegistFragment extends BaseFragment {
     private void SendCaptcha() {
         if (mEdtPhone.length() < 11) {
             cancleDiaLog();
-            MyAlertDialog.Show(getActivity(), "<测试> 验证码为:" + validateNo);
+            showOKDiaLog(getActivity(), "<测试> 验证码为:" + validateNo);
         } else {
             WebService.SendMessage(null, mEdtPhone.getText().toString(), validateNo, new WebService.WebCallback() {
 
@@ -170,7 +170,7 @@ public class AccountRegistFragment extends BaseFragment {
                     Log.v(TAG, "obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "短信接口错误！");
+                        showOKDiaLog(getActivity(), "短信接口错误！");
                         return;
                     }
 
@@ -193,9 +193,9 @@ public class AccountRegistFragment extends BaseFragment {
             }
         } else {
             if (!activated) {
-                MyAlertDialog.Show(getActivity(), "尚未获取验证码！");
+                showOKDiaLog(getActivity(), "尚未获取验证码！");
             } else {
-                MyAlertDialog.Show(getActivity(), "验证码錯誤！");
+                showOKDiaLog(getActivity(), "验证码錯誤！");
             }
         }
     }
@@ -211,7 +211,7 @@ public class AccountRegistFragment extends BaseFragment {
                 Log.i(TAG, "obj:" + obj);
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "验证错误！");
+                    showOKDiaLog(getActivity(), "验证错误！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;

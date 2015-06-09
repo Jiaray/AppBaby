@@ -19,7 +19,7 @@ import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.item.MomentsItem;
-import com.app.Common.ImgViewPage.GestureImageView;
+import com.app.Common.ImgViewPager.GestureImageView;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
@@ -83,6 +83,7 @@ public class MomentsImageFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mLyFunBar.getVisibility() == View.VISIBLE)main.AddTabHost();
         if (onCallBack != null) onCallBack.onBack(CricleItem, afterBackAction);
     }
 
@@ -243,7 +244,7 @@ public class MomentsImageFragment extends BaseFragment {
         if (hadGood) {
             DisplayToast("已按讚!");
         } else {
-            WebService.SetCircleGood(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+            WebService.SetCircleGood(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(),"INSERT", new WebService.WebCallback() {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     Map map = new HashMap();
@@ -265,7 +266,7 @@ public class MomentsImageFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "Error!");
+                    showOKDiaLog(getActivity(), "Error!");
                     return;
                 }
                 JSONObject json = (JSONObject) obj;

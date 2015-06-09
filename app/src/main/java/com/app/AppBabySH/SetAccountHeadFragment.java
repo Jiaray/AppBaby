@@ -129,7 +129,7 @@ public class SetAccountHeadFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "GetUpToken Error!");
+                    showOKDiaLog(getActivity(), "GetUpToken Error!");
                     return;
                 }
                 data = new File(mCurrentPhotoPath);
@@ -155,7 +155,7 @@ public class SetAccountHeadFragment extends BaseFragment {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
                         if (obj == null) {
-                            MyAlertDialog.Show(getActivity(), "SetChangeAvatar Error!");
+                            showOKDiaLog(getActivity(), "SetChangeAvatar Error!");
                             return;
                         }
                         cancleDiaLog();

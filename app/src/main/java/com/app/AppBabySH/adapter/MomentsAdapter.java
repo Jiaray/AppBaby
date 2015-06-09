@@ -34,7 +34,6 @@ public class MomentsAdapter extends BaseAdapter {
     private LayoutInflater minflater;
     private ArrayList<MomentsItem> list;
     private ArrayList<MomentsImageItem> momentsIMGlist;
-    public ImageLoader imageLoader;
     private ViewHolder viewHolder;
     private Integer i = -1, j;
     private String contentStr;
@@ -61,7 +60,6 @@ public class MomentsAdapter extends BaseAdapter {
         centerV = (GlobalVar) context.getApplicationContext();
         this.minflater = LayoutInflater.from(context);
         this.list = _list;
-        imageLoader = new ImageLoader();
     }
 
     static class ViewHolder {
@@ -115,7 +113,7 @@ public class MomentsAdapter extends BaseAdapter {
         }
 
         if (item != null) {
-            imageLoader.DisplayRoundedCornerImage(item.USER_AVATAR, viewHolder.mImgHeader);
+            ImageLoader.getInstance().DisplayRoundedCornerImage(item.USER_AVATAR, viewHolder.mImgHeader);
             viewHolder.mLyComment.setVisibility(View.GONE);
             viewHolder.mTxtName.setText(item.NIC_NAME);
             viewHolder.mTxtTitle.setText(item.DESCRIPTION);

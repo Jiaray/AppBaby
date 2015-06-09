@@ -1,6 +1,8 @@
 package com.app.AppBabySH;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +30,9 @@ public class ProfileFragment extends BaseFragment {
     private ImageView mImgPic;
     private TableLayout mTblPersonalInfo;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustPan");
         _inflater = inflater;
@@ -64,12 +66,12 @@ public class ProfileFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     cancleDiaLog();
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "取得资讯错误！");
+                        showOKDiaLog(getActivity(), "取得资讯错误！");
                         return;
                     }
                     JSONArray json = (JSONArray) obj;
                     if (json.length() == 0) {
-                        MyAlertDialog.Show(getActivity(), "没有任何资讯！");
+                        showOKDiaLog(getActivity(), "没有任何资讯！");
                         return;
                     }
                     int i = -1;
@@ -91,12 +93,12 @@ public class ProfileFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     cancleDiaLog();
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "取得资讯错误！");
+                        showOKDiaLog(getActivity(), "取得资讯错误！");
                         return;
                     }
                     JSONArray json = (JSONArray) obj;
                     if (json.length() == 0) {
-                        MyAlertDialog.Show(getActivity(), "没有任何资讯！");
+                        showOKDiaLog(getActivity(), "没有任何资讯！");
                         return;
                     }
                     int i = -1;
@@ -125,6 +127,13 @@ public class ProfileFragment extends BaseFragment {
                     break;
                 case R.id.lyProfileSet:
                     SetMenuFragment setF = new SetMenuFragment();
+                    setF.onCallBack = new SetMenuFragment.CallBack() {
+                        @Override
+                        public void onBack() {
+                            ImageLoader.getInstance().DisplayRoundedCornerImage(
+                                    UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"),mImgPic);
+                        }
+                    };
                     main.OpenBottom(setF);
                     break;
                 case R.id.lyProfileFavChannel:

@@ -29,11 +29,21 @@ public class SetMenuFragment extends BaseFragment {
     private ImageButton mImgbBack;
     private Button mBtnLogout;
     private LinearLayout mLySetAcc, mLyClearCache, mLyFeedback, mLyAbout;
+
+    public CallBack onCallBack;
+    public interface CallBack {
+        public void onBack();
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        onCallBack.onBack();
         main.AddTabHost();
     }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //共用宣告
@@ -77,7 +87,6 @@ public class SetMenuFragment extends BaseFragment {
                         @Override
                         public void onEnter() {
                             LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
-                            //getActivity().setContentView(R.layout.login_activity);
                             //Switch to config page
                             UserMstr.userData = null;
                             Intent intent = new Intent();
