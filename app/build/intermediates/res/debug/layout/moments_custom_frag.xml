@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/rlyRegFeedBackTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/common_bg2">
+
+        <ImageButton
+            android:id="@+id/imgbtnMomentsPersonalBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/head_back" />
+
+        <TextView
+            android:id="@+id/txtMomentsPersonalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="0.77"
+            android:singleLine="false"
+            android:text="個人頁面"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
+            android:textSize="30dp" />
+    </RelativeLayout>
+
+    <com.app.Common.PullDownView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pdvMomentsPersonalContent"
+        android:layout_below="@+id/rlyRegFeedBackTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/moments_custom_frag.xml -->

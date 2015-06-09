@@ -397,7 +397,7 @@ public class PullDownView extends LinearLayout implements ScrollOverListView.OnS
 	private void updateFooter() {
 		if (!mEnableLoadMore) return;
 		if (mIsNoMoreData) {
-			mFooterTextView.setText("已加载完全部");
+			mFooterTextView.setText("已全部加载完毕!");
 			mFooterLoadingView.setVisibility(View.GONE);
 		} else if ((state & STATE_LOADING_MORE) == STATE_LOADING_MORE) {
 			mFooterTextView.setText("加载更多中...");

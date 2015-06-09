@@ -24,18 +24,13 @@
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <!--<ImageView
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_marginLeft="300dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/moments_userhead_bg_cricle" />-->
     <ImageView
         android:id="@+id/imgMomentsHeaderUserHead"
         android:layout_width="90dp"
         android:layout_height="90dp"
-        android:layout_marginLeft="300dp"
+        android:layout_marginLeft="280dp"
         android:layout_marginTop="50dp"
         android:scaleType="centerInside"
+        android:background="@drawable/moments_header_head_bg_cricle"
         android:src="@drawable/user_default_avatar" />
 </RelativeLayout>

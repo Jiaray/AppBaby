@@ -64,25 +64,22 @@ public class FileCache {
         strJsonPath = strPathHead + "/" + FOLDERNAME + "/json/";
         jsonDir = new File(strJsonPath);
         if (!jsonDir.exists()) jsonDir.mkdirs();
+
+        File noMedia = new File(strCachePath, ".nomedia");
+        Log.i(TAG, "noMedia:" + noMedia);
+        try {
+            if (!noMedia.exists()) noMedia.createNewFile();
+        } catch (IOException e) {
+            Log.i("Error", "couldn't create .nomedia file");
+        }
     }
 
     public File getFile(String url) {
-        //I identify images by hashcode. Not a perfect solution, good for the demo.
-        //Log.i(TAG, "getFile url - " + url);
-        //String filename = String.valueOf(url.hashCode());
         String filename = url.substring(url.lastIndexOf("/") + 1);
         //Log.i(TAG, "getFile filename - " + filename);
         File f = new File(cacheDir, filename);
         // Log.i(TAG, "getFile File - " + f);
         return f;
-    }
-
-    public void clear() {
-        File[] files = cacheDir.listFiles();
-        if (files == null)
-            return;
-        for (File f : files)
-            f.delete();
     }
 
     public boolean saveData(String strApiUrl, String dataJson, String imgurl, Bitmap bmp) {
@@ -315,7 +312,7 @@ public class FileCache {
         return false;
     }
 
-    public boolean checkFileExistsByPath(String path){
+    public boolean checkFileExistsByPath(String path) {
         File file = new File(path);
         return file.exists();
     }

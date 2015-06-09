@@ -83,7 +83,7 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                 Log.i(TAG, "obj : " + obj);
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "关系资讯取得错误！");
+                    showOKDiaLog(getActivity(), "关系资讯取得错误！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -197,7 +197,7 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                     Log.i(TAG, "obj : " + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        MyAlertDialog.Show(getActivity(), "关系资讯取得错误！");
+                        showOKDiaLog(getActivity(), "关系资讯取得错误！");
                         return;
                     }
                 }

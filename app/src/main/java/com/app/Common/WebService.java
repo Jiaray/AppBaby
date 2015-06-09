@@ -117,29 +117,34 @@ public class WebService {
 
     /*========  班級圈 Moments  ========*/
     //  取得班級圈列表-依班級
-    public static void GetCircleListClass(String id, String $userID, String $classID, WebCallback $callBack) {
+    public static void GetCircleListClass(String id, String $userID, String $classID,String $pageIndex,String $pageSize, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
         map.put("Class_ID", $classID);
+        map.put("Page_Index", $pageIndex);
+        map.put("Page_Size", $pageSize);
         map.put("CheckKey", "");
-        Log.i(TAG, "GetCircleListClass map : " + map);
         GetJson(id, "Baby_Get_Circle_List_Class", map, $callBack);
     }
 
     //  取得班及圈列表-依個人
-    public static void GetCircleListPersonal(String id, String $userID, String $classID, WebCallback $callBack) {
+    public static void GetCircleListPersonal(String id, String $userID, String $classID,String $pageIndex,String $pageSize, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
         map.put("Class_ID", $classID);
+        map.put("Page_Index", $pageIndex);
+        map.put("Page_Size", $pageSize);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Circle_List_Personal", map, $callBack);
     }
 
     //  取得班及圈列表-最新 (Push未讀的)
-    public static void GetCircleListNotRead(String id, String $userID, String $classID, WebCallback $callBack) {
+    public static void GetCircleListNotRead(String id, String $userID, String $classID,String $pageIndex,String $pageSize, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
         map.put("Class_ID", $classID);
+        map.put("Page_Index", $pageIndex);
+        map.put("Page_Size", $pageSize);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Circle_List_Not_Read", map, $callBack);
     }
@@ -163,11 +168,12 @@ public class WebService {
     }
 
     //  班級圈按讚
-    public static void SetCircleGood(String id, String $circleID, String $userID, WebCallback $callBack) {
+    public static void SetCircleGood(String id, String $circleID, String $userID, String $type, WebCallback $callBack) {
         Log.v(TAG, "$circleID:" + $circleID + " $userID:" + $userID);
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("Circle_ID", $circleID);
         map.put("User_ID", $userID);
+        map.put("Type", $type);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Set_Circle_Good", map, $callBack);
     }
@@ -241,19 +247,30 @@ public class WebService {
 
     /*========  頻道 News  ========*/
     //  取得頻道列表
-    public static void GetNews(String id, String $userID, String $userType, WebCallback $callBack) {
+    public static void GetNews(String id, String $userID, String $userType,String $pageIndex,String $pageSize, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
         map.put("User_Type", $userType);
+        map.put("Page_Index", $pageIndex);
+        map.put("Page_Size", $pageSize);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Get_Channel_List", map, $callBack);
     }
 
-    //  取得或設定喜歡收藏的資訊
-    public static void GetSetChannelFavGood(String $webName, String id, String $userID, String $chanlID, WebCallback $callBack) {
+    //  取得喜歡收藏的資訊
+    public static void GetChannelFavGood(String $webName, String id, String $userID, String $chanlID, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("User_ID", $userID);
         map.put("Channel_ID", $chanlID);
+        map.put("CheckKey", "");
+        GetJson(id, $webName, map, $callBack);
+    }
+    //  設定喜歡收藏的資訊
+    public static void SetChannelFavGood(String $webName, String id, String $userID, String $chanlID, String $type, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("User_ID", $userID);
+        map.put("Channel_ID", $chanlID);
+        map.put("Type", $type);
         map.put("CheckKey", "");
         GetJson(id, $webName, map, $callBack);
     }

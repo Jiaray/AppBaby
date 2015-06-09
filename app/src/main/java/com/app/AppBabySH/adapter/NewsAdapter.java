@@ -21,47 +21,34 @@ import com.app.Common.ImageLoader;
 public class NewsAdapter extends BaseAdapter {
     private LayoutInflater minflater;
     private ArrayList<NewsItem> list;// 資料
-    public ImageLoader imageLoader;
     private ViewHolder viewHolder;
-
-    public interface CallBack {
-        public void onClick(NewsItem _item);
-    }
-
-    public CallBack onCallBack;
 
     public NewsAdapter(Context context,
                        ArrayList<NewsItem> _list) {
         if (context == null) return;
         this.minflater = LayoutInflater.from(context);
         this.list = _list;
-        imageLoader = new ImageLoader();
     }
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        if (list == null)
-            return 0;
-        return list.size();
+        return (list == null) ? 0 : list.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
+    public NewsItem getItem(int position) {
         return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         viewHolder = null;
-        final NewsItem item = list.get(position);
+        final NewsItem item = getItem(position);
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = minflater.inflate(R.layout.news_item, null);
@@ -81,21 +68,13 @@ public class NewsAdapter extends BaseAdapter {
             viewHolder.titleTxt.setText(item.CHANNEL_TITLE);
             viewHolder.goodTxt.setText(item.GOOD_CNT);
             viewHolder.favTxt.setText(item.FAVORITE_CNT);
-            viewHolder.item = item;
-            imageLoader.DisplayImage(item.THUMB_URL, viewHolder.mainIMGIMG);
-            viewHolder.mainIMGIMG.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onCallBack.onClick(item);
-                }
-            });
+            ImageLoader.getInstance().DisplayImage(item.THUMB_URL, viewHolder.mainIMGIMG);
         }
         return convertView;
     }
 
     static class ViewHolder {
         TextView titleTxt, goodTxt, favTxt;
-        ImageView newIMG,mainIMGIMG,goodIMG,favIMG;
-        NewsItem item;
+        ImageView newIMG, mainIMGIMG, goodIMG, favIMG;
     }
 }

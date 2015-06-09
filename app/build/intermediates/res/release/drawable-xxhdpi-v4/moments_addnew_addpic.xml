@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true" android:drawable="@drawable/moments_addnew_addpic_pressed"/>
+    <item android:state_pressed="false" android:drawable="@drawable/moments_addnew_addpic_nor"/>
+</selector>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/drawable-xxhdpi/moments_addnew_addpic.xml -->

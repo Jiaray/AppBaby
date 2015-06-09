@@ -69,12 +69,16 @@ public class SetHistoryFragment extends BaseFragment {
             public void CompleteCallback(String id, Object obj) {
                 cancleDiaLog();
                 if (obj == null) {
-                    MyAlertDialog.Show(getActivity(), "取得资讯错误！");
+                    showOKDiaLog(getActivity(), "取得资讯错误！");
+                    return;
+                } else if (obj.equals("Success! No Data Return!")) {
+                    showOKDiaLog(getActivity(), "没有任何资讯！");
                     return;
                 }
+                Log.i(TAG,"obj : "+obj);
                 JSONArray json = (JSONArray) obj;
                 if (json.length() == 0) {
-                    MyAlertDialog.Show(getActivity(), "没有任何资讯！");
+                    showOKDiaLog(getActivity(), "没有任何资讯！");
                     return;
                 }
                 JSONObject tmpObj;

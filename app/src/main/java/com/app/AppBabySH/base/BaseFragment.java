@@ -60,7 +60,7 @@ public class BaseFragment extends Fragment {
 		if (progressDialog==null)return;
 		progressDialog.show();
 		if (!ComFun.checkNetworkState(context)) {
-			MyAlertDialog.Show(context, "当前网络不可用，请设置后重试！");
+			showOKDiaLog(context, "当前网络不可用，请设置后重试！");
 			progressDialog.cancel();
 			return;
 		}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/common_mainboby_bg_gray">
+
+    <RelativeLayout
+        android:id="@+id/rlySetFavChannelTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/common_bg2">
+
+        <ImageButton
+            android:id="@+id/imgbSetFavChannelBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:src="@drawable/head_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:singleLine="false"
+            android:text="我的收藏"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <com.app.Common.SwipeMenuListview.SwipeMenuListView
+        android:id="@+id/lvSetFavChannelContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlySetFavChannelTitle"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout><!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/layout/profile_set_favchannel_fragment.xml -->

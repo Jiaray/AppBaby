@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <stroke
+        android:width="5px"
+        android:color="#888888" />
+    <solid android:color="#272727" />
+    <corners android:radius="2dp"/>
+</shape>
+<!-- From: file:/D:/Jiaray/Keep/Android/AppBaby/app/src/main/res/drawable/moments_commentfun_bg.xml -->

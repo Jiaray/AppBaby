@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -62,6 +62,8 @@ public class NewsChannelFragment extends BaseFragment {
     private MainTabActivity main;
     private NewsChannelFragment thisFragment;
 
+    private String callType;
+
     public itmeCallBack onCallBack;
 
     public interface itmeCallBack {
@@ -75,14 +77,24 @@ public class NewsChannelFragment extends BaseFragment {
     private RelativeLayout mRlyInteractiveArea;
     private ImageButton mImgBBack, mImgBShare;
     private ImageView mImgGood, mImgFav;
-    private LinearLayout mLyGood,mLyFav;
+    private LinearLayout mLyGood, mLyFav;
     private WebView mWvContent;
     private TextView mTxtGoodNum, mTxtFavNum;
     private UMSocialService mController;
 
     /*收藏、按讚狀態*/
-    private boolean isGood = false;
-    private boolean isFav = false;
+    private boolean hadData;
+    private boolean isGood;
+    private boolean isFav;
+    private int countNum;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cancleDiaLog();
+        if (onCallBack != null) onCallBack.onBack();
+        if (mRlyInteractiveArea.getVisibility() == View.VISIBLE)main.AddTabHost();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,11 +111,11 @@ public class NewsChannelFragment extends BaseFragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.news_channel_fragment,
                     container, false);
-            creatRootView();
+            initView();
+            getData();
             // 设置分享的内容
             setShareContent();
             main = (MainTabActivity) getActivity();
-            /* 初始化本頁面 */
             thisFragment = this;
         }
         return rootView;
@@ -112,7 +124,13 @@ public class NewsChannelFragment extends BaseFragment {
     /**
      * 產生主畫面
      */
-    private void creatRootView() {
+    private void initView() {
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         mRlyInteractiveArea = (RelativeLayout) rootView.findViewById(R.id.rlyRegFeedBackFooter);
         mLyGood = (LinearLayout) rootView.findViewById(R.id.lyNewsGood);
         mLyFav = (LinearLayout) rootView.findViewById(R.id.lyNewsFav);
@@ -123,9 +141,9 @@ public class NewsChannelFragment extends BaseFragment {
         mWvContent = (WebView) rootView.findViewById(R.id.wvNewsContent);
         mTxtGoodNum = (TextView) rootView.findViewById(R.id.txtNewsGoodNum);
         mTxtFavNum = (TextView) rootView.findViewById(R.id.txtNewsFavNum);
-        if(GOOD_CNT.equals("null") || FAVORITE_CNT.equals("null")){
+        if (GOOD_CNT.equals("null") || FAVORITE_CNT.equals("null")) {
             mRlyInteractiveArea.setVisibility(View.GONE);
-        }else{
+        } else {
             mRlyInteractiveArea.setVisibility(View.VISIBLE);
             mTxtGoodNum.setText(GOOD_CNT);
             mTxtFavNum.setText(FAVORITE_CNT);
@@ -139,21 +157,19 @@ public class NewsChannelFragment extends BaseFragment {
         mImgBShare.setOnClickListener(new onClick());
         mLyGood.setOnClickListener(new onClick());
         mLyFav.setOnClickListener(new onClick());
-        getGoodState();
-        getFavState();
     }
 
     private class onClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.imgbSetAccBack:
-                    if(mRlyInteractiveArea.getVisibility() == View.VISIBLE){
+                    if (mRlyInteractiveArea.getVisibility() == View.VISIBLE) {
                         main.RemoveBottom(thisFragment);
-                    }else{
+                    } else {
                         main.RemoveBottomNotAddTab(thisFragment);
                     }
-                break;
+                    break;
                 case R.id.btnNewsShare:
                     addCustomPlatforms();
                     break;
@@ -174,19 +190,11 @@ public class NewsChannelFragment extends BaseFragment {
         }
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cancleDiaLog();
-        if (onCallBack != null) onCallBack.onBack();
-    }
-
-    /**
-     * 取得收藏狀態
-     */
-    private void getFavState() {
-        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
+    //  取得該頻道資訊
+    private void getData() {
+        showLoadingDiaLog(getActivity(), "");
+        //  取得收藏狀態
+        WebService.GetChannelFavGood("Baby_Get_Channel_Had_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -195,61 +203,97 @@ public class NewsChannelFragment extends BaseFragment {
                 if (JsonisEmpty(json, "沒有取得收藏的任何資訊！")) return;
                 isFav = json.optString("FAVORITE_CNT").equals("1");
                 Log.v(TAG, "已設定為收藏:" + isFav);
-                setImgBtnContent(isFav ? "@drawable/news_content_favbiged" : "@drawable/news_content_favbig", mImgFav);
+                checkFavImg();
+                //  取得喜歡狀態
+                WebService.GetChannelFavGood("Baby_Get_Channel_Had_Good", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
+
+                    @Override
+                    public void CompleteCallback(String id, Object obj) {
+                        cancleDiaLog();
+                        if (ObjisNull(obj, "取得喜歡資訊錯誤！")) return;
+                        JSONObject json = (JSONObject) obj;
+                        if (JsonisEmpty(json, "沒有取得喜歡的任何資訊！")) return;
+                        isGood = json.optString("GOOD_CNT").equals("1");
+                        Log.v(TAG, "已設定為喜歡:" + isGood);
+                        checkGoodImg();
+                        hadData = true;
+                    }
+                });
             }
         });
     }
+
 
     /**
      * 設定收藏狀態
      */
     private void setFavState() {
-        WebService.GetSetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
+        if(!hadData){
+            showOKDiaLog(getActivity(), "频道资讯取得异常，无法提交动作!");
+            return;
+        }
+        countNum = Integer.valueOf(FAVORITE_CNT);
+        callType = isFav ? "CLEAR" : "INSERT";
+        showLoadingDiaLog(getActivity(), "");
+        WebService.SetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, callType, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                if (ObjisNull(obj, "已設定收藏")) return;
-                isFav = obj.equals("1");
-                Log.v(TAG, "已設定為收藏:" + isFav);
-                setImgBtnContent(isFav ? "@drawable/news_content_favbiged" : "@drawable/news_content_favbig", mImgFav);
-                mTxtFavNum.setText(String.valueOf(Integer.valueOf(FAVORITE_CNT) + 1));
+                cancleDiaLog();
+                if (obj == null || !obj.equals("1")){
+                    showOKDiaLog(getActivity(), "提交失败!");
+                    return;
+                }else if (obj.equals("1")) {
+                    DisplayToast("提交完成!");
+                    isFav = callType.equals("INSERT") ? true : false;
+                    countNum = callType.equals("INSERT") ? (countNum + 1) : (countNum - 1);
+                    FAVORITE_CNT = String.valueOf(countNum);
+                    mTxtFavNum.setText(FAVORITE_CNT);
+                    checkFavImg();
+                }
+                Log.v(TAG, "收藏狀態 : " + isFav);
             }
         });
     }
 
-    /**
-     * 取得喜歡狀態
-     */
-    private void getGoodState() {
-        WebService.GetSetChannelFavGood("Baby_Get_Channel_Had_Good", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
-
-            @Override
-            public void CompleteCallback(String id, Object obj) {
-                if (ObjisNull(obj, "取得喜歡資訊錯誤！")) return;
-                JSONObject json = (JSONObject) obj;
-                if (JsonisEmpty(json, "沒有取得喜歡的任何資訊！")) return;
-                isGood = json.optString("GOOD_CNT").equals("1");
-                Log.v(TAG, "已設定為喜歡:" + isGood);
-                setImgBtnContent(isGood ? "@drawable/news_goodbiged" : "@drawable/news_goodbig", mImgGood);
-            }
-        });
+    private void checkFavImg() {
+        setImgBtnContent(isFav ? "@drawable/news_content_favbiged" : "@drawable/news_content_favbig", mImgFav);
     }
 
     /**
      * 設定喜歡狀態
      */
     private void setGoodState() {
-        WebService.GetSetChannelFavGood("Baby_Set_Channel_Good ", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
+        if(!hadData){
+            showOKDiaLog(getActivity(), "频道资讯取得异常，无法提交动作!");
+            return;
+        }
+        countNum = Integer.valueOf(GOOD_CNT);
+        callType = isGood ? "CLEAR" : "INSERT";
+        showLoadingDiaLog(getActivity(), "");
+        WebService.SetChannelFavGood("Baby_Set_Channel_Good ", null, UserMstr.userData.getUserID(), CHANNEL_ID, "INSERT", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                if (ObjisNull(obj, "已設定喜歡")) return;
-                isGood = obj.equals("1");
-                Log.v(TAG, "已設定為喜歡:" + isGood);
-                setImgBtnContent(isGood ? "@drawable/news_goodbiged" : "@drawable/news_goodbig", mImgGood);
-                mTxtGoodNum.setText(String.valueOf(Integer.valueOf(GOOD_CNT) + 1));
+                cancleDiaLog();
+                if (obj == null || !obj.equals("1")){
+                    showOKDiaLog(getActivity(), "提交失败!");
+                    return;
+                }else if (obj.equals("1")) {
+                    DisplayToast("提交完成!");
+                    isGood = callType.equals("INSERT") ? true : false;
+                    countNum = callType.equals("INSERT") ? (countNum + 1) : (countNum - 1);
+                    GOOD_CNT = String.valueOf(countNum);
+                    mTxtGoodNum.setText(GOOD_CNT);
+                    checkGoodImg();
+                }
+                Log.v(TAG, "喜歡狀態 : " + isFav);
             }
         });
+    }
+
+    private void checkGoodImg() {
+        setImgBtnContent(isGood ? "@drawable/news_goodbiged" : "@drawable/news_goodbig", mImgGood);
     }
 
     /**
@@ -261,7 +305,7 @@ public class NewsChannelFragment extends BaseFragment {
      */
     private boolean ObjisNull(Object $obj, String msg) {
         if ($obj == null) {
-            MyAlertDialog.Show(getActivity(), msg);
+            showOKDiaLog(getActivity(), msg);
             return true;
         } else {
             return false;
@@ -277,7 +321,7 @@ public class NewsChannelFragment extends BaseFragment {
      */
     private boolean JsonisEmpty(JSONObject $json, String msg) {
         if ($json.length() == 0) {
-            MyAlertDialog.Show(getActivity(), msg);
+            showOKDiaLog(getActivity(), msg);
             return true;
         } else {
             return false;
