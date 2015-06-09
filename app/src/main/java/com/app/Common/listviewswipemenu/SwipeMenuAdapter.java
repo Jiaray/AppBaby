@@ -1,4 +1,4 @@
-package com.app.AppBabySH.SwipeMenuListview;
+package com.app.Common.listviewswipemenu;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -9,16 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
-import com.app.AppBabySH.SwipeMenuListview.SwipeMenuListView.OnMenuItemClickListener;
-import com.app.AppBabySH.SwipeMenuListview.SwipeMenuView.OnSwipeItemClickListener;
-
 
 public class SwipeMenuAdapter implements WrapperListAdapter,
-		OnSwipeItemClickListener {
+		SwipeMenuView.OnSwipeItemClickListener {
 
 	private ListAdapter mAdapter;
 	private Context mContext;
-	private OnMenuItemClickListener onMenuItemClickListener;
+	private SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener;
 
 	public SwipeMenuAdapter(Context context, ListAdapter adapter) {
 		mAdapter = adapter;
@@ -90,7 +87,7 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
 	}
 
 	public void setOnMenuItemClickListener(
-			OnMenuItemClickListener onMenuItemClickListener) {
+			SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener) {
 		this.onMenuItemClickListener = onMenuItemClickListener;
 	}
 

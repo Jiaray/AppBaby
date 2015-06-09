@@ -1,4 +1,4 @@
-package com.app.AppBabySH.SwipeMenuListview;
+package com.app.Common.listviewswipemenu;
 
 import android.text.TextUtils;
 import android.view.Gravity;

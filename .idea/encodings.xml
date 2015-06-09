@@ -3,13 +3,6 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/MomentsFragment.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SelectMultiImgFragment.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenu.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuAdapter.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuCreator.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuItem.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuLayout.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuListView.java" charset="x-windows-950" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/SwipeMenuListview/SwipeMenuView.java" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/AppBabySH/adapter/MomentsAdapter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/AsyncImageLoader.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/ImgViewPager/Animation.java" charset="x-windows-950" />
@@ -34,6 +27,13 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/SelectMultiImg/SelectMultiImgDirPopupWindow.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/SelectMultiImg/SelectMultiImgLoader.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/SelectMultiImg/SelectMultiImgViewHolder.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenu.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuCreator.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuItem.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuLayout.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuListView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuView.java" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_in.xml" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_out.xml" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_action_share.png" charset="x-windows-950" />

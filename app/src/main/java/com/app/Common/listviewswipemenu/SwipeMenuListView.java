@@ -1,4 +1,4 @@
-package com.app.AppBabySH.SwipeMenuListview;
+package com.app.Common.listviewswipemenu;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
