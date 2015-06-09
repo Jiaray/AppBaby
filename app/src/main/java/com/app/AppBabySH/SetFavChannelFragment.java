@@ -16,10 +16,10 @@ import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.AppBabySH.adapter.SetFavChannelAdapter;
 import com.app.AppBabySH.item.NewsItem;
-import com.app.Common.SwipeMenuListview.SwipeMenu;
-import com.app.Common.SwipeMenuListview.SwipeMenuCreator;
-import com.app.Common.SwipeMenuListview.SwipeMenuItem;
-import com.app.Common.SwipeMenuListview.SwipeMenuListView;
+import com.app.AppBabySH.SwipeMenuListview.SwipeMenu;
+import com.app.AppBabySH.SwipeMenuListview.SwipeMenuCreator;
+import com.app.AppBabySH.SwipeMenuListview.SwipeMenuItem;
+import com.app.AppBabySH.SwipeMenuListview.SwipeMenuListView;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
