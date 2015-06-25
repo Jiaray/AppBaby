@@ -1,13 +1,13 @@
 package com.app.AppBabySH;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -49,14 +49,14 @@ public class MomentsImageFragment extends BaseFragment {
     private ViewPager mVPimage;
     private ImageButton mImgBtnBack;
     private TextView mTxtNo, mTxtGood, mTxtFav, mTxtContent;
-    private LinearLayout mLyGood,mLyFav,mLyComment;
+    private LinearLayout mLyGood, mLyFav, mLyComment;
 
     //
     private ArrayList<String> imgPaths;
     private Integer pos;
     private FullScreenImageAdapter adapter;
     private AlertDialog.Builder alertD;
-    private Boolean hadGood;
+    private Boolean hadGood, hadFav;
 
     public imgCallBack onCallBack;
     private String afterBackAction;
@@ -83,11 +83,17 @@ public class MomentsImageFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mLyFunBar.getVisibility() == View.VISIBLE)main.AddTabHost();
+        if (mLyFunBar.getVisibility() == View.VISIBLE) main.AddTabHost();
         if (onCallBack != null) onCallBack.onBack(CricleItem, afterBackAction);
     }
 
     private void createRootView() {
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         mLyFunBar = (RelativeLayout) rootView.findViewById(R.id.lyMomentsImageFun);
         mTxtNo = (TextView) rootView.findViewById(R.id.txtMomentsImageNo);
         mTxtNo.setText(SEQ + "/" + CricleItem.ATCH.size());
@@ -104,10 +110,10 @@ public class MomentsImageFragment extends BaseFragment {
         mLyComment.setOnClickListener(new ImageFragmentClick());
         mImgBtnBack.setOnClickListener(new ImageFragmentClick());
         mVPimage = (ViewPager) rootView.findViewById(R.id.vpMomentsImageContent);
-        if(!openFunBar){
+        if (!openFunBar) {
             mTxtContent.setVisibility(View.VISIBLE);
             mLyFunBar.setVisibility(View.GONE);
-        }else{
+        } else {
             mTxtContent.setVisibility(View.GONE);
             mLyFunBar.setVisibility(View.VISIBLE);
         }
@@ -151,15 +157,27 @@ public class MomentsImageFragment extends BaseFragment {
                     DisplayToast("無法點讚資訊!");
                     return;
                 }
-                if (json.optString("GOOD_CNT").equals("1")) {
-                    hadGood = true;
-                } else {
-                    hadGood = false;
-                }
+                hadGood = json.optString("GOOD_CNT").equals("1") ? true : false;
                 mTxtGood.setText("" + CricleItem.GOOD.size());
             }
         });
 
+        WebService.GetCircleHadKeepToGrow(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+            @Override
+            public void CompleteCallback(String id, Object obj) {
+                if (obj == null) {
+                    DisplayOKDiaLog("Error!");
+                    return;
+                }
+                JSONObject json = (JSONObject) obj;
+                hadFav = json.optString("GROW_CNT").equals("1") ? true : false;
+            }
+        });
+
+        getFavCount();
+    }
+
+    private void getFavCount() {
         WebService.GetCircleKeepToGrowCount(null, CricleItem.CIRCLE_ID, new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -241,55 +259,76 @@ public class MomentsImageFragment extends BaseFragment {
 
     //  對班級圈按讚
     private void goodCircle() {
-        if (hadGood) {
-            DisplayToast("已按讚!");
-        } else {
-            WebService.SetCircleGood(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(),"INSERT", new WebService.WebCallback() {
-                @Override
-                public void CompleteCallback(String id, Object obj) {
-                    Map map = new HashMap();
-                    map.put("CIRCLE_ID", CricleItem.CIRCLE_ID);
-                    map.put("USER_ID", UserMstr.userData.getUserID());
-                    map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
-                    JSONObject newJsonObj = new JSONObject(map);
-                    // 按下"收到"以後要做的事情
-                    CricleItem.GOOD.add(newJsonObj);
-                    adapter.notifyDataSetChanged();
-                }
-            });
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) {
+            return;
         }
+        final String callType = hadGood ? "CLEAR" : "INSERT";
+        DisplayLoadingDiaLog("检查中...");
+        WebService.SetCircleGood(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), callType, new WebService.WebCallback() {
+            @Override
+            public void CompleteCallback(String id, Object obj) {
+                MyAlertDialog.Cancel();
+                if (obj == null) {
+                    DisplayOKDiaLog("提交失败!");
+                    return;
+                } else {
+                    if (callType.equals("INSERT")) {
+                        Map map = new HashMap();
+                        map.put("CIRCLE_ID", CricleItem.CIRCLE_ID);
+                        map.put("USER_ID", UserMstr.userData.getUserID());
+                        map.put("NIC_NAME", UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME"));
+                        JSONObject newJsonObj = new JSONObject(map);
+                        // 按下"收到"以後要做的事情
+                        CricleItem.GOOD.add(newJsonObj);
+                        adapter.notifyDataSetChanged();
+                        DisplayToast("完成按讚!");
+                        hadGood = true;
+                    } else {
+                        int i = -1;
+                        while (++i < CricleItem.GOOD.size()) {
+                            if (CricleItem.GOOD.get(i).optString("CIRCLE_ID").equals(CricleItem.CIRCLE_ID) &&
+                                    CricleItem.GOOD.get(i).optString("USER_ID").equals(UserMstr.userData.getUserID())) {
+                                CricleItem.GOOD.remove(i);
+                            }
+                        }
+                        hadGood = false;
+                        DisplayToast("取消按讚!");
+                    }
+                    mTxtGood.setText("" + CricleItem.GOOD.size());
+                }
+
+            }
+        });
     }
 
     //  收藏班級圈
     private void favCircle() {
-        WebService.GetCircleHadKeepToGrow(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) {
+            return;
+        }
+        final String callType = hadFav ? "CLEAR" : "INSERT";
+        DisplayLoadingDiaLog("检查中...");
+        WebService.SetCircleKeepToGrow(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), callType, new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
+                MyAlertDialog.Cancel();
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "Error!");
+                    DisplayOKDiaLog("提交失败!");
                     return;
-                }
-                JSONObject json = (JSONObject) obj;
-                if (json.optString("GROW_CNT").equals("1")) {
-                    DisplayToast("已收藏!");
                 } else {
-                    WebService.SetCircleKeepToGrow(null, CricleItem.CIRCLE_ID, UserMstr.userData.getUserID(), new WebService.WebCallback() {
-                        @Override
-                        public void CompleteCallback(String id, Object obj) {
-                            alertD = new AlertDialog.Builder(getActivity());
-                            alertD.setTitle("檢查"); //設定dialog 的title顯示內容
-                            alertD.setMessage("收藏成功!");
-                            alertD.setCancelable(false); //關閉 Android 系統的主要功能鍵(menu,home等...)
-                            alertD.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-                            alertD.show();
-                        }
-                    });
+                    if (callType.equals("INSERT")) {
+                        DisplayOKDiaLog("完成收藏!");
+                        hadFav = true;
+                    }else{
+                        DisplayToast("取消收藏!");
+                        hadFav = false;
+                    }
+                    getFavCount();
                 }
             }
         });
     }
+
 }

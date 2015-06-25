@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -33,6 +34,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -46,8 +48,9 @@ import com.app.Common.FileCache;
 
 public class LoginActivity extends FragmentActivity implements OnClickListener {
     private static final String TAG = "LoginA";
-    private EditText mTxtName, mTxtPW;
+    public EditText mTxtName, mTxtPW;
     private Button mBtnLoginEnter, mBtnReg, mBtnForget, mBtnGuest;
+    private ImageButton mBtnDelName,mBtnDelPw;
     private Toast toast;
     private ProgressDialog pd;
     public Boolean Agreement = false;
@@ -100,11 +103,21 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
         mBtnReg = (Button) findViewById(R.id.btnLoginReg);
         mBtnForget = (Button) findViewById(R.id.btnLoginForget);
         mBtnGuest = (Button) findViewById(R.id.btnLoginGuest);
+        mBtnDelName = (ImageButton) findViewById(R.id.imgbLoginDelName);
+        mBtnDelPw = (ImageButton) findViewById(R.id.imgbLoginDelPW);
         mBtnLoginEnter.setOnClickListener(this);
         mBtnReg.setOnClickListener(this);
         mBtnForget.setOnClickListener(this);
         mBtnGuest.setOnClickListener(this);
-        getUserInfoByDB();
+        mBtnDelName.setOnClickListener(this);
+        mBtnDelPw.setOnClickListener(this);
+
+        //  判斷網路
+        if (!WebService.isConnected(this)) {
+            return;
+        }else{
+            getUserInfoByDB();
+        }
     }
 
     //  確認 DB 資料
@@ -165,6 +178,11 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     @SuppressLint("NewApi")
     @Override
     public void onClick(View v) {
+        //  判斷網路
+        if (!WebService.isConnected(this)) {
+            return;
+        }
+
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.btnLoginEnter:
@@ -184,11 +202,17 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                 break;
             case R.id.btnLoginGuest:
                 break;
+            case R.id.imgbLoginDelName:
+                mTxtName.setText("");
+                break;
+            case R.id.imgbLoginDelPW:
+                mTxtPW.setText("");
+                break;
         }
     }
 
     //  APP 確認輸入的資料
-    private void checkLoginData() {
+    public void checkLoginData() {
         Log.i(TAG, "checkLoginData : 確認輸入的資料");
         if (mTxtName.getText().toString().equals("")) {
             DisplayToast("请输入用戶名称");
@@ -218,13 +242,6 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     //  WEB 確認登入資料
     private void connectWebLogin() {
         Log.i(TAG, "connectWebLogin : 連結至網路確認登入資料");
-        /** 判斷網路 */
-        if (!ComFun.checkNetworkState(this)) {
-            MyAlertDialog.Show(this, "当前网络不可用，请设置后重试！");
-            pd.cancel();
-            return;
-        }
-
         WebService.Login(null, mTxtName.getText().toString(), mTxtPW.getText().toString(),
                 "Android", "1234", "1234", "1234", "1234", new WebService.WebCallback() {
 

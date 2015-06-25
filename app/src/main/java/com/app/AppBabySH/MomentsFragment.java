@@ -75,6 +75,7 @@ public class MomentsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG,"onCreateView");
         //共用宣告
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustResize");
@@ -87,6 +88,7 @@ public class MomentsFragment extends BaseFragment {
 
     private void initView() {
         Log.v(TAG, "Moments-Init");
+        if(UserMstr.userData == null) return;
         isInit = true;
         CurrClassID = UserMstr.userData.ClassAryList.get(0).CLASS_ID;
         pageIndex = 1;
@@ -98,30 +100,48 @@ public class MomentsFragment extends BaseFragment {
 
             @Override
             public void onRefresh() {//Refresh
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    refreshPullView();
+                }else{
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-Refresh");
-                        refreshListView();
-                    }
-                }, 100);
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-Refresh");
+                            refreshListView();
+                        }
+                    }, 100);
+                }
             }
 
             @Override
             public void onLoadMore() {//LoadMore
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-LoadMore");
-                        pageIndex++;
-                        getData();
-                        pullDownView.notifyDidLoadMore(momentslist.isEmpty());
-                    }
-                }, 1000);
+                        @Override
+                        public void run() {
+                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                            refreshPullView();
+                        }
+                    }, 1000);
+                }else {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-LoadMore");
+                            pageIndex++;
+                            getData();
+                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                        }
+                    }, 1000);
+                }
             }
         });
 
@@ -149,7 +169,10 @@ public class MomentsFragment extends BaseFragment {
         mImgBFilter.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mutiItemDialogFilter.show();
+                //  判斷網路
+                if (WebService.isConnected(getActivity())) {
+                    mutiItemDialogFilter.show();
+                }
             }
         });
 
@@ -159,7 +182,10 @@ public class MomentsFragment extends BaseFragment {
         mImgBAddNew.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mutiItemDialogAddNew.show();
+                //  判斷網路
+                if (WebService.isConnected(getActivity())) {
+                    mutiItemDialogAddNew.show();
+                }
             }
         });
 
@@ -188,7 +214,10 @@ public class MomentsFragment extends BaseFragment {
                         tt.post(new Runnable() {
                             @Override
                             public void run() {
-                                comF.customCircle("news");
+                                //  判斷網路
+                                if (WebService.isConnected(getActivity())) {
+                                    comF.customCircle("news");
+                                }
                             }
                         });
                     }
@@ -196,8 +225,13 @@ public class MomentsFragment extends BaseFragment {
             }
             ImageLoader.getInstance().DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
             mSlvContent.addHeaderView(mVgHeader, null, false);
-
-            getData();
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) {
+                refreshPullView();
+                return;
+            }else{
+                getData();
+            }
             //removeCallbacks
             hdrMain.removeCallbacks(runInit);
         }
@@ -259,20 +293,21 @@ public class MomentsFragment extends BaseFragment {
 
     //  取得 Web 資料
     private void getData() {
-        showLoadingDiaLog(getActivity(), "Loading...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, String.valueOf(pageIndex), "3", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                CancelDiaLog();
                 Log.i(TAG, "obj : " + obj);
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "Error!");
+                    DisplayOKDiaLog("Error!");
                     return;
                 } else if (obj.equals("Success! No Data Return!")) {
-                    showOKDiaLog(getActivity(), "此班级查无资料!");
+                    DisplayOKDiaLog("此班级查无资料!");
                     momentslist.clear();
                     adapter.notifyDataSetChanged();
+                    pullDownView.notifyDidDataLoad(true);
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -281,7 +316,7 @@ public class MomentsFragment extends BaseFragment {
                 JSONArray replyAry = json.optJSONObject(0).optJSONArray("CIRCLE_REPLY");
                 JSONArray goodAry = json.optJSONObject(0).optJSONArray("CIRCLE_GOOD");
                 if (infoAry.length() == 0) {
-                    showOKDiaLog(getActivity(), "Empty!");
+                    DisplayOKDiaLog("Empty!");
                     return;
                 }
 
@@ -347,11 +382,10 @@ public class MomentsFragment extends BaseFragment {
     private void refreshPullView() {
         if (isInit) {
             isInit = false;
-            adapter.notifyDataSetChanged();
         } else {
-            adapter.notifyDataSetChanged();
             pullDownView.notifyDidRefresh(momentslist.isEmpty());
         }
+        adapter.notifyDataSetChanged();
 
         if (momentslist.size() == MOMENTS_COUNT) {
             pullDownView.notifyDidDataLoad(true);
@@ -367,6 +401,10 @@ public class MomentsFragment extends BaseFragment {
         //刪除、按讚、收藏功能
         @Override
         public void onClick(String $actiontype, MomentsItem $item) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) {
+                return;
+            }
             callBackItem = $item;
             Log.v(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID);
             Log.v(TAG, "DESCRIPTION:" + callBackItem.DESCRIPTION);
@@ -384,6 +422,10 @@ public class MomentsFragment extends BaseFragment {
         //  回覆功能
         @Override
         public void onCommentClick(MomentsItem $item, String $atReplySN, String $atReplyName) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) {
+                return;
+            }
             callBackItem = $item;
             strReplySN = $atReplySN;
             strReplyName = $atReplyName;
@@ -393,6 +435,10 @@ public class MomentsFragment extends BaseFragment {
         //  進入瀏覽圖示的畫面
         @Override
         public void onImgAdapterClick(MomentsImageItem $item) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) {
+                return;
+            }
             MomentsImageFragment momentsImageFragment = new MomentsImageFragment();
             int i = -1;
             while (++i < momentslist.size()) {
@@ -471,7 +517,7 @@ public class MomentsFragment extends BaseFragment {
     class SendReplyMsg implements View.OnClickListener {
         public void onClick(View v) {
             toViewMode();
-            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString(), strReplySN, new WebService.WebCallback() {
+            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString().replace("\n",""), strReplySN, new WebService.WebCallback() {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     if (obj != null) {

@@ -45,7 +45,7 @@ public class MainTabActivity extends FragmentActivity {
 
     //定义数组来存放Fragment界面
     //private Class fragmentArray[] = {MomentsFragment.class, ChatFragment.class, NewsFragment.class, GrowthFragment.class, ProfileFragment.class};
-    private Class fragmentArray[] = {MomentsFragment.class, NewsFragment.class, ProfileFragment.class};
+    public Class fragmentArray[] = {MomentsFragment.class, NewsFragment.class, ProfileFragment.class};
 
     //定义数组来存放按钮图片
     //private int mImageViewArray[] = {R.drawable.tab_moments, R.drawable.tab_chat, R.drawable.tab_news,R.drawable.tab_growth, R.drawable.tab_profile};
@@ -53,7 +53,7 @@ public class MainTabActivity extends FragmentActivity {
 
     //Tab选项卡的文字
     //private String mTextviewArray[] = {"班级圈", "家校通", "频道", "成长档案", "我"};
-    private String mTextviewArray[] = {"班级圈", "频道", "我"};
+    public String mTextviewArray[] = {"班级圈", "频道", "我"};
 
     private ArrayList<TextView> aryPushText;
     private int i;
@@ -63,7 +63,7 @@ public class MainTabActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maintab_layout);
-        Log.v(TAG, "onCreate");
+        Log.i(TAG, "onCreate");
 
         //取得螢幕寬高
         centerV = (GlobalVar) getApplicationContext();
@@ -80,14 +80,18 @@ public class MainTabActivity extends FragmentActivity {
     public void onResume() {
         super.onResume();
         if (!UserMstr.closeApp && UserMstr.userData == null) {
-            Log.v(TAG, "onResume : (UserMstr.userData = null)");
+            Log.i(TAG, "onResume : (UserMstr.userData = null)");
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
         }else{
             refreshPush();
+            if(centerV.loginAgain){
+                centerV.loginAgain = false;
+                mTabHost.setCurrentTab(0);
+            }
         }
         if (!isActive) {
-            Log.v(TAG, "onResume : (isActive = false) app 从后台唤醒，进入前台");
+            Log.i(TAG, "onResume : (isActive = false) app 从后台唤醒，进入前台");
             //app 从后台唤醒，进入前台
             isActive = true;
             Intent intent = new Intent(MainTabActivity.this, WelcomeActivity.class);
@@ -100,7 +104,7 @@ public class MainTabActivity extends FragmentActivity {
         super.onStop();
         isActive = isBackground(this);
         UserMstr.closeApp = false;
-        Log.v(TAG, "onStop : isActive : " + isActive);
+        Log.i(TAG, "onStop : isActive : " + isActive);
     }
 
 
@@ -108,7 +112,7 @@ public class MainTabActivity extends FragmentActivity {
      * 初始化组件
      */
     private void initView() {
-        Log.v(TAG, "initView : 初始化组件");
+        Log.i(TAG, "initView : 初始化组件");
         //实例化布局对象
         layoutInflater = LayoutInflater.from(this);
 
@@ -118,7 +122,6 @@ public class MainTabActivity extends FragmentActivity {
         mTabHostParent = (ViewGroup) mTabHost.getParent();
         //得到fragment的个数
         int count = fragmentArray.length;
-
         for (int i = 0; i < count; i++) {
             //为每一个Tab按钮设置图标、文字和内容
             TabSpec tabSpec = mTabHost.newTabSpec(mTextviewArray[i]).setIndicator(getTabItemView(i));

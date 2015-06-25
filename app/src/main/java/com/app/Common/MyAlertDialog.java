@@ -76,11 +76,22 @@ public class MyAlertDialog {
     }
 
 
+    /**
+     * 打開讀取視窗
+     * @param context
+     * @param message
+     */
+    public static void ShowLoading(Context context, String message) {
+        Cancel();
+        pd = MyAlertDialog.ShowProgress(context, message);
+        if (pd==null)return;
+        pd.show();
+    }
 
 
 
     /**
-     * 打開對話框
+     * 打開對話框提問 確定、取消
      *
      * @param msg
      * @param yesMsg
@@ -116,7 +127,7 @@ public class MyAlertDialog {
 
 
     /**
-     * 確認後 執行 something
+     * 打開對話框顯示確認且確認後 執行 something
      *
      * @param msg
      * @param context

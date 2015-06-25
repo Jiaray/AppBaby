@@ -20,12 +20,13 @@
             android:src="@drawable/head_back" />
 
         <TextView
+            android:id="@+id/txtSetAccAboutTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:singleLine="false"
-            android:text="设置头像"
+            android:text="关于宝贝通"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
     </RelativeLayout>

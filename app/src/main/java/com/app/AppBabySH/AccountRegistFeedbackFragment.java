@@ -1,7 +1,6 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,15 +12,8 @@ import android.widget.ImageButton;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
-import com.app.Common.SQLite.LocalFun;
-import com.app.Common.SQLite.LocalSQLCode;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by ray on 2015/5/29.
@@ -90,6 +82,8 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                     onBack();
                     break;
                 case R.id.btnRegFeedBackCommit:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     strSource = "激活碼無法註冊";
                     strNickName = mEdtNickName.getText().toString();
                     strPhone = mEdtPhone.getText().toString();
@@ -99,7 +93,7 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                     strStudent = mEdtStudent.getText().toString();
                     strActivation = TYPE.equals("activation") ? mEdtActivation.getText().toString() : "";
                     strContent = mEdtContent.getText().toString();
-                    strUserID = UserMstr.userData.getUserID();
+                    strUserID = TYPE.equals("activation") ? "" : UserMstr.userData.getUserID();
                     if (strNickName.equals("")) {
                         DisplayToast("称呼未填写!");
                         return;
@@ -142,7 +136,7 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
 
     //  激活碼驗證
     private void sendFeedback() {
-        showLoadingDiaLog(getActivity(), "提交中,请稍后!");
+        DisplayLoadingDiaLog("提交中,请稍后!");
         WebService.SetFeedback(null,
                 strSource, strNickName, strPhone,
                 strSchool, strClass, strEmail,
@@ -151,14 +145,14 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
 
                     @Override
                     public void CompleteCallback(String id, Object obj) {
-                        cancleDiaLog();
+                        CancelDiaLog();
 
                         // TODO Auto-generated method stub
                         if (obj == null || !obj.equals("1")) {
-                            showOKDiaLog(getActivity(), "提交失败！");
+                            DisplayOKDiaLog("提交失败！");
                             return;
                         } else {
-                            showOKDiaLog(getActivity(), "提交完成");
+                            DisplayOKDiaLog("提交完成");
                             onBack();
                         }
                     }

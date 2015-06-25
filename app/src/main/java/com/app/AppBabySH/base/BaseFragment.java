@@ -16,7 +16,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.app.Common.ComFun;
+
 import com.app.Common.MyAlertDialog;
 
 import java.util.Calendar;
@@ -49,37 +49,28 @@ public class BaseFragment extends Fragment {
 	
 	/**
 	 * 讀取中對話視窗
-	 * @param context
 	 * @param msg
 	 */
-	protected void showLoadingDiaLog(Context context,String msg){
-		//progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		//ProgressDialog.show(context,"", msg, true);
-		cancleDiaLog();
-		progressDialog = MyAlertDialog.ShowProgress(context, msg);
+	protected void DisplayLoadingDiaLog(String msg){
+		CancelDiaLog();
+		progressDialog = MyAlertDialog.ShowProgress(getActivity(), msg);
 		if (progressDialog==null)return;
 		progressDialog.show();
-		if (!ComFun.checkNetworkState(context)) {
-			showOKDiaLog(context, "当前网络不可用，请设置后重试！");
-			progressDialog.cancel();
-			return;
-		}
 	}
 
 	/**
 	 * 確認對話視窗
-	 * @param context
 	 * @param message
 	 */
-	protected void showOKDiaLog(Context context, String message) {
-		new AlertDialog.Builder(context).setTitle("检查").setMessage(message)
+	protected void DisplayOKDiaLog(String message) {
+		new AlertDialog.Builder(getActivity()).setTitle("检查").setMessage(message)
 				.setPositiveButton("确定", null).show();
 	}
 	
 	/**
 	 * 關閉對話視窗
 	 */
-	protected void cancleDiaLog(){
+	protected void CancelDiaLog(){
 		if (progressDialog!=null){
 			progressDialog.cancel();
 			progressDialog.dismiss();
@@ -200,12 +191,11 @@ public class BaseFragment extends Fragment {
 	 * @param msg
 	 * @param yesMsg
 	 * @param noMsg
-	 * @param context
 	 * @param onCallbck
 	 */
-	protected void showDialog(String title ,String msg,String yesMsg,String noMsg,
-			Context context,final DialogCallBack onCallbck){
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+	protected void DisplayNYDialog(String title, String msg, String yesMsg, String noMsg,
+								   final DialogCallBack onCallbck){
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(msg);
 		builder.setTitle(title);
 		builder.setCancelable(false);

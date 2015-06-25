@@ -2,11 +2,9 @@ package com.app.AppBabySH;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsImageAdapter;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.Common.UserMstr;
@@ -194,7 +191,7 @@ public class MomentsAddNewFragment extends BaseFragment {
             @Override
             public void onEnter(List imgList) {
                 _list = imgList;
-                showLoadingDiaLog(getActivity(), "图片处理中");
+               DisplayLoadingDiaLog("图片处理中");
                 i = -1;
                 while (++i < imgList.size()) {
                     File f = new File(imgList.get(i).toString());
@@ -202,12 +199,13 @@ public class MomentsAddNewFragment extends BaseFragment {
                     ImageLoader.getInstance().AChangeSmallSizeToB(f.getAbsolutePath(), mCurrentPhotoPath);
                     aryPicPath.add(mCurrentPhotoPath);
                 }
-                cancleDiaLog();
+                CancelDiaLog();
                 createPreview();
             }
 
             @Override
             public void onBack() {
+                createPreview();
                 main.RemoveTab();
             }
         };
@@ -272,14 +270,14 @@ public class MomentsAddNewFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "GetUpToken Error!");
+                    DisplayOKDiaLog("GetUpToken Error!");
                     return;
                 }
                 strUpToken = obj.toString();
                 posPic = 0;
                 jsonAryPic = new JSONArray();
                 if (aryPicPath.size() == 0) {
-                    showLoadingDiaLog(getActivity(), "提交中...");
+                   DisplayLoadingDiaLog("提交中...");
                     connectWeb();
                 } else {
                     uploadPic(posPic);
@@ -291,7 +289,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     //  開始上傳照片
     private void uploadPic(int $pos) {
         posPic = ($pos + 1);
-        showLoadingDiaLog(getActivity(), "图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
+       DisplayLoadingDiaLog("图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
         data = new File(aryPicPath.get($pos));
         String key = aryPicPath.get($pos).substring(aryPicPath.get($pos).lastIndexOf("/") + 1, aryPicPath.get($pos).length());
         String token = strUpToken;
@@ -325,14 +323,15 @@ public class MomentsAddNewFragment extends BaseFragment {
     private void connectWeb() {
         String Atch_Info = jsonAryPic.length() == 0 ? "" : jsonAryPic.toString();
         WebService.SetCircleNew(null,
+                centerV.apn,
                 UserMstr.userData.getUserID(),
-                Class_ID, mEdtContent.getText().toString(),
+                Class_ID, mEdtContent.getText().toString().replace("\n",""),
                 UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE"), "", "", String.valueOf(jsonAryPic.length()), Atch_Info, new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
-                        cancleDiaLog();
+                        CancelDiaLog();
                         if (obj == null) {
-                            showOKDiaLog(getActivity(), "SetCircleNew Error!");
+                            DisplayOKDiaLog("SetCircleNew Error!");
                             return;
                         }
                         main.RemoveBottom(thisFragment);

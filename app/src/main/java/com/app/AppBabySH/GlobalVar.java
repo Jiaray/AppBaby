@@ -8,5 +8,6 @@ import android.app.Application;
 public class GlobalVar extends Application {
     public Integer windowHeight,windowWidth;
     public final double[] momentsImageSizeAry={0.26,0.38,0.5};
-    public final double[] momentsPersonalImageSizeAry={0.1,0.2};
+    public Boolean loginAgain = false;
+    public String apn = "P";
 }

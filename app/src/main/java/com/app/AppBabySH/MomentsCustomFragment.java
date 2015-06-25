@@ -1,13 +1,9 @@
 package com.app.AppBabySH;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,15 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.AppBabySH.activity.MainTabActivity;
-import com.app.AppBabySH.adapter.MomentsAdapter;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.adapter.MomentsCustomAdapter;
 import com.app.AppBabySH.item.MomentsImageItem;
 import com.app.AppBabySH.item.MomentsItem;
 import com.app.Common.PullDownView;
 import com.app.Common.ScrollOverListView;
-import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -111,31 +104,49 @@ public class MomentsCustomFragment extends BaseFragment {
         pullDownView.setOnPullDownListener(new PullDownView.OnPullDownListener() {
 
             @Override
-            public void onRefresh() {//Refresh
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+            public void onRefresh() {//Refresh.
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    refreshPullView();
+                }else {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-Personal-Refresh");
-                        refreshListView();
-                    }
-                }, 100);
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-Personal-Refresh");
+                            refreshListView();
+                        }
+                    }, 100);
+                }
             }
 
             @Override
             public void onLoadMore() {//LoadMore
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        Log.v(TAG, "Moments-Personal-Refresh");
-                        pageIndex++;
-                        getData();
-                        pullDownView.notifyDidLoadMore(momentslist.isEmpty());
-                    }
-                }, 1000);
+                        @Override
+                        public void run() {
+                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                            refreshPullView();
+                        }
+                    }, 1000);
+                }else {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.v(TAG, "Moments-Personal-Refresh");
+                            pageIndex++;
+                            getData();
+                            pullDownView.notifyDidLoadMore(momentslist.isEmpty());
+                        }
+                    }, 1000);
+                }
             }
         });
 
@@ -176,7 +187,7 @@ public class MomentsCustomFragment extends BaseFragment {
 
     //  取得 Web 資料
     private void getData() {
-        showLoadingDiaLog(getActivity(), "Personal Loading...");
+        DisplayLoadingDiaLog("Personal Loading...");
         if (NIC_NAME.equals("MomentsNews")) {
             WebService.GetCircleListNotRead(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
         } else {
@@ -187,9 +198,9 @@ public class MomentsCustomFragment extends BaseFragment {
     class webCallBack implements WebService.WebCallback {
         @Override
         public void CompleteCallback(String id, Object obj) {
-            cancleDiaLog();
+            CancelDiaLog();
             if (obj == null) {
-                showOKDiaLog(getActivity(), "Personal Error!");
+                DisplayOKDiaLog("Personal Error!");
                 return;
             }
             JSONArray json = (JSONArray) obj;
@@ -198,7 +209,7 @@ public class MomentsCustomFragment extends BaseFragment {
             JSONArray replyAry = json.optJSONObject(0).optJSONArray("CIRCLE_REPLY");
             JSONArray goodAry = json.optJSONObject(0).optJSONArray("CIRCLE_GOOD");
             if (infoAry.length() == 0) {
-                showOKDiaLog(getActivity(), "Personal Empty!");
+                DisplayOKDiaLog("Personal Empty!");
                 return;
             }
 
@@ -277,6 +288,10 @@ public class MomentsCustomFragment extends BaseFragment {
         //  進入瀏覽圖示的畫面
         @Override
         public void onImgAdapterClick(MomentsImageItem $item) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) {
+                return;
+            }
             MomentsImageFragment momentsImageFragment = new MomentsImageFragment();
             int i = -1;
             while (++i < momentslist.size()) {

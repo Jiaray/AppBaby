@@ -54,10 +54,10 @@ public class NewsAdapter extends BaseAdapter {
             convertView = minflater.inflate(R.layout.news_item, null);
             viewHolder.titleTxt = (TextView) convertView.findViewById(R.id.txtNewsTitle);
             viewHolder.goodTxt = (TextView) convertView.findViewById(R.id.news_goodTxt);
-            viewHolder.favTxt = (TextView) convertView.findViewById(R.id.news_favTxt);
+            //viewHolder.favTxt = (TextView) convertView.findViewById(R.id.news_favTxt);
             viewHolder.mainIMGIMG = (ImageView) convertView.findViewById(R.id.news_imageImg);
             viewHolder.goodIMG = (ImageView) convertView.findViewById(R.id.news_goodImg);
-            viewHolder.favIMG = (ImageView) convertView.findViewById(R.id.news_favImg);
+            //viewHolder.favIMG = (ImageView) convertView.findViewById(R.id.news_favImg);
             viewHolder.newIMG = (ImageView) convertView.findViewById(R.id.imgNewsNewLogo);
             convertView.setTag(viewHolder);
         } else {
@@ -67,7 +67,7 @@ public class NewsAdapter extends BaseAdapter {
         if (item != null) {
             viewHolder.titleTxt.setText(item.CHANNEL_TITLE);
             viewHolder.goodTxt.setText(item.GOOD_CNT);
-            viewHolder.favTxt.setText(item.FAVORITE_CNT);
+            //viewHolder.favTxt.setText(item.FAVORITE_CNT);
             ImageLoader.getInstance().DisplayImage(item.THUMB_URL, viewHolder.mainIMGIMG);
         }
         return convertView;

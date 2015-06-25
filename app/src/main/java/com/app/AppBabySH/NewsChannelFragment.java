@@ -1,5 +1,6 @@
 package com.app.AppBabySH;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.HttpAuthHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -91,9 +94,9 @@ public class NewsChannelFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        cancleDiaLog();
+        CancelDiaLog();
         if (onCallBack != null) onCallBack.onBack();
-        if (mRlyInteractiveArea.getVisibility() == View.VISIBLE)main.AddTabHost();
+        if (mRlyInteractiveArea.getVisibility() == View.VISIBLE) main.AddTabHost();
     }
 
     @Override
@@ -112,7 +115,11 @@ public class NewsChannelFragment extends BaseFragment {
             rootView = inflater.inflate(R.layout.news_channel_fragment,
                     container, false);
             initView();
-            getData();
+            //  判斷網路
+            if (WebService.isConnected(getActivity())) {
+                getData();
+            }
+
             // 设置分享的内容
             setShareContent();
             main = (MainTabActivity) getActivity();
@@ -148,15 +155,19 @@ public class NewsChannelFragment extends BaseFragment {
             mTxtGoodNum.setText(GOOD_CNT);
             mTxtFavNum.setText(FAVORITE_CNT);
         }
+        mImgBBack.setOnClickListener(new onClick());
+        mImgBShare.setOnClickListener(new onClick());
+        mLyGood.setOnClickListener(new onClick());
+        mLyFav.setOnClickListener(new onClick());
+        initWebView();
+    }
+
+    private void initWebView() {
         Log.v(TAG, "開起網頁 Url = " + MEDIA_CONTENT);
         mWvContent.getSettings().setJavaScriptEnabled(true);
         mWvContent.requestFocus();
         mWvContent.setWebViewClient(new MyWebViewClient());
         mWvContent.loadUrl(MEDIA_CONTENT);
-        mImgBBack.setOnClickListener(new onClick());
-        mImgBShare.setOnClickListener(new onClick());
-        mLyGood.setOnClickListener(new onClick());
-        mLyFav.setOnClickListener(new onClick());
     }
 
     private class onClick implements View.OnClickListener {
@@ -185,6 +196,25 @@ public class NewsChannelFragment extends BaseFragment {
 
     private class MyWebViewClient extends WebViewClient {
         @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            DisplayLoadingDiaLog("网站开启中");
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            CancelDiaLog();
+        }
+
+        @Override
+        public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+            super.onReceivedHttpAuthRequest(view, handler, host, realm);
+            CancelDiaLog();
+            DisplayOKDiaLog("网站开启失败");
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return super.shouldOverrideUrlLoading(view, url);
         }
@@ -192,7 +222,7 @@ public class NewsChannelFragment extends BaseFragment {
 
     //  取得該頻道資訊
     private void getData() {
-        showLoadingDiaLog(getActivity(), "");
+        DisplayLoadingDiaLog("");
         //  取得收藏狀態
         WebService.GetChannelFavGood("Baby_Get_Channel_Had_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, new WebService.WebCallback() {
 
@@ -209,7 +239,7 @@ public class NewsChannelFragment extends BaseFragment {
 
                     @Override
                     public void CompleteCallback(String id, Object obj) {
-                        cancleDiaLog();
+                        CancelDiaLog();
                         if (ObjisNull(obj, "取得喜歡資訊錯誤！")) return;
                         JSONObject json = (JSONObject) obj;
                         if (JsonisEmpty(json, "沒有取得喜歡的任何資訊！")) return;
@@ -228,22 +258,24 @@ public class NewsChannelFragment extends BaseFragment {
      * 設定收藏狀態
      */
     private void setFavState() {
-        if(!hadData){
-            showOKDiaLog(getActivity(), "频道资讯取得异常，无法提交动作!");
+        if (!hadData) {
+            DisplayOKDiaLog("频道资讯取得异常，无法提交动作!");
             return;
         }
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) return;
         countNum = Integer.valueOf(FAVORITE_CNT);
         callType = isFav ? "CLEAR" : "INSERT";
-        showLoadingDiaLog(getActivity(), "");
+        DisplayLoadingDiaLog("");
         WebService.SetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getUserID(), CHANNEL_ID, callType, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
-                if (obj == null || !obj.equals("1")){
-                    showOKDiaLog(getActivity(), "提交失败!");
+                CancelDiaLog();
+                if (obj == null || !obj.equals("1")) {
+                    DisplayOKDiaLog("提交失败!");
                     return;
-                }else if (obj.equals("1")) {
+                } else if (obj.equals("1")) {
                     DisplayToast("提交完成!");
                     isFav = callType.equals("INSERT") ? true : false;
                     countNum = callType.equals("INSERT") ? (countNum + 1) : (countNum - 1);
@@ -264,22 +296,24 @@ public class NewsChannelFragment extends BaseFragment {
      * 設定喜歡狀態
      */
     private void setGoodState() {
-        if(!hadData){
-            showOKDiaLog(getActivity(), "频道资讯取得异常，无法提交动作!");
+        if (!hadData) {
+            DisplayOKDiaLog("频道资讯取得异常，无法提交动作!");
             return;
         }
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) return;
         countNum = Integer.valueOf(GOOD_CNT);
         callType = isGood ? "CLEAR" : "INSERT";
-        showLoadingDiaLog(getActivity(), "");
+        DisplayLoadingDiaLog("");
         WebService.SetChannelFavGood("Baby_Set_Channel_Good ", null, UserMstr.userData.getUserID(), CHANNEL_ID, "INSERT", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
-                if (obj == null || !obj.equals("1")){
-                    showOKDiaLog(getActivity(), "提交失败!");
+                CancelDiaLog();
+                if (obj == null || !obj.equals("1")) {
+                    DisplayOKDiaLog("提交失败!");
                     return;
-                }else if (obj.equals("1")) {
+                } else if (obj.equals("1")) {
                     DisplayToast("提交完成!");
                     isGood = callType.equals("INSERT") ? true : false;
                     countNum = callType.equals("INSERT") ? (countNum + 1) : (countNum - 1);
@@ -305,7 +339,7 @@ public class NewsChannelFragment extends BaseFragment {
      */
     private boolean ObjisNull(Object $obj, String msg) {
         if ($obj == null) {
-            showOKDiaLog(getActivity(), msg);
+            DisplayOKDiaLog(msg);
             return true;
         } else {
             return false;
@@ -321,7 +355,7 @@ public class NewsChannelFragment extends BaseFragment {
      */
     private boolean JsonisEmpty(JSONObject $json, String msg) {
         if ($json.length() == 0) {
-            showOKDiaLog(getActivity(), msg);
+            DisplayOKDiaLog(msg);
             return true;
         } else {
             return false;
@@ -467,6 +501,8 @@ public class NewsChannelFragment extends BaseFragment {
      * 添加所有的平台</br>
      */
     private void addCustomPlatforms() {
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) return;
         // 添加微信平台
         addWXPlatform();
         // 添加QQ平台

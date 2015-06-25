@@ -12,12 +12,9 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.AppBabySH.item.NewsItem;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -88,18 +85,20 @@ public class SetAccountNickNameFragment extends BaseFragment {
     }
 
     private void setNick() {
-        showLoadingDiaLog(getActivity(), "昵称设置中，请稍后...");
+        //  判斷網路
+        if (!WebService.isConnected(getActivity())) return;
+        DisplayLoadingDiaLog("昵称设置中，请稍后...");
         WebService.SetChangeNick(null, UserMstr.userData.getUserID(), UserMstr.userData.getUserName(), mEdtNew.getText().toString(), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj)  {
-                cancleDiaLog();
+                CancelDiaLog();
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "设置昵称错误！");
+                    DisplayOKDiaLog("设置昵称错误！");
                     return;
                 }
                 if(obj.toString().equals("1")){
-                    showOKDiaLog(getActivity(), "设置昵称完成！");
+                    DisplayOKDiaLog("设置昵称完成！");
                     JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
                     try {
                         tmpObj.put("NIC_NAME",mEdtNew.getText().toString());
@@ -108,7 +107,7 @@ public class SetAccountNickNameFragment extends BaseFragment {
                     }
                     main.RemoveBottomNotAddTab(thisFragment);
                 }else{
-                    showOKDiaLog(getActivity(), "设置昵称失败！");
+                    DisplayOKDiaLog("设置昵称失败！");
                 }
             }
         });

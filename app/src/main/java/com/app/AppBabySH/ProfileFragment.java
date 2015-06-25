@@ -1,8 +1,6 @@
 package com.app.AppBabySH;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.ImageLoader;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 
@@ -38,9 +35,11 @@ public class ProfileFragment extends BaseFragment {
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.profile_fragment, container, false);
         initView();
-        getData();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
+
     //  初始化
     private void initView() {
         mTblPersonalInfo = (TableLayout) rootView.findViewById(R.id.tblProfilePersonalInfo);
@@ -54,24 +53,25 @@ public class ProfileFragment extends BaseFragment {
         mLySet.setOnClickListener(new onClick());
         mLyFavChannel.setOnClickListener(new onClick());
         ImageLoader.getInstance().DisplayRoundedCornerImage(
-                UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"),mImgPic);
+                UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgPic);
     }
+
     //  取得數據
     private void getData() {
-        showLoadingDiaLog(getActivity(), "资料读取中，请稍后...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         if (UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE").equals("P")) {
             WebService.GetParentChilds(null, UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE_ID"), new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    cancleDiaLog();
+                    CancelDiaLog();
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "取得资讯错误！");
+                        DisplayOKDiaLog("取得资讯错误！");
                         return;
                     }
                     JSONArray json = (JSONArray) obj;
                     if (json.length() == 0) {
-                        showOKDiaLog(getActivity(), "没有任何资讯！");
+                        DisplayOKDiaLog("没有任何资讯！");
                         return;
                     }
                     int i = -1;
@@ -82,23 +82,23 @@ public class ProfileFragment extends BaseFragment {
                         mTxtRelationship.setText(json.optJSONObject(i).optString("STUDENT_NAME") + " 的 " + json.optJSONObject(i).optString("STUDENT_RELATION"));
                         mTxtSchool.setText(json.optJSONObject(i).optString("SCHOOL_NAME"));
                         mTblPersonalInfo.addView(mVPersonalInfoItem);
-                        mVPersonalInfoItem.setOnClickListener(new onPersonalItemClick(json.optJSONObject(i).optString("SCHOOL_ID"),json.optJSONObject(i).optString("STUDENT_ID")));
+                        mVPersonalInfoItem.setOnClickListener(new onPersonalItemClick(json.optJSONObject(i).optString("SCHOOL_ID"), json.optJSONObject(i).optString("STUDENT_ID")));
                     }
                 }
             });
-        }else{
+        } else {
             WebService.GetTeacherTeaching(null, UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE_ID"), new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    cancleDiaLog();
+                    CancelDiaLog();
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "取得资讯错误！");
+                        DisplayOKDiaLog("取得资讯错误！");
                         return;
                     }
                     JSONArray json = (JSONArray) obj;
                     if (json.length() == 0) {
-                        showOKDiaLog(getActivity(), "没有任何资讯！");
+                        DisplayOKDiaLog("没有任何资讯！");
                         return;
                     }
                     int i = -1;
@@ -120,6 +120,8 @@ public class ProfileFragment extends BaseFragment {
     class onClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) return;
             switch (v.getId()) {
                 case R.id.lyProfileRegOther:
                     AccountRegistFragment regF = new AccountRegistFragment();
@@ -130,8 +132,12 @@ public class ProfileFragment extends BaseFragment {
                     setF.onCallBack = new SetMenuFragment.CallBack() {
                         @Override
                         public void onBack() {
-                            ImageLoader.getInstance().DisplayRoundedCornerImage(
-                                    UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"),mImgPic);
+                            try {
+                                ImageLoader.getInstance().DisplayRoundedCornerImage(
+                                        UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgPic);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     };
                     main.OpenBottom(setF);
@@ -144,14 +150,18 @@ public class ProfileFragment extends BaseFragment {
         }
     }
 
-    private class onPersonalItemClick implements View.OnClickListener{
-        private String schollID,studentID;
-        public onPersonalItemClick(String $schollID,String $studentID){
+    private class onPersonalItemClick implements View.OnClickListener {
+        private String schollID, studentID;
+
+        public onPersonalItemClick(String $schollID, String $studentID) {
             schollID = $schollID;
             studentID = $studentID;
         }
+
         @Override
         public void onClick(View v) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) return;
             SetHistoryFragment setHistoryF = new SetHistoryFragment();
             setHistoryF.School_ID = schollID;
             setHistoryF.Student_ID = studentID;

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
  */
 public class AccountRegistDetailParentFragment extends BaseFragment {
     final private String TAG = "DetailP";
-    public String Activity_No, Phone, SchoolName, Province, City, ClassName, BabyName;
+    public String Type,Activity_No, Phone, SchoolName, Province, City, ClassName, BabyName;
     private Integer i;
 
     private View rootView;
@@ -83,7 +82,7 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                 Log.i(TAG, "obj : " + obj);
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "关系资讯取得错误！");
+                    DisplayOKDiaLog("关系资讯取得错误！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -137,6 +136,16 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
         mBtnCommit = (Button) rootView.findViewById(R.id.btnRegInfoCommit);
         mBtnBack.setOnClickListener(new RegistInfoonClick());
         mBtnCommit.setOnClickListener(new RegistInfoonClick());
+
+        if(Type.equals("New")){
+            mEdtNickname.setVisibility(View.VISIBLE);
+            mEdtPW.setVisibility(View.VISIBLE);
+            mEdtCheckPW.setVisibility(View.VISIBLE);
+        }else{
+            mEdtNickname.setVisibility(View.GONE);
+            mEdtPW.setVisibility(View.GONE);
+            mEdtCheckPW.setVisibility(View.GONE);
+        }
     }
 
     //  關係選單
@@ -173,6 +182,8 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                     onBack();
                     break;
                 case R.id.btnRegInfoCommit:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     regist();
                     break;
             }
@@ -185,20 +196,29 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
         strCheckPw = mEdtCheckPW.getText().toString();
         if (strNick.equals("") || strPw.equals("") || strCheckPw.equals("")) {
             DisplayToast("尚有资料未填写完成");
-            return;
         } else if (!strPw.equals(strCheckPw)) {
             DisplayToast("密码不一致");
-            return;
         } else {
+            DisplayLoadingDiaLog("注册中,请稍后!");
             WebService.SetRegister(null, Activity_No, relationshipID, strPw, strNick, new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    Log.i(TAG, "obj : " + obj);
+                    Log.i(TAG, "SetRegister obj : " + obj);
+                    CancelDiaLog();
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "关系资讯取得错误！");
-                        return;
+                        DisplayOKDiaLog("关系资讯取得错误！");
+                    }else{
+                        onBack();
+                        if(actName.equals("MainTabActivity")){
+
+                        }else {
+                            loginA.mTxtName.setText(Phone);
+                            loginA.mTxtPW.setText(strPw);
+                            loginA.checkLoginData();
+                        }
+
                     }
                 }
             });

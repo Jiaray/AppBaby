@@ -14,6 +14,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.Inet4Address;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -317,8 +322,7 @@ public class ComFun {
     public static boolean checkNetworkState(Context context) {
         // // 获取手机所有连接管理对象（包括对wi-fi,net等连接的管理）
         try {
-            ConnectivityManager connectivity = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivity != null) {
                 // 获取网络连接管理的对象
                 NetworkInfo info = connectivity.getActiveNetworkInfo();
@@ -422,23 +426,23 @@ public class ComFun {
     }
 
     //  將日期8碼換成使用者要看的樣式
-    public static String date2UserSee(String $date,String $addsyl){
-        String _year = $date.substring(0,4);
-        String _month = $date.substring(4,6);
-        String _date = $date.substring(6,8);
-        return  _year + $addsyl + _month + $addsyl + _date;
+    public static String date2UserSee(String $date, String $addsyl) {
+        String _year = $date.substring(0, 4);
+        String _month = $date.substring(4, 6);
+        String _date = $date.substring(6, 8);
+        return _year + $addsyl + _month + $addsyl + _date;
     }
 
     //  將時間6碼換成使用者要看的樣式
-    public static String time2UserSee(String $time,String $addsyl){
-        String _h = $time.substring(0,2);
-        String _m = $time.substring(2,4);
-        String _s = $time.substring(4,6);
-        return  _h + $addsyl + _m + $addsyl + _s;
+    public static String time2UserSee(String $time, String $addsyl) {
+        String _h = $time.substring(0, 2);
+        String _m = $time.substring(2, 4);
+        String _s = $time.substring(4, 6);
+        return _h + $addsyl + _m + $addsyl + _s;
     }
 
     //  取得 APP 版本 Code
-    public static String getVersionCode(Activity $act){
+    public static String getVersionCode(Activity $act) {
         try {
             PackageInfo packageInfo = $act.getPackageManager().getPackageInfo($act.getPackageName(), 0);
             return String.valueOf(packageInfo.versionCode);
@@ -451,7 +455,7 @@ public class ComFun {
     }
 
     //  取得 APP 版本 Name
-    public static String getVersionName(Activity $act){
+    public static String getVersionName(Activity $act) {
         try {
             PackageInfo packageInfo = $act.getPackageManager().getPackageInfo($act.getPackageName(), 0);
             return packageInfo.versionName;
@@ -462,7 +466,6 @@ public class ComFun {
             return "Cannot load Version!";
         }
     }
-
 
 
 //

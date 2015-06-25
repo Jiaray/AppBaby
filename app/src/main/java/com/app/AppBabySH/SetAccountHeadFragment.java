@@ -1,7 +1,6 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,14 +13,12 @@ import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.FileCache;
 import com.app.Common.ImageLoader;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,9 +79,13 @@ public class SetAccountHeadFragment extends BaseFragment {
                     main.RemoveBottomNotAddTab(thisFragment);
                     break;
                 case R.id.btnSetAccHeadChoose:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) break;
                     openAlbum();
                     break;
                 case R.id.btnSetAccHeadCommit:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) break;
                     if (change) {
                         uploadPic();
                     } else {
@@ -103,7 +104,7 @@ public class SetAccountHeadFragment extends BaseFragment {
         selectImg.onCallBack = new SelectMultiImgFragment.CallBack() {
             @Override
             public void onEnter(List imgList) {
-                showLoadingDiaLog(getActivity(), "图片处理中");
+                DisplayLoadingDiaLog("图片处理中");
                 if (imgList.size() > 0) {
                     change = true;
                     File f = new File(imgList.get(0).toString());
@@ -111,7 +112,7 @@ public class SetAccountHeadFragment extends BaseFragment {
                     ImageLoader.getInstance().AChangeSmallSizeToB(f.getAbsolutePath(), mCurrentPhotoPath);
                     ImageLoader.getInstance().DisplayRoundedCornerImage(mCurrentPhotoPath, mImgUserHead);
                 }
-                cancleDiaLog();
+                CancelDiaLog();
             }
 
             @Override
@@ -124,12 +125,12 @@ public class SetAccountHeadFragment extends BaseFragment {
 
     //  取得七牛驗證碼
     private void uploadPic() {
-        showLoadingDiaLog(getActivity(), "图片上传中...");
+        DisplayLoadingDiaLog("图片上传中...");
         WebService.GetUpToken(null, "baby-m", new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "GetUpToken Error!");
+                    DisplayOKDiaLog("GetUpToken Error!");
                     return;
                 }
                 data = new File(mCurrentPhotoPath);
@@ -155,11 +156,11 @@ public class SetAccountHeadFragment extends BaseFragment {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
                         if (obj == null) {
-                            showOKDiaLog(getActivity(), "SetChangeAvatar Error!");
+                            DisplayOKDiaLog("SetChangeAvatar Error!");
                             return;
                         }
-                        cancleDiaLog();
-                        showOKDiaLog(getActivity(), "头像設置完成");
+                        CancelDiaLog();
+                        DisplayOKDiaLog("头像設置完成");
                         JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
                         try {
                             tmpObj.put("USER_AVATAR", USER_AVATAR);

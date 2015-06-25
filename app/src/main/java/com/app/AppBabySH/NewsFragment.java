@@ -42,7 +42,10 @@ public class NewsFragment extends BaseFragment {
         rootView = inflater.inflate(R.layout.news_fragment, container, false);
         isInit = true;
         initView();
-        getData();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) {
+            getData();
+        }
         return rootView;
     }
 
@@ -60,22 +63,40 @@ public class NewsFragment extends BaseFragment {
 
             @Override
             public void onRefresh() {//刷新
-                refreshListView();
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    refreshPullView();
+                }else{
+                    refreshListView();
+                }
             }
 
             @Override
             public void onLoadMore() {//加載更多
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                //  判斷網路
+                if (!WebService.isConnected(getActivity())) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "頻道加載更多");
-                        pageIndex++;
-                        getData();
-                        pullDownView.notifyDidLoadMore(newslist.isEmpty());
-                    }
-                }, 1000);
+                        @Override
+                        public void run() {
+                            pullDownView.notifyDidLoadMore(newslist.isEmpty());
+                            refreshPullView();
+                        }
+                    }, 1000);
+                }else {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "頻道加載更多");
+                            pageIndex++;
+                            getData();
+                            pullDownView.notifyDidLoadMore(newslist.isEmpty());
+                        }
+                    }, 1000);
+                }
             }
         });
 
@@ -87,24 +108,22 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void getData() {
-        showLoadingDiaLog(getActivity(), "資料讀取中...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         WebService.GetNews(null, UserMstr.userData.getUserID(), "P", String.valueOf(pageIndex), "3", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                CancelDiaLog();
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "取得資訊錯誤！");
+                    DisplayOKDiaLog("取得资讯错误！");
                     return;
                 } else if (obj.equals("Success! No Data Return!")) {
-                    /*showOKDiaLog(getActivity(), "!");
-                    return;*/
                 }
                 Log.i(TAG,"obj:"+obj);
                 JSONArray json = (JSONArray) obj;
 
                 if (json.length() == 0) {
-                    showOKDiaLog(getActivity(), "沒有任何資訊！");
+                    DisplayOKDiaLog("没有任何资讯！");
                     return;
                 }
                 Log.i(TAG, "頻道資料取得成功 json:" + json.toString());
@@ -154,6 +173,8 @@ public class NewsFragment extends BaseFragment {
     private class clickTheme implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //  判斷網路
+            if (!WebService.isConnected(getActivity())) return;
             NewsItem _item = newslist.get(position);
             NewsChannelFragment newsItemFragment = new NewsChannelFragment();
             newsItemFragment.onCallBack = new NewsChannelFragment.itmeCallBack() {

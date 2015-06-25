@@ -1,5 +1,6 @@
 package com.app.AppBabySH;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -10,7 +11,9 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 import com.app.AppBabySH.activity.LoginActivity;
+import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
+import com.app.Common.WebService;
 
 /**
  * Created by ray on 2015/5/29.
@@ -56,6 +59,8 @@ public class AccountAgreeFragment extends BaseFragment {
                     loginA.RemoveBottom(thisFragment);
                     break;
                 case R.id.btnAgreeOK:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     if (mCkbOK.isChecked()) {
                         loginA.changeData2DB();
                         getActivity().finish();

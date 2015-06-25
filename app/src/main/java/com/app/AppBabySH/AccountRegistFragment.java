@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
@@ -27,7 +26,7 @@ public class AccountRegistFragment extends BaseFragment {
     private AccountRegistFragment thisFragment;
     private LoginActivity loginA;
     private MainTabActivity mainA;
-    private String actName;
+    private String actName,strRegDType;
 
     private EditText mEdtActivation, mEdtPhone, mEdtCaptcha;
     private Button mBtnNext, mBtnSendCaptcha,mBtnHowtoGet;
@@ -82,6 +81,8 @@ public class AccountRegistFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btnRegSendCaptcha:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     if (mEdtActivation.getText().toString().equals("")) {
                         DisplayToast("请输入激活码");
                         return;
@@ -101,6 +102,8 @@ public class AccountRegistFragment extends BaseFragment {
                     }
                     break;
                 case R.id.btnRegNext:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     checkCaptcha();
                     break;
                 case R.id.btnRegHowToGet:
@@ -117,38 +120,43 @@ public class AccountRegistFragment extends BaseFragment {
 
     //  激活碼驗證
     private void checkActivation() {
-        showLoadingDiaLog(getActivity(), "激活码验证中,请稍后!");
+        DisplayLoadingDiaLog("激活码验证中,请稍后!");
         WebService.GetActivate(null, mEdtActivation.getText().toString(), mEdtPhone.getText().toString(), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                CancelDiaLog();
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "激活失败！");
+                    DisplayOKDiaLog("激活失败！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
                 if (json.optJSONObject(0).optString("STATE").equals("Y")) {
-                    showLoadingDiaLog(getActivity(), "短信发送中,请稍后!");
-                    activated = true;
                     userType = json.optJSONObject(0).optString("USER_TYPE");
                     validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
                     SendCaptcha();
+                    strRegDType = "New";
                 } else {
                     Integer STATE = Integer.valueOf(json.optJSONObject(0).optString("STATE"));
                     switch (STATE) {
                         case 1:
-                            showOKDiaLog(getActivity(), "無效電話！");
+                            DisplayOKDiaLog("无此帐号，请与学校人员联系！");
                             break;
                         case 2:
-                            showOKDiaLog(getActivity(), "無效激活！");
+                            DisplayOKDiaLog("無效激活！");
                             break;
                         case 3:
-                            showOKDiaLog(getActivity(), "已激活！");
+                            DisplayOKDiaLog("已激活！");
                             break;
                         case 4:
-                            showOKDiaLog(getActivity(), "沒有建班級！");
+                            DisplayOKDiaLog("沒有建班級！");
+                            break;
+                        case 5:
+                            strRegDType = "hadData";
+                            userType = json.optJSONObject(0).optString("USER_TYPE");
+                            validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
+                            SendCaptcha();
                             break;
                     }
                 }
@@ -158,19 +166,27 @@ public class AccountRegistFragment extends BaseFragment {
 
     //  傳送驗證碼
     private void SendCaptcha() {
+        DisplayLoadingDiaLog("短信发送中,请稍后!");
+        activated = true;
         if (mEdtPhone.length() < 11) {
-            cancleDiaLog();
-            showOKDiaLog(getActivity(), "<测试> 验证码为:" + validateNo);
+            CancelDiaLog();
+            DisplayOKDiaLog("<测试> 验证码为:" + validateNo);
         } else {
             WebService.SendMessage(null, mEdtPhone.getText().toString(), validateNo, new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    cancleDiaLog();
-                    Log.v(TAG, "obj:" + obj);
+                    CancelDiaLog();
+                    Log.v(TAG, "SendMessage obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "短信接口错误！");
+                        DisplayOKDiaLog("短信接口错误！");
+                        return;
+                    }else if(obj.toString().indexOf("success") != -1){
+                        DisplayOKDiaLog("已传送验证短信！");
+                        return;
+                    }else{
+                        DisplayOKDiaLog("验证短信传送失败！");
                         return;
                     }
 
@@ -193,30 +209,31 @@ public class AccountRegistFragment extends BaseFragment {
             }
         } else {
             if (!activated) {
-                showOKDiaLog(getActivity(), "尚未获取验证码！");
+                DisplayOKDiaLog("尚未获取验证码！");
             } else {
-                showOKDiaLog(getActivity(), "验证码錯誤！");
+                DisplayOKDiaLog("验证码錯誤！");
             }
         }
     }
 
     //  準備家長詳細資料填寫的畫面
     private void readyParentDetail() {
-        showLoadingDiaLog(getActivity(), "验证码确认中,请稍后!");
+        DisplayLoadingDiaLog("验证码确认中,请稍后!");
         WebService.GetValidate(null, mEdtActivation.getText().toString(), validateNo, "P", "", "", new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
-                Log.i(TAG, "obj:" + obj);
+                CancelDiaLog();
+                Log.i(TAG, "GetValidate obj:" + obj);
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "验证错误！");
+                    DisplayOKDiaLog("验证错误！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
                 loginA.RemoveBottom(thisFragment);
                 AccountRegistDetailParentFragment regDPF = new AccountRegistDetailParentFragment();
+                regDPF.Type = strRegDType;
                 regDPF.Activity_No = mEdtActivation.getText().toString();
                 regDPF.Phone = mEdtPhone.getText().toString();
                 regDPF.SchoolName = json.optJSONObject(0).optString("SCHOOL_NAME");

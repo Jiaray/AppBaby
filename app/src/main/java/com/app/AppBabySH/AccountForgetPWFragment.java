@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.SQLite.LocalFun;
 import com.app.Common.SQLite.LocalSQLCode;
 import com.app.Common.UserMstr;
@@ -109,6 +108,8 @@ public class AccountForgetPWFragment extends BaseFragment {
                     }
                     break;
                 case R.id.btnForgetPWSendCaptcha:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     if (mEdtPhone.equals("")) {
                         DisplayToast("手机号码尚未填写!");
                         return;
@@ -117,6 +118,8 @@ public class AccountForgetPWFragment extends BaseFragment {
                     break;
 
                 case R.id.btnForgetPWCommit:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     Log.i(TAG, "Commit ForgetPW");
                     strPw = mEdtNewPW.getText().toString();
                     strCheckPw = mEdtCheckPW.getText().toString();
@@ -143,18 +146,18 @@ public class AccountForgetPWFragment extends BaseFragment {
     //  取得驗證碼
     private void getCaptcha() {
         if (actName.equals("LoginActivity")) {
-            showLoadingDiaLog(getActivity(), "验证码短信发送中,请稍后...");
+            DisplayLoadingDiaLog("验证码短信发送中,请稍后...");
         } else {
-            showLoadingDiaLog(getActivity(), "设置新密码中,请稍后...");
+            DisplayLoadingDiaLog("设置新密码中,请稍后...");
         }
         WebService.GetPasswordValidate(null, mEdtPhone.getText().toString(), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                if (actName.equals("LoginActivity")) cancleDiaLog();
+                if (actName.equals("LoginActivity")) CancelDiaLog();
                 // TODO Auto-generated method stub
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "取得验证码失败！");
+                    DisplayOKDiaLog("取得验证码失败！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
@@ -171,18 +174,18 @@ public class AccountForgetPWFragment extends BaseFragment {
     //  傳送驗證碼
     private void SendCaptcha() {
         if (mEdtPhone.length() < 11) {
-            cancleDiaLog();
-            showOKDiaLog(getActivity(), "<测试> 验证码为:" + validateNo);
+            CancelDiaLog();
+            DisplayOKDiaLog("<测试> 验证码为:" + validateNo);
         } else {
             WebService.SendMessage(null, mEdtPhone.getText().toString(), validateNo, new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    cancleDiaLog();
+                    CancelDiaLog();
                     Log.v(TAG, "obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "短信接口错误！");
+                        DisplayOKDiaLog("短信接口错误！");
                         return;
                     }
                 }
@@ -199,10 +202,10 @@ public class AccountForgetPWFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     // TODO Auto-generated method stub
                     if (obj == null || !obj.equals("1")) {
-                        showOKDiaLog(getActivity(), "密码重置错误！");
+                        DisplayOKDiaLog("密码重置错误！");
                         return;
                     } else {
-                        showOKDiaLog(getActivity(), "密码重置完成！");
+                        DisplayOKDiaLog("密码重置完成！");
                         LocalFun.getInstance().RunSqlNoQuery(
                                 LocalSQLCode.SQLite_UpdateTableData(
                                         "ASC_MSTR",
@@ -218,7 +221,7 @@ public class AccountForgetPWFragment extends BaseFragment {
                 }
             });
         } else {
-            showOKDiaLog(getActivity(), "验证码錯誤！");
+            DisplayOKDiaLog("验证码錯誤！");
         }
     }
 }

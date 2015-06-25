@@ -11,6 +11,9 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.Log;
 
@@ -49,6 +52,7 @@ public class WebService {
         map.put("Mobile_No", $classID);
         map.put("Validate_Type", "");
         map.put("CheckKey", "");
+        Log.i(TAG, "GetActivate map:" + map);
         GetJson(id, "Baby_Get_Activate", map, $callBack);
     }
 
@@ -61,7 +65,7 @@ public class WebService {
         map.put("Password", $password);
         map.put("Nick_Name", $nickName);
         map.put("CheckKey", "");
-        Log.i(TAG, "map:" + map);
+        Log.i(TAG, "GetValidate map:" + map);
         GetJson(id, "Baby_Get_Validate", map, $callBack);
     }
 
@@ -198,11 +202,12 @@ public class WebService {
     }
 
     //  班級圈收藏到成長檔案
-    public static void SetCircleKeepToGrow(String id, String $circleID, String $userID, WebCallback $callBack) {
+    public static void SetCircleKeepToGrow(String id, String $circleID, String $userID, String $type, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("Circle_ID", $circleID);
         map.put("User_ID", $userID);
         map.put("Grow_From", "CIRCLE");
+        map.put("Type", $type);
         map.put("CheckKey", "");
         GetJson(id, "Baby_Set_Circle_KeepTo_Grow", map, $callBack);
     }
@@ -219,10 +224,11 @@ public class WebService {
     }
 
     //  班級圈新增
-    public static void SetCircleNew(String id, String $userID, String $classID,
+    public static void SetCircleNew(String id, String $apn, String $userID, String $classID,
                                     String $description, String $circle_Type, String $latitude,
                                     String $longitude, String $atch_Cnt, String $atch_Info, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
+        map.put("APN", $apn);
         map.put("User_ID", $userID);
         map.put("Class_ID", $classID);
         map.put("Description", $description);
@@ -337,7 +343,7 @@ public class WebService {
         map.put("Mobile_No", $mobile_No);
         map.put("Message", $message);
         map.put("CheckKey", "");
-        GetJson(id, "Baby_Send_Message", map, $callBack);
+        GetStr(id, "Baby_Send_Message", map, $callBack);
     }
 
     //  查詢家長與學生關係代碼
@@ -470,5 +476,26 @@ public class WebService {
 
     public interface WebCallback {
         public void CompleteCallback(String id, Object obj);
+    }
+
+    //  確認網路連線-获取手机所有连接管理对象（包括对wi-fi,net等连接的管理）
+    public static boolean isConnected(Context context) {
+        try {
+            ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (connectivity != null) {
+                // 获取网络连接管理的对象
+                NetworkInfo info = connectivity.getActiveNetworkInfo();
+                if (info != null && info.isConnected()) {
+                    // 判断当前网络是否已经连接
+                    if (info.getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        MyAlertDialog.Show(context, "当前网络不可用，请设置后重试！");
+        return false;
     }
 }

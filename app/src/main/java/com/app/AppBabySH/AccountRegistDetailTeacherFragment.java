@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.WebService;
 
 /**
@@ -80,6 +79,8 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                     onBack();
                     break;
                 case R.id.btnRegInfoTCommit:
+                    //  判斷網路
+                    if (!WebService.isConnected(getActivity())) return;
                     commitData();
                     break;
             }
@@ -98,20 +99,20 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
             DisplayToast("密码不一致");
             return;
         } else {
-            showLoadingDiaLog(getActivity(), "提交中,请稍后!");
+            DisplayLoadingDiaLog("提交中,请稍后!");
             WebService.GetValidate(null, Activity_No, Validate_No, "T", strPw, strNick, new WebService.WebCallback() {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    cancleDiaLog();
+                    CancelDiaLog();
                     Log.i(TAG, "obj:" + obj);
                     // TODO Auto-generated method stub
                     if (obj == null) {
-                        showOKDiaLog(getActivity(), "提交失败！");
+                        DisplayOKDiaLog("提交失败！");
                         return;
                     }
 
-                    showOKDiaLog(getActivity(), "提交完成");
+                    DisplayOKDiaLog("提交完成");
                     onBack();
                 }
             });

@@ -22,6 +22,7 @@ import com.app.Common.FileCache;
 
 public class SetMenuFragment extends BaseFragment {
     final private String TAG = "setF";
+    private GlobalVar centerV;
     private MainTabActivity main;
     private View rootView;
     private SetMenuFragment thisFragment;
@@ -39,14 +40,15 @@ public class SetMenuFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        onCallBack.onBack();
         main.AddTabHost();
+        onCallBack.onBack();
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //共用宣告
+        centerV = (GlobalVar) getActivity().getApplicationContext();
         main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_menu_fragment, container, false);
@@ -83,15 +85,17 @@ public class SetMenuFragment extends BaseFragment {
                     main.RemoveBottom(thisFragment);
                     break;
                 case R.id.btnSetAccHeadCommit:
-                    showDialog("确认", "确定要退出登录此帐号？", "确定", "取消", getActivity(), new DialogCallBack() {
+                    DisplayNYDialog("确认", "确定要退出登录此帐号？", "确定", "取消", new DialogCallBack() {
                         @Override
                         public void onEnter() {
                             LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
-                            //Switch to config page
+                            centerV.loginAgain = true;
                             UserMstr.userData = null;
                             Intent intent = new Intent();
                             intent.setClass(getActivity(), LoginActivity.class);
                             startActivity(intent);
+
+                            main.RemoveBottom(thisFragment);
                         }
 
                         @Override

@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
-import com.app.Common.MyAlertDialog;
 import com.app.Common.ComFun;
 import com.app.Common.WebService;
 
@@ -49,7 +48,8 @@ public class SetHistoryFragment extends BaseFragment {
             }
         });
         initView();
-        getData();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
 
@@ -62,23 +62,23 @@ public class SetHistoryFragment extends BaseFragment {
 
     private void getData() {
         Log.i(TAG, "SchoolID:" + School_ID + " StudentID:" + Student_ID);
-        showLoadingDiaLog(getActivity(), "资料读取中，请稍后...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         WebService.GetStudentHistory(null, School_ID, Student_ID, new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                CancelDiaLog();
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "取得资讯错误！");
+                    DisplayOKDiaLog("取得资讯错误！");
                     return;
                 } else if (obj.equals("Success! No Data Return!")) {
-                    showOKDiaLog(getActivity(), "没有任何资讯！");
+                    DisplayOKDiaLog("没有任何资讯！");
                     return;
                 }
                 Log.i(TAG,"obj : "+obj);
                 JSONArray json = (JSONArray) obj;
                 if (json.length() == 0) {
-                    showOKDiaLog(getActivity(), "没有任何资讯！");
+                    DisplayOKDiaLog("没有任何资讯！");
                     return;
                 }
                 JSONObject tmpObj;

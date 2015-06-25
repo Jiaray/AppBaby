@@ -51,7 +51,8 @@ public class SetFavChannelFragment extends BaseFragment {
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_favchannel_fragment, container, false);
         initView();
-        getData();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
 
@@ -123,15 +124,17 @@ public class SetFavChannelFragment extends BaseFragment {
                 final int _pos = position;
                 switch (index) {
                     case 0:
-                        showDialog("确认", "确定从收藏中删除此频道吗?", "确定", "取消", getActivity(), new DialogCallBack() {
+                        //  判斷網路
+                        if (!WebService.isConnected(getActivity())) break;
+                        DisplayNYDialog("确认", "确定从收藏中删除此频道吗?", "确定", "取消", new DialogCallBack() {
                             @Override
                             public void onEnter() {
-                                showLoadingDiaLog(getActivity(), "删除中,请稍后...");
+                                DisplayLoadingDiaLog("删除中,请稍后...");
                                 WebService.SetChannelFavGood("Baby_Set_Channel_Favorite", null, UserMstr.userData.getUserID(), favlist.get(_pos).CHANNEL_ID, "CLEAR", new WebService.WebCallback() {
 
                                     @Override
                                     public void CompleteCallback(String id, Object obj) {
-                                        cancleDiaLog();
+                                        CancelDiaLog();
                                         if (obj.equals("1")) {
                                             DisplayToast("频道已删除");
                                             favlist.remove(_pos);
@@ -161,19 +164,19 @@ public class SetFavChannelFragment extends BaseFragment {
     }
 
     private void getData() {
-        showLoadingDiaLog(getActivity(), "资料读取中，请稍后...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         WebService.GetFavoriteList(null, UserMstr.userData.getUserID(), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                cancleDiaLog();
+                CancelDiaLog();
                 if (obj == null) {
-                    showOKDiaLog(getActivity(), "取得资讯错误！");
+                    DisplayOKDiaLog("取得资讯错误！");
                     return;
                 }
                 JSONArray json = (JSONArray) obj;
                 if (json.length() == 0) {
-                    showOKDiaLog(getActivity(), "没有任何资讯！");
+                    DisplayOKDiaLog("没有任何资讯！");
                     return;
                 }
                 favlist.clear();
