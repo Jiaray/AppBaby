@@ -44,6 +44,14 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -51,10 +59,8 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        initView();
-        return rootView;
     }
+
 
     private void initView() {
         mEdtNickname = (EditText) rootView.findViewById(R.id.edtRegInfoTNickname);
@@ -71,7 +77,7 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
         //mEdtCheckPW.setTransformationMethod(HideReturnsTransformationMethod.getInstance());//顯示密碼
     }
 
-    class  DetailonClick implements View.OnClickListener {
+    class DetailonClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -105,24 +111,28 @@ public class AccountRegistDetailTeacherFragment extends BaseFragment {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     CancelDiaLog();
-                    Log.i(TAG, "obj:" + obj);
-                    // TODO Auto-generated method stub
-                    if (obj == null) {
-                        DisplayOKDiaLog("提交失败！");
-                        return;
-                    }
+                    Log.i(TAG, "GetValidate obj:" + obj);
+                    try {
+                        if (obj == null) {
+                            DisplayOKDiaLog("提交失败！");
+                            return;
+                        }
 
-                    DisplayOKDiaLog("提交完成");
+                        DisplayOKDiaLog("提交完成");
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("提交失败！ e:" + e);
+                        e.printStackTrace();
+                    }
                     onBack();
                 }
             });
         }
     }
 
-    private void onBack(){
-        if(actName.equals("MainTabActivity")){
+    private void onBack() {
+        if (actName.equals("MainTabActivity")) {
             mainA.RemoveBottomNotAddTab(thisFragment);
-        }else {
+        } else {
             loginA.RemoveBottom(thisFragment);
         }
     }

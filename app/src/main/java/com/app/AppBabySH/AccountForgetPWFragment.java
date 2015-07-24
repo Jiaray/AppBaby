@@ -51,6 +51,14 @@ public class AccountForgetPWFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -58,10 +66,8 @@ public class AccountForgetPWFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        initView();
-        return rootView;
     }
+
 
     private void initView() {
         mLyPhone = (LinearLayout) rootView.findViewById(R.id.lyForgetPWPhone);
@@ -155,17 +161,24 @@ public class AccountForgetPWFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 if (actName.equals("LoginActivity")) CancelDiaLog();
-                // TODO Auto-generated method stub
-                if (obj == null) {
-                    DisplayOKDiaLog("取得验证码失败！");
-                    return;
-                }
-                JSONArray json = (JSONArray) obj;
-                validateNo = json.optJSONObject(0).optString("VALID_NO");
-                if (actName.equals("LoginActivity")) {
-                    SendCaptcha();
-                } else {
-                    checkCaptcha();
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("取得验证码失败！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
+                    }
+                    JSONArray json = (JSONArray) obj;
+                    validateNo = json.optJSONObject(0).optString("VALID_NO");
+                    if (actName.equals("LoginActivity")) {
+                        SendCaptcha();
+                    } else {
+                        checkCaptcha();
+                    }
+                } catch (Exception e) {
+                    DisplayOKDiaLog("取得验证码失败！ e:" + e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -182,11 +195,9 @@ public class AccountForgetPWFragment extends BaseFragment {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     CancelDiaLog();
-                    Log.v(TAG, "obj:" + obj);
-                    // TODO Auto-generated method stub
+                    Log.v(TAG, "SendMessage obj:" + obj);
                     if (obj == null) {
                         DisplayOKDiaLog("短信接口错误！");
-                        return;
                     }
                 }
             });
@@ -200,23 +211,26 @@ public class AccountForgetPWFragment extends BaseFragment {
 
                 @Override
                 public void CompleteCallback(String id, Object obj) {
-                    // TODO Auto-generated method stub
-                    if (obj == null || !obj.equals("1")) {
-                        DisplayOKDiaLog("密码重置错误！");
-                        return;
-                    } else {
-                        DisplayOKDiaLog("密码重置完成！");
-                        LocalFun.getInstance().RunSqlNoQuery(
-                                LocalSQLCode.SQLite_UpdateTableData(
-                                        "ASC_MSTR",
-                                        "USER_PSWD", UserMstr.userData.getUserPW(),
-                                        "USER_PSWD", strPw));
-
-                        if (actName.equals("MainTabActivity")) {
-                            mainA.RemoveBottomNotAddTab(thisFragment);
+                    try {
+                        if (obj == null || !obj.equals("1")) {
+                            DisplayOKDiaLog("密码重置错误！");
                         } else {
-                            loginA.RemoveBottom(thisFragment);
+                            DisplayOKDiaLog("密码重置完成！");
+                            LocalFun.getInstance().RunSqlNoQuery(
+                                    LocalSQLCode.SQLite_UpdateTableData(
+                                            "ASC_MSTR",
+                                            "USER_PSWD", UserMstr.userData.getUserPW(),
+                                            "USER_PSWD", strPw));
+
+                            if (actName.equals("MainTabActivity")) {
+                                mainA.RemoveBottomNotAddTab(thisFragment);
+                            } else {
+                                loginA.RemoveBottom(thisFragment);
+                            }
                         }
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("密码重置失败！ e:" + e);
+                        e.printStackTrace();
                     }
                 }
             });

@@ -47,14 +47,20 @@ public class SetFavChannelFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_favchannel_fragment, container, false);
         initView();
-        //  判斷網路
-        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
+    }
+
 
     private void initView() {
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -135,12 +141,17 @@ public class SetFavChannelFragment extends BaseFragment {
                                     @Override
                                     public void CompleteCallback(String id, Object obj) {
                                         CancelDiaLog();
-                                        if (obj.equals("1")) {
-                                            DisplayToast("频道已删除");
-                                            favlist.remove(_pos);
-                                            adapter.notifyDataSetChanged();
-                                        } else {
-                                            DisplayToast("频道删除失败");
+                                        try {
+                                            if (obj.equals("1")) {
+                                                DisplayToast("频道已删除");
+                                                favlist.remove(_pos);
+                                                adapter.notifyDataSetChanged();
+                                            } else {
+                                                DisplayToast("频道删除失败");
+                                            }
+                                        } catch (Exception e) {
+                                            DisplayToast("SetChannelFavGood 频道删除失败! e:" + e);
+                                            e.printStackTrace();
                                         }
                                     }
                                 });
@@ -170,30 +181,39 @@ public class SetFavChannelFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
-                if (obj == null) {
-                    DisplayOKDiaLog("取得资讯错误！");
-                    return;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("取得资讯错误！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
+                    }
+
+                    JSONArray json = (JSONArray) obj;
+                    if (json.length() == 0) {
+                        DisplayOKDiaLog("没有任何资讯！");
+                        return;
+                    }
+                    favlist.clear();
+                    int i = -1;
+                    while (++i < json.length()) {
+                        NewsItem item = new NewsItem();
+                        item.CHANNEL_ID = json.optJSONObject(i).optString("CHANNEL_ID");
+                        item.CHANNEL_TITLE = json.optJSONObject(i).optString("CHANNEL_TITLE");
+                        item.THUMB_URL = json.optJSONObject(i).optString("THUMB_URL");
+                        item.MEDIA_TYPE = json.optJSONObject(i).optString("MEDIA_TYPE");
+                        item.MEDIA_CONTENT = json.optJSONObject(i).optString("MEDIA_CONTENT");
+                        item.GOOD_CNT = "null";
+                        item.FAVORITE_CNT = "null";
+                        favlist.add(item);
+                    }
+                    mLvContent.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    DisplayOKDiaLog("GetFavoriteList 取得资讯失败！e:" + e);
+                    e.printStackTrace();
                 }
-                JSONArray json = (JSONArray) obj;
-                if (json.length() == 0) {
-                    DisplayOKDiaLog("没有任何资讯！");
-                    return;
-                }
-                favlist.clear();
-                int i = -1;
-                while (++i < json.length()) {
-                    NewsItem item = new NewsItem();
-                    item.CHANNEL_ID = json.optJSONObject(i).optString("CHANNEL_ID");
-                    item.CHANNEL_TITLE = json.optJSONObject(i).optString("CHANNEL_TITLE");
-                    item.THUMB_URL = json.optJSONObject(i).optString("THUMB_URL");
-                    item.MEDIA_TYPE = json.optJSONObject(i).optString("MEDIA_TYPE");
-                    item.MEDIA_CONTENT = json.optJSONObject(i).optString("MEDIA_CONTENT");
-                    item.GOOD_CNT = "null";
-                    item.FAVORITE_CNT = "null";
-                    favlist.add(item);
-                }
-                mLvContent.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
             }
         });
     }
