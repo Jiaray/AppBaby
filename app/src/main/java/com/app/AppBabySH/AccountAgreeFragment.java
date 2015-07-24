@@ -35,10 +35,15 @@ public class AccountAgreeFragment extends BaseFragment {
                 return true;
             }
         });
-        loginA = (LoginActivity) getActivity();
         thisFragment = this;
         initView();
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loginA = (LoginActivity) getActivity();
     }
 
     private void initView() {

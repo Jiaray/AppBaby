@@ -28,8 +28,6 @@ public class SetAccountMenuFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_acc_menu_fragment, container, false);
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -41,6 +39,14 @@ public class SetAccountMenuFragment extends BaseFragment {
         initView();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        main = (MainTabActivity) getActivity();
+    }
+
 
 
     private void initView() {

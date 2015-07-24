@@ -30,6 +30,7 @@ public class SetAccountNickNameFragment extends BaseFragment {
     private EditText mEdtNew;
 
     public CallBack onCallBack;
+
     public interface CallBack {
         public void onBack();
     }
@@ -42,8 +43,6 @@ public class SetAccountNickNameFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_acc_nickname_fragment, container, false);
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -55,6 +54,14 @@ public class SetAccountNickNameFragment extends BaseFragment {
         initView();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        main = (MainTabActivity) getActivity();
+    }
+
 
     private void initView() {
         mImgbBack = (ImageButton) rootView.findViewById(R.id.imgbSetAccNickNameBack);
@@ -91,23 +98,31 @@ public class SetAccountNickNameFragment extends BaseFragment {
         WebService.SetChangeNick(null, UserMstr.userData.getUserID(), UserMstr.userData.getUserName(), mEdtNew.getText().toString(), new WebService.WebCallback() {
 
             @Override
-            public void CompleteCallback(String id, Object obj)  {
+            public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
-                if (obj == null) {
-                    DisplayOKDiaLog("设置昵称错误！");
-                    return;
-                }
-                if(obj.toString().equals("1")){
-                    DisplayOKDiaLog("设置昵称完成！");
-                    JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
-                    try {
-                        tmpObj.put("NIC_NAME",mEdtNew.getText().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("设置昵称错误！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
                     }
-                    main.RemoveBottomNotAddTab(thisFragment);
-                }else{
-                    DisplayOKDiaLog("设置昵称失败！");
+                    if (obj.toString().equals("1")) {
+                        DisplayOKDiaLog("设置昵称完成！");
+                        JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
+                        try {
+                            tmpObj.put("NIC_NAME", mEdtNew.getText().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        main.RemoveBottomNotAddTab(thisFragment);
+                    } else {
+                        DisplayOKDiaLog("设置昵称失败！");
+                    }
+                } catch (Exception e) {
+                    DisplayOKDiaLog("SetChangeNick 设置昵称失败！e:" + e);
+                    e.printStackTrace();
                 }
             }
         });

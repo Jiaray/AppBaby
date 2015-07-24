@@ -44,8 +44,6 @@ public class SetAccountHeadFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_acc_head_fragment, container, false);
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -57,6 +55,14 @@ public class SetAccountHeadFragment extends BaseFragment {
         initView();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        main = (MainTabActivity) getActivity();
+    }
+
 
     private void initView() {
         change = false;
@@ -129,20 +135,28 @@ public class SetAccountHeadFragment extends BaseFragment {
         WebService.GetUpToken(null, "baby-m", new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
-                if (obj == null) {
-                    DisplayOKDiaLog("GetUpToken Error!");
-                    return;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("GetUpToken Error!");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
+                    }
+                    data = new File(mCurrentPhotoPath);
+                    key = mCurrentPhotoPath.substring(mCurrentPhotoPath.lastIndexOf("/") + 1, mCurrentPhotoPath.length());
+                    UploadManager uploadManager = new UploadManager();
+                    uploadManager.put(data, key, obj.toString(),
+                            new UpCompletionHandler() {
+                                @Override
+                                public void complete(String key, ResponseInfo info, JSONObject response) {
+                                    updateWebData();
+                                }
+                            }, null);
+                } catch (Exception e) {
+                    DisplayOKDiaLog("uploadPic GetUpToken Error!e:" + e);
+                    e.printStackTrace();
                 }
-                data = new File(mCurrentPhotoPath);
-                key = mCurrentPhotoPath.substring(mCurrentPhotoPath.lastIndexOf("/") + 1, mCurrentPhotoPath.length());
-                UploadManager uploadManager = new UploadManager();
-                uploadManager.put(data, key, obj.toString(),
-                        new UpCompletionHandler() {
-                            @Override
-                            public void complete(String key, ResponseInfo info, JSONObject response) {
-                                updateWebData();
-                            }
-                        }, null);
             }
         });
     }
@@ -155,19 +169,27 @@ public class SetAccountHeadFragment extends BaseFragment {
                 USER_AVATAR, new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
-                        if (obj == null) {
-                            DisplayOKDiaLog("SetChangeAvatar Error!");
-                            return;
-                        }
-                        CancelDiaLog();
-                        DisplayOKDiaLog("头像設置完成");
-                        JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
                         try {
-                            tmpObj.put("USER_AVATAR", USER_AVATAR);
-                        } catch (JSONException e) {
+                            if (obj == null) {
+                                DisplayOKDiaLog("SetChangeAvatar Error!");
+                                return;
+                            }else if (obj.equals("Success! No Data Return!")) {
+                                DisplayOKDiaLog("读取完成，无资料返回!");
+                                return;
+                            }
+                            CancelDiaLog();
+                            DisplayOKDiaLog("头像設置完成");
+                            JSONObject tmpObj = UserMstr.userData.getBaseInfoAry().optJSONObject(0);
+                            try {
+                                tmpObj.put("USER_AVATAR", USER_AVATAR);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            main.RemoveBottomNotAddTab(thisFragment);
+                        } catch (Exception e) {
+                            DisplayOKDiaLog("SetChangeAvatar Error!e:" + e);
                             e.printStackTrace();
                         }
-                        main.RemoveBottomNotAddTab(thisFragment);
                     }
                 });
     }

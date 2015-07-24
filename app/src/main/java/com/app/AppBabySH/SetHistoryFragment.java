@@ -34,10 +34,10 @@ public class SetHistoryFragment extends BaseFragment {
         super.onDestroy();
         main.AddTabHost();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
-        main = (MainTabActivity) getActivity();
+
         thisFragment = this;
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.profile_set_history_fragment, container, false);
@@ -48,10 +48,18 @@ public class SetHistoryFragment extends BaseFragment {
             }
         });
         initView();
-        //  判斷網路
-        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        main = (MainTabActivity) getActivity();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
+    }
+
 
     private void initView() {
         mImgbBack = (ImageButton) rootView.findViewById(R.id.imgbSetHistoryBack);
@@ -68,40 +76,45 @@ public class SetHistoryFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
-                if (obj == null) {
-                    DisplayOKDiaLog("取得资讯错误！");
-                    return;
-                } else if (obj.equals("Success! No Data Return!")) {
-                    DisplayOKDiaLog("没有任何资讯！");
-                    return;
-                }
-                Log.i(TAG,"obj : "+obj);
-                JSONArray json = (JSONArray) obj;
-                if (json.length() == 0) {
-                    DisplayOKDiaLog("没有任何资讯！");
-                    return;
-                }
-                JSONObject tmpObj;
-                int i = -1;
-                while (++i < json.length()) {
-                    tmpObj = json.optJSONObject(i);
-                    View mVHistoryItem = _inflater.inflate(R.layout.profile_personalhistory_item, null);
-                    TextView mTxtSchoolName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistorySchoolName);
-                    TextView mTxtClassName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryClassName);
-                    TextView mTxtStudentName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryStudentName);
-                    TextView mTxtTime = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryTime);
-                    mTxtSchoolName.setText(tmpObj.optString("SCHOOL_NAME"));
-                    mTxtClassName.setText(tmpObj.optString("CLASS_NAME"));
-                    mTxtStudentName.setText(tmpObj.optString("STUDENT_NAME"));
-                    mTxtTime.setText(ComFun.date2UserSee(tmpObj.optString("CLASS_ST_DATE"), "/") + " - " + ComFun.date2UserSee(tmpObj.optString("CLASS_END_DATE"), "/"));
-
-                    if (Integer.valueOf(tmpObj.optString("CLASS_END_DATE")) < Integer.valueOf(ComFun.GetNowDate())) {
-                        //if(Integer.valueOf(tmpObj.optString("CLASS_END_DATE")) < 20160101){
-                        mTblOld.addView(mVHistoryItem);
-                    } else {
-                        mTblCurr.addView(mVHistoryItem);
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("取得资讯错误！");
+                        return;
+                    } else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("没有任何资讯！");
+                        return;
                     }
+                    Log.i(TAG, "GetStudentHistory obj : " + obj);
+                    JSONArray json = (JSONArray) obj;
+                    if (json.length() == 0) {
+                        DisplayOKDiaLog("没有任何资讯！");
+                        return;
+                    }
+                    JSONObject tmpObj;
+                    int i = -1;
+                    while (++i < json.length()) {
+                        tmpObj = json.optJSONObject(i);
+                        View mVHistoryItem = _inflater.inflate(R.layout.profile_personalhistory_item, null);
+                        TextView mTxtSchoolName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistorySchoolName);
+                        TextView mTxtClassName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryClassName);
+                        TextView mTxtStudentName = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryStudentName);
+                        TextView mTxtTime = (TextView) mVHistoryItem.findViewById(R.id.txtProfileHistoryTime);
+                        mTxtSchoolName.setText(tmpObj.optString("SCHOOL_NAME"));
+                        mTxtClassName.setText(tmpObj.optString("CLASS_NAME"));
+                        mTxtStudentName.setText(tmpObj.optString("STUDENT_NAME"));
+                        mTxtTime.setText(ComFun.date2UserSee(tmpObj.optString("CLASS_ST_DATE"), "/") + " - " + ComFun.date2UserSee(tmpObj.optString("CLASS_END_DATE"), "/"));
 
+                        if (Integer.valueOf(tmpObj.optString("CLASS_END_DATE")) < Integer.valueOf(ComFun.GetNowDate())) {
+                            //if(Integer.valueOf(tmpObj.optString("CLASS_END_DATE")) < 20160101){
+                            mTblOld.addView(mVHistoryItem);
+                        } else {
+                            mTblCurr.addView(mVHistoryItem);
+                        }
+
+                    }
+                } catch (NumberFormatException e) {
+                    DisplayOKDiaLog("GetStudentHistory 取得资讯失败！e:" + e);
+                    e.printStackTrace();
                 }
             }
         });

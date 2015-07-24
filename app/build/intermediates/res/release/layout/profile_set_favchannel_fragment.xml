@@ -30,7 +30,7 @@
             android:textSize="30sp" />
     </RelativeLayout>
 
-    <com.app.Common.SwipeMenuListview.SwipeMenuListView
+    <com.app.Common.listviewswipemenu.SwipeMenuListView
         android:id="@+id/lvSetFavChannelContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

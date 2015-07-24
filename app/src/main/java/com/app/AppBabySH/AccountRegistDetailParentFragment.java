@@ -29,7 +29,7 @@ import java.util.ArrayList;
  */
 public class AccountRegistDetailParentFragment extends BaseFragment {
     final private String TAG = "DetailP";
-    public String Type,Activity_No, Phone, SchoolName, Province, City, ClassName, BabyName;
+    public String Type, Activity_No, Phone, SchoolName, Province, City, ClassName, BabyName;
     private Integer i;
 
     private View rootView;
@@ -60,6 +60,15 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        getRelationshipData();
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -67,11 +76,8 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        getRelationshipData();
-        initView();
-        return rootView;
     }
+
 
     //Create Menu
     private void getRelationshipData() {
@@ -79,25 +85,30 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
-                Log.i(TAG, "obj : " + obj);
-                // TODO Auto-generated method stub
-                if (obj == null) {
-                    DisplayOKDiaLog("关系资讯取得错误！");
-                    return;
-                }
-                JSONArray json = (JSONArray) obj;
-                if (json.length() == 0) {
-
-                } else {
-                    relationshipAryList = new ArrayList<relationshipItem>();
-                    i = -1;
-                    while (++i < json.length()) {
-                        relationshipItem ritem = new relationshipItem();
-                        ritem.CODE = json.optJSONObject(i).optString("PARENTS_CLASS_CODE");
-                        ritem.NAME = json.optJSONObject(i).optString("PARENTS_CLASS_NAME");
-                        relationshipAryList.add(ritem);
+                Log.i(TAG, "GetParentRelation obj : " + obj);
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("关系资讯取得错误！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
                     }
-                    adRelationship = getMenuDialog();
+                    JSONArray json = (JSONArray) obj;
+                    if (json.length() != 0) {
+                        relationshipAryList = new ArrayList<relationshipItem>();
+                        i = -1;
+                        while (++i < json.length()) {
+                            relationshipItem ritem = new relationshipItem();
+                            ritem.CODE = json.optJSONObject(i).optString("PARENTS_CLASS_CODE");
+                            ritem.NAME = json.optJSONObject(i).optString("PARENTS_CLASS_NAME");
+                            relationshipAryList.add(ritem);
+                        }
+                        adRelationship = getMenuDialog();
+                    }
+                } catch (Exception e) {
+                    DisplayOKDiaLog("关系资讯取得失败！ e:" + e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -137,11 +148,11 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
         mBtnBack.setOnClickListener(new RegistInfoonClick());
         mBtnCommit.setOnClickListener(new RegistInfoonClick());
 
-        if(Type.equals("New")){
+        if (Type.equals("New")) {
             mEdtNickname.setVisibility(View.VISIBLE);
             mEdtPW.setVisibility(View.VISIBLE);
             mEdtCheckPW.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mEdtNickname.setVisibility(View.GONE);
             mEdtPW.setVisibility(View.GONE);
             mEdtCheckPW.setVisibility(View.GONE);
@@ -206,19 +217,22 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     Log.i(TAG, "SetRegister obj : " + obj);
                     CancelDiaLog();
-                    // TODO Auto-generated method stub
-                    if (obj == null) {
-                        DisplayOKDiaLog("关系资讯取得错误！");
-                    }else{
-                        onBack();
-                        if(actName.equals("MainTabActivity")){
+                    try {
+                        if (obj == null) {
+                            DisplayOKDiaLog("注册错误！");
+                        } else {
+                            onBack();
+                            if (actName.equals("MainTabActivity")) {
 
-                        }else {
-                            loginA.mTxtName.setText(Phone);
-                            loginA.mTxtPW.setText(strPw);
-                            loginA.checkLoginData();
+                            } else {
+                                loginA.mTxtName.setText(Phone);
+                                loginA.mTxtPW.setText(strPw);
+                                loginA.checkLoginData();
+                            }
                         }
-
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("SetRegister 注册错误失败！ e:" + e);
+                        e.printStackTrace();
                     }
                 }
             });
@@ -229,10 +243,10 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
         public String CODE, NAME;
     }
 
-    private void onBack(){
-        if(actName.equals("MainTabActivity")){
+    private void onBack() {
+        if (actName.equals("MainTabActivity")) {
             mainA.RemoveBottomNotAddTab(thisFragment);
-        }else {
+        } else {
             loginA.RemoveBottom(thisFragment);
         }
     }

@@ -133,7 +133,7 @@ public class SelectMultiImgLoader
 
 		// 獲取應用程序最大可用內存
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
-		int cacheSize = maxMemory / 8;
+		int cacheSize = maxMemory / 8;// 預設8
 		mLruCache = new LruCache<String, Bitmap>(cacheSize)
 		{
 			@Override
@@ -313,6 +313,11 @@ public class SelectMultiImgLoader
 		// parameter
 		if (height <= 0)
 			height = displayMetrics.heightPixels;
+
+		// 20150721 Ray 將縮圖比例再度壓縮 減輕記憶體使用 避免閃退
+		width = width/3;
+		height = height/3;
+
 		imageSize.width = width;
 		imageSize.height = height;
 		return imageSize;

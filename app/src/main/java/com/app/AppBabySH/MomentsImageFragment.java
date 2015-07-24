@@ -72,13 +72,18 @@ public class MomentsImageFragment extends BaseFragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.moments_imageview_fragment,
                     container, false);
-            main = (MainTabActivity) getActivity();
             thisFragment = this;
             createRootView();
         }
-
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
+    }
+
 
     @Override
     public void onDestroy() {

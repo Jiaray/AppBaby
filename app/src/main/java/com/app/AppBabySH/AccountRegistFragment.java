@@ -26,10 +26,10 @@ public class AccountRegistFragment extends BaseFragment {
     private AccountRegistFragment thisFragment;
     private LoginActivity loginA;
     private MainTabActivity mainA;
-    private String actName,strRegDType;
+    private String actName, strRegDType;
 
     private EditText mEdtActivation, mEdtPhone, mEdtCaptcha;
-    private Button mBtnNext, mBtnSendCaptcha,mBtnHowtoGet;
+    private Button mBtnNext, mBtnSendCaptcha, mBtnHowtoGet;
     private ImageButton mBtnBack;
 
     private Boolean activated = false;
@@ -38,7 +38,7 @@ public class AccountRegistFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(actName.equals("MainTabActivity"))mainA.AddTabHost();
+        if (actName.equals("MainTabActivity")) mainA.AddTabHost();
     }
 
     @Override
@@ -50,6 +50,14 @@ public class AccountRegistFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -57,10 +65,8 @@ public class AccountRegistFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        initView();
-        return rootView;
     }
+
 
     private void initView() {
         mEdtActivation = (EditText) rootView.findViewById(R.id.edtRegActivation);
@@ -95,9 +101,9 @@ public class AccountRegistFragment extends BaseFragment {
                     checkActivation();
                     break;
                 case R.id.imgbRegBack:
-                    if(actName.equals("MainTabActivity")){
+                    if (actName.equals("MainTabActivity")) {
                         mainA.RemoveBottom(thisFragment);
-                    }else{
+                    } else {
                         loginA.RemoveBottom(thisFragment);
                     }
                     break;
@@ -126,39 +132,46 @@ public class AccountRegistFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
-                // TODO Auto-generated method stub
-                if (obj == null) {
-                    DisplayOKDiaLog("激活失败！");
-                    return;
-                }
-                JSONArray json = (JSONArray) obj;
-                if (json.optJSONObject(0).optString("STATE").equals("Y")) {
-                    userType = json.optJSONObject(0).optString("USER_TYPE");
-                    validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
-                    SendCaptcha();
-                    strRegDType = "New";
-                } else {
-                    Integer STATE = Integer.valueOf(json.optJSONObject(0).optString("STATE"));
-                    switch (STATE) {
-                        case 1:
-                            DisplayOKDiaLog("无此帐号，请与学校人员联系！");
-                            break;
-                        case 2:
-                            DisplayOKDiaLog("無效激活！");
-                            break;
-                        case 3:
-                            DisplayOKDiaLog("已激活！");
-                            break;
-                        case 4:
-                            DisplayOKDiaLog("沒有建班級！");
-                            break;
-                        case 5:
-                            strRegDType = "hadData";
-                            userType = json.optJSONObject(0).optString("USER_TYPE");
-                            validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
-                            SendCaptcha();
-                            break;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("激活失败！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
                     }
+                    JSONArray json = (JSONArray) obj;
+                    if (json.optJSONObject(0).optString("STATE").equals("Y")) {
+                        userType = json.optJSONObject(0).optString("USER_TYPE");
+                        validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
+                        SendCaptcha();
+                        strRegDType = "New";
+                    } else {
+                        Integer STATE = Integer.valueOf(json.optJSONObject(0).optString("STATE"));
+                        switch (STATE) {
+                            case 1:
+                                DisplayOKDiaLog("无此帐号，请与学校人员联系！");
+                                break;
+                            case 2:
+                                DisplayOKDiaLog("無效激活！");
+                                break;
+                            case 3:
+                                DisplayOKDiaLog("已激活！");
+                                break;
+                            case 4:
+                                DisplayOKDiaLog("沒有建班級！");
+                                break;
+                            case 5:
+                                strRegDType = "hadData";
+                                userType = json.optJSONObject(0).optString("USER_TYPE");
+                                validateNo = json.optJSONObject(0).optString("VALIDATE_NO");
+                                SendCaptcha();
+                                break;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    DisplayOKDiaLog("GetActivate 激活失败！e:" + e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -178,16 +191,17 @@ public class AccountRegistFragment extends BaseFragment {
                 public void CompleteCallback(String id, Object obj) {
                     CancelDiaLog();
                     Log.v(TAG, "SendMessage obj:" + obj);
-                    // TODO Auto-generated method stub
-                    if (obj == null) {
-                        DisplayOKDiaLog("短信接口错误！");
-                        return;
-                    }else if(obj.toString().indexOf("success") != -1){
-                        DisplayOKDiaLog("已传送验证短信！");
-                        return;
-                    }else{
-                        DisplayOKDiaLog("验证短信传送失败！");
-                        return;
+                    try {
+                        if (obj == null) {
+                            DisplayOKDiaLog("短信接口错误！");
+                        } else if (obj.toString().indexOf("success") != -1) {
+                            DisplayOKDiaLog("已传送验证短信！");
+                        } else {
+                            DisplayOKDiaLog("验证短信传送失败！");
+                        }
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("SendMessage 短信接口失败！e:" + e);
+                        e.printStackTrace();
                     }
 
                 }
@@ -225,23 +239,30 @@ public class AccountRegistFragment extends BaseFragment {
             public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
                 Log.i(TAG, "GetValidate obj:" + obj);
-                // TODO Auto-generated method stub
-                if (obj == null) {
-                    DisplayOKDiaLog("验证错误！");
-                    return;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("验证错误！");
+                        return;
+                    }else if (obj.equals("Success! No Data Return!")) {
+                        DisplayOKDiaLog("读取完成，无资料返回!");
+                        return;
+                    }
+                    JSONArray json = (JSONArray) obj;
+                    loginA.RemoveBottom(thisFragment);
+                    AccountRegistDetailParentFragment regDPF = new AccountRegistDetailParentFragment();
+                    regDPF.Type = strRegDType;
+                    regDPF.Activity_No = mEdtActivation.getText().toString();
+                    regDPF.Phone = mEdtPhone.getText().toString();
+                    regDPF.SchoolName = json.optJSONObject(0).optString("SCHOOL_NAME");
+                    regDPF.Province = json.optJSONObject(0).optString("PROVINCE");
+                    regDPF.City = json.optJSONObject(0).optString("CITY");
+                    regDPF.ClassName = json.optJSONObject(0).optString("CLASS_ENAME");
+                    regDPF.BabyName = json.optJSONObject(0).optString("STUDENT_NAME");
+                    loginA.OpenBottom(regDPF);
+                } catch (Exception e) {
+                    DisplayOKDiaLog("GetValidate 验证失败！e:" + e);
+                    e.printStackTrace();
                 }
-                JSONArray json = (JSONArray) obj;
-                loginA.RemoveBottom(thisFragment);
-                AccountRegistDetailParentFragment regDPF = new AccountRegistDetailParentFragment();
-                regDPF.Type = strRegDType;
-                regDPF.Activity_No = mEdtActivation.getText().toString();
-                regDPF.Phone = mEdtPhone.getText().toString();
-                regDPF.SchoolName = json.optJSONObject(0).optString("SCHOOL_NAME");
-                regDPF.Province = json.optJSONObject(0).optString("PROVINCE");
-                regDPF.City = json.optJSONObject(0).optString("CITY");
-                regDPF.ClassName = json.optJSONObject(0).optString("CLASS_ENAME");
-                regDPF.BabyName = json.optJSONObject(0).optString("STUDENT_NAME");
-                loginA.OpenBottom(regDPF);
             }
         });
     }

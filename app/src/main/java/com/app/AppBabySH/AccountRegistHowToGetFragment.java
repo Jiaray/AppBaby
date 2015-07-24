@@ -39,6 +39,14 @@ public class AccountRegistHowToGetFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -46,10 +54,8 @@ public class AccountRegistHowToGetFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        initView();
-        return rootView;
     }
+
 
     private void initView() {
         mBtnBack = (ImageButton) rootView.findViewById(R.id.imgbRegHowToGetBack);

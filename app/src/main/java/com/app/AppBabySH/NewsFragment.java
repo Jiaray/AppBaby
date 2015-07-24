@@ -38,16 +38,22 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        main = (MainTabActivity) getActivity();
         rootView = inflater.inflate(R.layout.news_fragment, container, false);
         isInit = true;
         initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
         //  判斷網路
         if (WebService.isConnected(getActivity())) {
             getData();
         }
-        return rootView;
     }
+
 
     private void initView() {
         pageIndex = 1;
@@ -66,7 +72,7 @@ public class NewsFragment extends BaseFragment {
                 //  判斷網路
                 if (!WebService.isConnected(getActivity())) {
                     refreshPullView();
-                }else{
+                } else {
                     refreshListView();
                 }
             }
@@ -84,7 +90,7 @@ public class NewsFragment extends BaseFragment {
                             refreshPullView();
                         }
                     }, 1000);
-                }else {
+                } else {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
 
@@ -114,33 +120,39 @@ public class NewsFragment extends BaseFragment {
             @Override
             public void CompleteCallback(String id, Object obj) {
                 CancelDiaLog();
-                if (obj == null) {
-                    DisplayOKDiaLog("取得资讯错误！");
-                    return;
-                } else if (obj.equals("Success! No Data Return!")) {
-                }
-                Log.i(TAG,"obj:"+obj);
-                JSONArray json = (JSONArray) obj;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("取得资讯错误！");
+                        return;
+                    } else if (obj.equals("Success! No Data Return!")) {
+                        pullDownView.notifyDidDataLoad(true);
+                    }
+                    Log.i(TAG, "obj:" + obj);
+                    JSONArray json = (JSONArray) obj;
 
-                if (json.length() == 0) {
-                    DisplayOKDiaLog("没有任何资讯！");
-                    return;
+                    if (json.length() == 0) {
+                        DisplayOKDiaLog("没有任何资讯！");
+                        return;
+                    }
+                    Log.i(TAG, "頻道資料取得成功 json:" + json.toString());
+                    Integer i = -1;
+                    while (++i < json.length()) {
+                        NewsItem item = new NewsItem();
+                        item.CHANNEL_ID = json.optJSONObject(i).optString("CHANNEL_ID");//"CHANNEL_ID":"C201504090003"
+                        item.CHANNEL_TITLE = json.optJSONObject(i).optString("CHANNEL_TITLE");//"CHANNEL_TITLE":"Channel 3"
+                        item.THUMB_URL = json.optJSONObject(i).optString("THUMB_URL");//"THUMB_URL":"http://img.appbaby.net/test_skichannel.jpg"
+                        item.MEDIA_TYPE = json.optJSONObject(i).optString("MEDIA_TYPE");//"MEDIA_TYPE":"U"
+                        item.MEDIA_CONTENT = json.optJSONObject(i).optString("MEDIA_CONTENT");//"MEDIA_CONTENT":"http://www.apple.com"
+                        item.GOOD_CNT = json.optJSONObject(i).optString("GOOD_CNT");//"GOOD_CNT":2
+                        item.FAVORITE_CNT = json.optJSONObject(i).optString("FAVORITE_CNT");//"FAVORITE_CNT":2
+                        newslist.add(item);
+                    }
+                    NEWS_COUNT = Integer.valueOf(json.optJSONObject(0).optString("COUNT"));
+                    refreshPullView();
+                } catch (NumberFormatException e) {
+                    DisplayOKDiaLog("GetNews　取得资讯失败！e:" + e);
+                    e.printStackTrace();
                 }
-                Log.i(TAG, "頻道資料取得成功 json:" + json.toString());
-                Integer i = -1;
-                while (++i < json.length()) {
-                    NewsItem item = new NewsItem();
-                    item.CHANNEL_ID = json.optJSONObject(i).optString("CHANNEL_ID");//"CHANNEL_ID":"C201504090003"
-                    item.CHANNEL_TITLE = json.optJSONObject(i).optString("CHANNEL_TITLE");//"CHANNEL_TITLE":"Channel 3"
-                    item.THUMB_URL = json.optJSONObject(i).optString("THUMB_URL");//"THUMB_URL":"http://img.appbaby.net/test_skichannel.jpg"
-                    item.MEDIA_TYPE = json.optJSONObject(i).optString("MEDIA_TYPE");//"MEDIA_TYPE":"U"
-                    item.MEDIA_CONTENT = json.optJSONObject(i).optString("MEDIA_CONTENT");//"MEDIA_CONTENT":"http://www.apple.com"
-                    item.GOOD_CNT = json.optJSONObject(i).optString("GOOD_CNT");//"GOOD_CNT":2
-                    item.FAVORITE_CNT = json.optJSONObject(i).optString("FAVORITE_CNT");//"FAVORITE_CNT":2
-                    newslist.add(item);
-                }
-                NEWS_COUNT = Integer.valueOf(json.optJSONObject(0).optString("COUNT"));
-                refreshPullView();
             }
         });
     }
@@ -162,7 +174,7 @@ public class NewsFragment extends BaseFragment {
         //Log.i(TAG, "頻道畫面產生完畢!");
     }
 
-    private void refreshListView(){
+    private void refreshListView() {
         Log.i(TAG, "頻道刷新");
         pageIndex = 1;
         newslist.clear();
@@ -179,7 +191,8 @@ public class NewsFragment extends BaseFragment {
             NewsChannelFragment newsItemFragment = new NewsChannelFragment();
             newsItemFragment.onCallBack = new NewsChannelFragment.itmeCallBack() {
                 @Override
-                public void onBack() {refreshListView();
+                public void onBack() {
+                    refreshListView();
                 }
             };
             newsItemFragment.CHANNEL_ID = _item.CHANNEL_ID;

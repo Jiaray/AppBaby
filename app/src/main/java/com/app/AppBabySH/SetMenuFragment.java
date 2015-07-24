@@ -47,9 +47,6 @@ public class SetMenuFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //共用宣告
-        centerV = (GlobalVar) getActivity().getApplicationContext();
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         rootView = inflater.inflate(R.layout.profile_set_menu_fragment, container, false);
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -61,6 +58,14 @@ public class SetMenuFragment extends BaseFragment {
         initView();
         return rootView;
     }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        centerV = (GlobalVar) getActivity().getApplicationContext();
+        main = (MainTabActivity) getActivity();
+    }
+
 
     private void initView() {
         mImgbBack = (ImageButton) rootView.findViewById(R.id.imgbSetMenuBack);

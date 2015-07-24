@@ -30,15 +30,21 @@ public class ProfileFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        main = (MainTabActivity) getActivity();
-        main.setSoftInputMode("adjustPan");
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.profile_fragment, container, false);
         initView();
-        //  判斷網路
-        if (WebService.isConnected(getActivity())) getData();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
+        main.setSoftInputMode("adjustPan");
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) getData();
+    }
+
 
     //  初始化
     private void initView() {
@@ -65,24 +71,32 @@ public class ProfileFragment extends BaseFragment {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     CancelDiaLog();
-                    if (obj == null) {
-                        DisplayOKDiaLog("取得资讯错误！");
-                        return;
-                    }
-                    JSONArray json = (JSONArray) obj;
-                    if (json.length() == 0) {
-                        DisplayOKDiaLog("没有任何资讯！");
-                        return;
-                    }
-                    int i = -1;
-                    while (++i < json.length()) {
-                        View mVPersonalInfoItem = _inflater.inflate(R.layout.profile_personalinfo_item, null);
-                        TextView mTxtRelationship = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalRelationship);
-                        TextView mTxtSchool = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalSchool);
-                        mTxtRelationship.setText(json.optJSONObject(i).optString("STUDENT_NAME") + " 的 " + json.optJSONObject(i).optString("STUDENT_RELATION"));
-                        mTxtSchool.setText(json.optJSONObject(i).optString("SCHOOL_NAME"));
-                        mTblPersonalInfo.addView(mVPersonalInfoItem);
-                        mVPersonalInfoItem.setOnClickListener(new onPersonalItemClick(json.optJSONObject(i).optString("SCHOOL_ID"), json.optJSONObject(i).optString("STUDENT_ID")));
+                    try {
+                        if (obj == null) {
+                            DisplayOKDiaLog("取得资讯错误！");
+                            return;
+                        }else if (obj.equals("Success! No Data Return!")) {
+                            DisplayOKDiaLog("读取完成，无资料返回!");
+                            return;
+                        }
+                        JSONArray json = (JSONArray) obj;
+                        if (json.length() == 0) {
+                            DisplayOKDiaLog("没有任何资讯！");
+                            return;
+                        }
+                        int i = -1;
+                        while (++i < json.length()) {
+                            View mVPersonalInfoItem = _inflater.inflate(R.layout.profile_personalinfo_item, null);
+                            TextView mTxtRelationship = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalRelationship);
+                            TextView mTxtSchool = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalSchool);
+                            mTxtRelationship.setText(json.optJSONObject(i).optString("STUDENT_NAME") + " 的 " + json.optJSONObject(i).optString("STUDENT_RELATION"));
+                            mTxtSchool.setText(json.optJSONObject(i).optString("SCHOOL_NAME"));
+                            mTblPersonalInfo.addView(mVPersonalInfoItem);
+                            mVPersonalInfoItem.setOnClickListener(new onPersonalItemClick(json.optJSONObject(i).optString("SCHOOL_ID"), json.optJSONObject(i).optString("STUDENT_ID")));
+                        }
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("GetParentChilds 取得资讯失败！e:" + e);
+                        e.printStackTrace();
                     }
                 }
             });
@@ -92,25 +106,33 @@ public class ProfileFragment extends BaseFragment {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     CancelDiaLog();
-                    if (obj == null) {
-                        DisplayOKDiaLog("取得资讯错误！");
-                        return;
-                    }
-                    JSONArray json = (JSONArray) obj;
-                    if (json.length() == 0) {
-                        DisplayOKDiaLog("没有任何资讯！");
-                        return;
-                    }
-                    int i = -1;
-                    while (++i < json.length()) {
-                        View mVPersonalInfoItem = _inflater.inflate(R.layout.profile_personalinfo_item, null);
-                        TextView mTxtRelationship = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalRelationship);
-                        TextView mTxtSchool = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalSchool);
-                        ImageView mImgNext = (ImageView) mVPersonalInfoItem.findViewById(R.id.imgProfilePersonalNext);
-                        mTxtRelationship.setText(json.optJSONObject(i).optString("SCHOOL_NAME") + " - " + json.optJSONObject(i).optString("CLASS_NAME"));
-                        mTxtSchool.setVisibility(View.GONE);
-                        mImgNext.setVisibility(View.GONE);
-                        mTblPersonalInfo.addView(mVPersonalInfoItem);
+                    try {
+                        if (obj == null) {
+                            DisplayOKDiaLog("取得资讯错误！");
+                            return;
+                        }else if (obj.equals("Success! No Data Return!")) {
+                            DisplayOKDiaLog("读取完成，无资料返回!");
+                            return;
+                        }
+                        JSONArray json = (JSONArray) obj;
+                        if (json.length() == 0) {
+                            DisplayOKDiaLog("没有任何资讯！");
+                            return;
+                        }
+                        int i = -1;
+                        while (++i < json.length()) {
+                            View mVPersonalInfoItem = _inflater.inflate(R.layout.profile_personalinfo_item, null);
+                            TextView mTxtRelationship = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalRelationship);
+                            TextView mTxtSchool = (TextView) mVPersonalInfoItem.findViewById(R.id.txtProfilPersonalSchool);
+                            ImageView mImgNext = (ImageView) mVPersonalInfoItem.findViewById(R.id.imgProfilePersonalNext);
+                            mTxtRelationship.setText(json.optJSONObject(i).optString("SCHOOL_NAME") + " - " + json.optJSONObject(i).optString("CLASS_NAME"));
+                            mTxtSchool.setVisibility(View.GONE);
+                            mImgNext.setVisibility(View.GONE);
+                            mTblPersonalInfo.addView(mVPersonalInfoItem);
+                        }
+                    } catch (Exception e) {
+                        DisplayOKDiaLog("GetTeacherTeaching 取得资讯失败！e:" + e);
+                        e.printStackTrace();
                     }
                 }
             });

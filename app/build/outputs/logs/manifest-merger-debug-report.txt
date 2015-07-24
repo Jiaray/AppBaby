@@ -243,3 +243,87 @@ ADDED from AndroidManifest.xml:111:9
 		ADDED from AndroidManifest.xml:113:13
 	android:name
 		ADDED from AndroidManifest.xml:112:13
+receiver#com.tencent.android.tpush.XGPushReceiver
+ADDED from AndroidManifest.xml:139:9
+	android:process
+		ADDED from AndroidManifest.xml:141:13
+	android:name
+		ADDED from AndroidManifest.xml:140:13
+intent-filter#android.bluetooth.adapter.action.STATE_CHANGED+android.intent.action.ACTION_POWER_CONNECTED+android.intent.action.ACTION_POWER_DISCONNECTED+android.intent.action.USER_PRESENT+android.net.conn.CONNECTIVITY_CHANGE+com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE+com.tencent.android.tpush.action.SDK
+ADDED from AndroidManifest.xml:142:13
+	android:priority
+		ADDED from AndroidManifest.xml:142:28
+action#com.tencent.android.tpush.action.SDK
+ADDED from AndroidManifest.xml:144:17
+	android:name
+		ADDED from AndroidManifest.xml:144:25
+action#com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE
+ADDED from AndroidManifest.xml:145:17
+	android:name
+		ADDED from AndroidManifest.xml:145:25
+action#android.intent.action.USER_PRESENT
+ADDED from AndroidManifest.xml:147:17
+	android:name
+		ADDED from AndroidManifest.xml:147:25
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from AndroidManifest.xml:148:17
+	android:name
+		ADDED from AndroidManifest.xml:148:25
+action#android.bluetooth.adapter.action.STATE_CHANGED
+ADDED from AndroidManifest.xml:151:17
+	android:name
+		ADDED from AndroidManifest.xml:151:25
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from AndroidManifest.xml:152:17
+	android:name
+		ADDED from AndroidManifest.xml:152:25
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from AndroidManifest.xml:153:17
+	android:name
+		ADDED from AndroidManifest.xml:153:25
+activity#com.tencent.android.tpush.XGPushActivity
+ADDED from AndroidManifest.xml:159:9
+	android:exported
+		ADDED from AndroidManifest.xml:161:13
+	android:name
+		ADDED from AndroidManifest.xml:160:13
+intent-filter#android.intent.action
+ADDED from AndroidManifest.xml:162:13
+action#android.intent.action
+ADDED from AndroidManifest.xml:164:17
+	android:name
+		ADDED from AndroidManifest.xml:164:25
+service#com.tencent.android.tpush.service.XGPushService
+ADDED from AndroidManifest.xml:169:9
+	android:process
+		ADDED from AndroidManifest.xml:173:13
+	android:exported
+		ADDED from AndroidManifest.xml:171:13
+	android:persistent
+		ADDED from AndroidManifest.xml:172:13
+	android:name
+		ADDED from AndroidManifest.xml:170:13
+service#com.tencent.android.tpush.rpc.XGRemoteService
+ADDED from AndroidManifest.xml:176:9
+	android:exported
+		ADDED from AndroidManifest.xml:178:13
+	android:name
+		ADDED from AndroidManifest.xml:177:13
+intent-filter#com.app.AppBabySH.PUSH_ACTION
+ADDED from AndroidManifest.xml:179:13
+action#com.app.AppBabySH.PUSH_ACTION
+ADDED from AndroidManifest.xml:180:17
+	android:name
+		ADDED from AndroidManifest.xml:180:25
+meta-data#XG_V2_ACCESS_ID
+ADDED from AndroidManifest.xml:185:9
+	android:name
+		ADDED from AndroidManifest.xml:186:13
+	android:value
+		ADDED from AndroidManifest.xml:187:13
+meta-data#XG_V2_ACCESS_KEY
+ADDED from AndroidManifest.xml:189:9
+	android:name
+		ADDED from AndroidManifest.xml:190:13
+	android:value
+		ADDED from AndroidManifest.xml:191:13

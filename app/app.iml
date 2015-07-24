@@ -86,26 +86,30 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 14 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="umeng_social_sdk" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_renren_2" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_renren_1" level="project" />
-    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.0.3" level="project" />
     <orderEntry type="library" exported="" name="ksoap2-android-assembly-3.0.0-jar-with-dependencies" level="project" />
+    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.0.3" level="project" />
+    <orderEntry type="library" exported="" name="jg_filter_sdk_1.1" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_3" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_2" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_1" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_laiwang_2" level="project" />
+    <orderEntry type="library" exported="" name="wup-1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_laiwang_1" level="project" />
+    <orderEntry type="library" exported="" name="umeng_social_sdk" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_QQZone_1" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_QQZone_2" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_QQZone_3" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_3" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_email" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_2" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_tencentWB_1" level="project" />
+    <orderEntry type="library" exported="" name="Xg_sdk_v2.38_20150616_1057" level="project" />
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_WeiXin_2" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_laiwang_2" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_WeiXin_1" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_whatsapp" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_Sina" level="project" />
-    <orderEntry type="library" exported="" name="SocialSDK_laiwang_1" level="project" />
+    <orderEntry type="library" exported="" name="SocialSDK_whatsapp" level="project" />
+    <orderEntry type="library" exported="" name="mid-sdk-2.20" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_yixin_1" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_yixin_2" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_sms" level="project" />

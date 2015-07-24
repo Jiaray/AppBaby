@@ -73,11 +73,17 @@ public class MomentsCustomFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_custom_frag, container, false);
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
         initView();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
+    }
+
 
     private void initView() {
         Log.v(TAG, "Moments-Personal-Init");
@@ -108,7 +114,7 @@ public class MomentsCustomFragment extends BaseFragment {
                 //  判斷網路
                 if (!WebService.isConnected(getActivity())) {
                     refreshPullView();
-                }else {
+                } else {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
 
@@ -134,7 +140,7 @@ public class MomentsCustomFragment extends BaseFragment {
                             refreshPullView();
                         }
                     }, 1000);
-                }else {
+                } else {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
 
@@ -189,6 +195,8 @@ public class MomentsCustomFragment extends BaseFragment {
     private void getData() {
         DisplayLoadingDiaLog("Personal Loading...");
         if (NIC_NAME.equals("MomentsNews")) {
+            main.momentPushNum = "0";
+            main.refreshPush();
             WebService.GetCircleListNotRead(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
         } else {
             WebService.GetCircleListPersonal(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
@@ -199,60 +207,69 @@ public class MomentsCustomFragment extends BaseFragment {
         @Override
         public void CompleteCallback(String id, Object obj) {
             CancelDiaLog();
-            if (obj == null) {
-                DisplayOKDiaLog("Personal Error!");
-                return;
-            }
-            JSONArray json = (JSONArray) obj;
-            JSONArray infoAry = json.optJSONObject(0).optJSONArray("CIRCLE_INFO");
-            JSONArray atchAry = json.optJSONObject(0).optJSONArray("CIRCLE_ATCH");
-            JSONArray replyAry = json.optJSONObject(0).optJSONArray("CIRCLE_REPLY");
-            JSONArray goodAry = json.optJSONObject(0).optJSONArray("CIRCLE_GOOD");
-            if (infoAry.length() == 0) {
-                DisplayOKDiaLog("Personal Empty!");
-                return;
-            }
+            try {
+                if (obj == null) {
+                    DisplayOKDiaLog("Personal Error!");
+                    return;
+                }else if (obj.equals("Success! No Data Return!")) {
+                    DisplayOKDiaLog("读取完成，无资料返回!");
+                    pullDownView.notifyDidDataLoad(true);
+                    return;
+                }
+                JSONArray json = (JSONArray) obj;
+                JSONArray infoAry = json.optJSONObject(0).optJSONArray("CIRCLE_INFO");
+                JSONArray atchAry = json.optJSONObject(0).optJSONArray("CIRCLE_ATCH");
+                JSONArray replyAry = json.optJSONObject(0).optJSONArray("CIRCLE_REPLY");
+                JSONArray goodAry = json.optJSONObject(0).optJSONArray("CIRCLE_GOOD");
+                if (infoAry.length() == 0) {
+                    DisplayOKDiaLog("Personal Empty!");
+                    return;
+                }
 
-            // TODO 塞值進陣列中
-            Integer i = -1, j;
-            //i = 0;
-            while (++i < infoAry.length()) {
-                MomentsItem item = new MomentsItem();
-                item.CIRCLE_ID = infoAry.optJSONObject(i).optString("CIRCLE_ID");//"C201504120015"
-                item.USER_ID = infoAry.optJSONObject(i).optString("USER_ID");//"U201504000002"
-                item.NIC_NAME = infoAry.optJSONObject(i).optString("NIC_NAME");//"張老師"
-                item.USER_AVATAR = infoAry.optJSONObject(i).optString("USER_AVATAR");//"http://img.appbaby.net/test_icon.png"
-                item.CLASS_ID = infoAry.optJSONObject(i).optString("CLASS_ID");//"C201504000002"
-                item.CLASS_NAME = infoAry.optJSONObject(i).optString("CLASS_NAME");//"B班"
-                item.SCHOOL_NAME = infoAry.optJSONObject(i).optString("SCHOOL_NAME");//"APP測試園一"
-                item.DESCRIPTION = infoAry.optJSONObject(i).optString("DESCRIPTION");//"但凡有?儿"
-                item.CIRCLE_TYPE = infoAry.optJSONObject(i).optString("CIRCLE_TYPE");//"T"
-                item.LATITUDE = infoAry.optJSONObject(i).optString("LATITUDE");//""
-                item.LONGITUDE = infoAry.optJSONObject(i).optString("LONGITUDE");//""
-                item.ENTRY_DATE = infoAry.optJSONObject(i).optString("ENTRY_DATE");//"20150511"
-                item.ENTRY_TIME = infoAry.optJSONObject(i).optString("ENTRY_TIME");//"161700"
-                j = -1;
-                while (++j < atchAry.length()) {
-                    if (atchAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
-                        item.ATCH.add(atchAry.optJSONObject(j));
+                // TODO 塞值進陣列中
+                Integer i = -1, j;
+                //i = 0;
+                while (++i < infoAry.length()) {
+                    MomentsItem item = new MomentsItem();
+                    item.CIRCLE_ID = infoAry.optJSONObject(i).optString("CIRCLE_ID");//"C201504120015"
+                    item.USER_ID = infoAry.optJSONObject(i).optString("USER_ID");//"U201504000002"
+                    item.NIC_NAME = infoAry.optJSONObject(i).optString("NIC_NAME");//"張老師"
+                    item.USER_AVATAR = infoAry.optJSONObject(i).optString("USER_AVATAR");//"http://img.appbaby.net/test_icon.png"
+                    item.CLASS_ID = infoAry.optJSONObject(i).optString("CLASS_ID");//"C201504000002"
+                    item.CLASS_NAME = infoAry.optJSONObject(i).optString("CLASS_NAME");//"B班"
+                    item.SCHOOL_NAME = infoAry.optJSONObject(i).optString("SCHOOL_NAME");//"APP測試園一"
+                    item.DESCRIPTION = infoAry.optJSONObject(i).optString("DESCRIPTION");//"但凡有?儿"
+                    item.CIRCLE_TYPE = infoAry.optJSONObject(i).optString("CIRCLE_TYPE");//"T"
+                    item.LATITUDE = infoAry.optJSONObject(i).optString("LATITUDE");//""
+                    item.LONGITUDE = infoAry.optJSONObject(i).optString("LONGITUDE");//""
+                    item.ENTRY_DATE = infoAry.optJSONObject(i).optString("ENTRY_DATE");//"20150511"
+                    item.ENTRY_TIME = infoAry.optJSONObject(i).optString("ENTRY_TIME");//"161700"
+                    j = -1;
+                    while (++j < atchAry.length()) {
+                        if (atchAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
+                            item.ATCH.add(atchAry.optJSONObject(j));
+                        }
                     }
-                }
-                j = -1;
-                while (++j < replyAry.length()) {
-                    if (replyAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
-                        item.REPLY.add(replyAry.optJSONObject(j));
+                    j = -1;
+                    while (++j < replyAry.length()) {
+                        if (replyAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
+                            item.REPLY.add(replyAry.optJSONObject(j));
+                        }
                     }
-                }
-                j = -1;
-                while (++j < goodAry.length()) {
-                    if (goodAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
-                        item.GOOD.add(goodAry.optJSONObject(j));
+                    j = -1;
+                    while (++j < goodAry.length()) {
+                        if (goodAry.optJSONObject(j).optString("CIRCLE_ID").equals(item.CIRCLE_ID)) {
+                            item.GOOD.add(goodAry.optJSONObject(j));
+                        }
                     }
+                    momentslist.add(item);
                 }
-                momentslist.add(item);
+                MOMENTS_COUNT = Integer.valueOf(infoAry.optJSONObject(0).optString("COUNT"));
+                refreshPullView();
+            } catch (NumberFormatException e) {
+                DisplayOKDiaLog("Personal Error!e:" + e);
+                e.printStackTrace();
             }
-            MOMENTS_COUNT = Integer.valueOf(infoAry.optJSONObject(0).optString("COUNT"));
-            refreshPullView();
         }
     }
 

@@ -42,6 +42,14 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                 return true;
             }
         });
+        thisFragment = this;
+        initView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
@@ -49,10 +57,8 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
-        thisFragment = this;
-        initView();
-        return rootView;
     }
+
 
     private void initView() {
         mEdtNickName = (EditText) rootView.findViewById(R.id.edtRegFeedbackNickName);
@@ -146,14 +152,17 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
                         CancelDiaLog();
-
-                        // TODO Auto-generated method stub
-                        if (obj == null || !obj.equals("1")) {
-                            DisplayOKDiaLog("提交失败！");
-                            return;
-                        } else {
-                            DisplayOKDiaLog("提交完成");
-                            onBack();
+                        try {
+                            if (obj == null || !obj.equals("1")) {
+                                DisplayOKDiaLog("提交失败！");
+                                return;
+                            } else {
+                                DisplayOKDiaLog("提交完成");
+                                onBack();
+                            }
+                        } catch (Exception e) {
+                            DisplayOKDiaLog("SetFeedback 提交失败！ e:" + e);
+                            e.printStackTrace();
                         }
                     }
                 });

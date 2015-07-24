@@ -115,18 +115,23 @@ public class NewsChannelFragment extends BaseFragment {
             rootView = inflater.inflate(R.layout.news_channel_fragment,
                     container, false);
             initView();
-            //  判斷網路
-            if (WebService.isConnected(getActivity())) {
-                getData();
-            }
-
             // 设置分享的内容
             setShareContent();
-            main = (MainTabActivity) getActivity();
             thisFragment = this;
         }
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        main = (MainTabActivity) getActivity();
+        //  判斷網路
+        if (WebService.isConnected(getActivity())) {
+            getData();
+        }
+    }
+
 
     /**
      * 產生主畫面

@@ -92,6 +92,12 @@ public class SelectMultiImgFragment extends BaseFragment implements SelectMultiI
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.selectmultiimg_fragment,
                 container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         main = (MainTabActivity) getActivity();
         thisFragment = this;
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -102,8 +108,8 @@ public class SelectMultiImgFragment extends BaseFragment implements SelectMultiI
         initView();
         getImages();
         initEvent();
-        return rootView;
     }
+
 
     @Override
     public void onDestroy() {

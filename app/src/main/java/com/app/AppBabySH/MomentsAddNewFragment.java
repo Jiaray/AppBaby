@@ -3,10 +3,13 @@ package com.app.AppBabySH;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,6 +72,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     private JSONArray jsonAryPic;
     private String tmpPath;
     private String mCurrentPhotoPath;// 图片路径
+    private boolean onFragCLick = false;
 
     public CallBack onCallBack;
 
@@ -94,12 +98,18 @@ public class MomentsAddNewFragment extends BaseFragment {
                 return true;
             }
         });
-        centerV = (GlobalVar) rootView.getContext().getApplicationContext();
-        main = (MainTabActivity) getActivity();
         thisFragment = this;
-        initView();
         return rootView;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        centerV = (GlobalVar) rootView.getContext().getApplicationContext();
+        main = (MainTabActivity) getActivity();
+        initView();
+    }
+
 
     private void initView() {
         aryPicPath = new ArrayList<String>();
@@ -159,6 +169,8 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
 
         public void onClick(View v) {
+            if(onFragCLick)return;
+            onFragCLick = true;
             switch (v.getId()) {
                 case R.id.txtMomentsAddNewCancel:
                     i = -1;
@@ -166,6 +178,7 @@ public class MomentsAddNewFragment extends BaseFragment {
                         FileCache.getInstance().deleteTempFile(aryPicPath.get(i));
                     }
                     main.RemoveBottom(thisFragment);
+                    onFragCLick = false;
                     break;
                 case R.id.txtMomentsAddNewSend:
                     getUpToken();
@@ -174,7 +187,7 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
     }
 
-    private void clearGridView(){
+    private void clearGridView() {
         ImageLoader.getInstance().clearCache();
         momentsIMGlist.clear();
         mGdvPreview.setAdapter(null);
@@ -188,10 +201,11 @@ public class MomentsAddNewFragment extends BaseFragment {
         selectImg.Max_Num = 9 - aryPicPath.size();
         selectImg.onCallBack = new SelectMultiImgFragment.CallBack() {
             private List _list;
+
             @Override
             public void onEnter(List imgList) {
                 _list = imgList;
-               DisplayLoadingDiaLog("图片处理中");
+                DisplayLoadingDiaLog("图片处理中");
                 i = -1;
                 while (++i < imgList.size()) {
                     File f = new File(imgList.get(i).toString());
@@ -237,7 +251,6 @@ public class MomentsAddNewFragment extends BaseFragment {
                 FileCache.getInstance().deleteTempFile(tmpPath);
                 Log.i(TAG, "添加到暫存图库");
                 aryPicPath.add(mCurrentPhotoPath);
-                createPreview();
             } catch (Exception e) {
                 Log.e(TAG, "error", e);
             }
@@ -246,6 +259,7 @@ public class MomentsAddNewFragment extends BaseFragment {
             // 取消照相后，删除已经创建的临时文件。
             FileCache.getInstance().deleteTempFile(mCurrentPhotoPath);
         }
+        createPreview();
     }
 
 
@@ -266,21 +280,28 @@ public class MomentsAddNewFragment extends BaseFragment {
 
     //  取得七牛驗證碼
     private void getUpToken() {
+        DisplayLoadingDiaLog("上传准备中...");
         WebService.GetUpToken(null, "baby-m", new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
-                if (obj == null) {
-                    DisplayOKDiaLog("GetUpToken Error!");
-                    return;
-                }
-                strUpToken = obj.toString();
-                posPic = 0;
-                jsonAryPic = new JSONArray();
-                if (aryPicPath.size() == 0) {
-                   DisplayLoadingDiaLog("提交中...");
-                    connectWeb();
-                } else {
-                    uploadPic(posPic);
+                onFragCLick = false;
+                try {
+                    if (obj == null) {
+                        DisplayOKDiaLog("GetUpToken Error!");
+                        return;
+                    }
+                    strUpToken = obj.toString();
+                    posPic = 0;
+                    jsonAryPic = new JSONArray();
+                    if (aryPicPath.size() == 0) {
+                        DisplayLoadingDiaLog("提交中...");
+                        connectWeb();
+                    } else {
+                        uploadPic(posPic);
+                    }
+                } catch (Exception e) {
+                    DisplayOKDiaLog("GetUpToken Error! e:" + e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -289,7 +310,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     //  開始上傳照片
     private void uploadPic(int $pos) {
         posPic = ($pos + 1);
-       DisplayLoadingDiaLog("图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
+        DisplayLoadingDiaLog("图片上传中(" + posPic + "/" + aryPicPath.size() + ")...");
         data = new File(aryPicPath.get($pos));
         String key = aryPicPath.get($pos).substring(aryPicPath.get($pos).lastIndexOf("/") + 1, aryPicPath.get($pos).length());
         String token = strUpToken;
@@ -325,16 +346,21 @@ public class MomentsAddNewFragment extends BaseFragment {
         WebService.SetCircleNew(null,
                 centerV.apn,
                 UserMstr.userData.getUserID(),
-                Class_ID, mEdtContent.getText().toString().replace("\n",""),
+                Class_ID, mEdtContent.getText().toString().replace("\n", ""),
                 UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE"), "", "", String.valueOf(jsonAryPic.length()), Atch_Info, new WebService.WebCallback() {
                     @Override
                     public void CompleteCallback(String id, Object obj) {
                         CancelDiaLog();
-                        if (obj == null) {
-                            DisplayOKDiaLog("SetCircleNew Error!");
-                            return;
+                        try {
+                            if (obj == null) {
+                                DisplayOKDiaLog("SetCircleNew Error!");
+                                return;
+                            }
+                            main.RemoveBottom(thisFragment);
+                        } catch (Exception e) {
+                            DisplayOKDiaLog("SetCircleNew Error! e:" + e);
+                            e.printStackTrace();
                         }
-                        main.RemoveBottom(thisFragment);
                     }
                 });
     }
