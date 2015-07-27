@@ -61,7 +61,6 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
             }
         });
         thisFragment = this;
-        getRelationshipData();
         initView();
         return rootView;
     }
@@ -76,6 +75,7 @@ public class AccountRegistDetailParentFragment extends BaseFragment {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
         }
+        getRelationshipData();
     }
 
 

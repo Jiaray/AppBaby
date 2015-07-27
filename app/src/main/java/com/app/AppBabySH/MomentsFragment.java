@@ -39,6 +39,7 @@ import com.app.Common.ImageLoader;
 public class MomentsFragment extends BaseFragment {
     private static final String TAG = "MomentsF";
     private MomentsCommonFun comF;
+    private GlobalVar centerV;
     public MomentsAdapter adapter;
     private AlertDialog.Builder alertD;
     public ArrayList<MomentsItem> momentslist;
@@ -86,9 +87,13 @@ public class MomentsFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //共用宣告
+        centerV = (GlobalVar) rootView.getContext().getApplicationContext();
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustResize");
         comF = new MomentsCommonFun(this, rootView);
+        //ListView Add Header
+        hdrMain = new Handler();
+        hdrMain.post(runInit);
     }
 
 
@@ -195,9 +200,6 @@ public class MomentsFragment extends BaseFragment {
             }
         });
 
-        //ListView Add Header
-        hdrMain = new Handler();
-        hdrMain.post(runInit);
     }
 
     private Runnable runInit = new Runnable() {
@@ -527,7 +529,8 @@ public class MomentsFragment extends BaseFragment {
     class SendReplyMsg implements View.OnClickListener {
         public void onClick(View v) {
             toViewMode();
-            WebService.SetCircleReply(null, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString().replace("\n", ""), strReplySN, new WebService.WebCallback() {
+            Log.i(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID + "||getUserID:" + UserMstr.userData.getUserID() + "||replyTo:" + mEdtReplyTo.getText().toString().replace("\n", "") + "||strReplySN:" + strReplySN);
+            WebService.SetCircleReply(null, centerV.apn, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString().replace("\n", ""), strReplySN, new WebService.WebCallback() {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
                     try {

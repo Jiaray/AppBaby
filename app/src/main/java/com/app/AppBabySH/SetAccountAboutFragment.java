@@ -46,6 +46,7 @@ public class SetAccountAboutFragment extends BaseFragment {
         //共用宣告
         centerV = (GlobalVar) getActivity().getApplicationContext();
         main = (MainTabActivity) getActivity();
+        setVersion();
     }
 
 
@@ -59,8 +60,6 @@ public class SetAccountAboutFragment extends BaseFragment {
         mImgbBack.setOnClickListener(new onClick());
         mBtnCheck.setOnClickListener(new onClick());
         mTxtTitle.setOnClickListener(new onClick());
-
-        setVersion();
     }
 
     class onClick implements View.OnClickListener {

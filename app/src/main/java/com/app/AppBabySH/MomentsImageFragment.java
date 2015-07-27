@@ -82,6 +82,7 @@ public class MomentsImageFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         main = (MainTabActivity) getActivity();
+        setWebInfo();
     }
 
 
@@ -143,7 +144,6 @@ public class MomentsImageFragment extends BaseFragment {
             public void onPageScrollStateChanged(int arg0) {
             }
         });
-        setWebInfo();
     }
 
     //  設定網路按讚收藏資訊

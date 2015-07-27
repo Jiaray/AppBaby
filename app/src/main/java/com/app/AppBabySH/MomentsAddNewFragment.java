@@ -55,6 +55,7 @@ public class MomentsAddNewFragment extends BaseFragment {
     private MainTabActivity main;
     private MomentsAddNewFragment thisFragment;
     private Integer i;
+    private boolean onAction = false;
     //
     private TextView mTxtCancel, mTxtSend;
     private EditText mEdtContent;
@@ -284,7 +285,6 @@ public class MomentsAddNewFragment extends BaseFragment {
         WebService.GetUpToken(null, "baby-m", new WebService.WebCallback() {
             @Override
             public void CompleteCallback(String id, Object obj) {
-                onFragCLick = false;
                 try {
                     if (obj == null) {
                         DisplayOKDiaLog("GetUpToken Error!");
@@ -301,6 +301,7 @@ public class MomentsAddNewFragment extends BaseFragment {
                     }
                 } catch (Exception e) {
                     DisplayOKDiaLog("GetUpToken Error! e:" + e);
+                    onFragCLick = false;
                     e.printStackTrace();
                 }
             }
@@ -342,6 +343,7 @@ public class MomentsAddNewFragment extends BaseFragment {
 
     //  更新資料庫數據
     private void connectWeb() {
+        onFragCLick = false;
         String Atch_Info = jsonAryPic.length() == 0 ? "" : jsonAryPic.toString();
         WebService.SetCircleNew(null,
                 centerV.apn,

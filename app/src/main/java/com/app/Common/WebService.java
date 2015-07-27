@@ -213,8 +213,9 @@ public class WebService {
     }
 
     //  班級圈回覆
-    public static void SetCircleReply(String id, String $circleID, String $userID, String $replydesc, String $atreplysn, WebCallback $callBack) {
+    public static void SetCircleReply(String id, String $apn, String $circleID, String $userID, String $replydesc, String $atreplysn, WebCallback $callBack) {
         HashMap<String, String> map = new HashMap<String, String>();
+        map.put("APN", $apn);
         map.put("Circle_ID", $circleID);
         map.put("User_ID", $userID);
         map.put("Reply_Desc", $replydesc);

@@ -82,6 +82,10 @@ public class MomentsCustomFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         main = (MainTabActivity) getActivity();
+
+        //ListView Add Header
+        hdrMain = new Handler();
+        hdrMain.post(runInit);
     }
 
 
@@ -162,11 +166,6 @@ public class MomentsCustomFragment extends BaseFragment {
         adapter = new MomentsCustomAdapter(getActivity(), momentslist);
         adapter.onCallBack = new AdapterCallBack();
         mSlvContent.setAdapter(adapter);
-
-
-        //ListView Add Header
-        hdrMain = new Handler();
-        hdrMain.post(runInit);
     }
 
     private Runnable runInit = new Runnable() {
@@ -175,7 +174,7 @@ public class MomentsCustomFragment extends BaseFragment {
             //ListView Add Header
             ViewGroup header = (ViewGroup) _inflater.inflate(R.layout.moments_header, mSlvContent, false);
             ImageView headerIMG = (ImageView) header.findViewById(R.id.imgMomentsHeaderUserHead);
-            ((ViewGroup.MarginLayoutParams) headerIMG.getLayoutParams()).topMargin = 50;
+            ((ViewGroup.MarginLayoutParams) headerIMG.getLayoutParams()).bottomMargin = 20;
             if (USER_AVATAR.equals("")) {
                 headerIMG.setVisibility(View.GONE);
             } else {
@@ -193,7 +192,7 @@ public class MomentsCustomFragment extends BaseFragment {
 
     //  取得 Web 資料
     private void getData() {
-        DisplayLoadingDiaLog("Personal Loading...");
+        DisplayLoadingDiaLog("资料读取中，请稍后...");
         if (NIC_NAME.equals("MomentsNews")) {
             main.momentPushNum = "0";
             main.refreshPush();

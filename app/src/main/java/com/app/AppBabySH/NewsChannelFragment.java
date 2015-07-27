@@ -130,6 +130,7 @@ public class NewsChannelFragment extends BaseFragment {
         if (WebService.isConnected(getActivity())) {
             getData();
         }
+        initWebView();
     }
 
 
@@ -164,7 +165,6 @@ public class NewsChannelFragment extends BaseFragment {
         mImgBShare.setOnClickListener(new onClick());
         mLyGood.setOnClickListener(new onClick());
         mLyFav.setOnClickListener(new onClick());
-        initWebView();
     }
 
     private void initWebView() {

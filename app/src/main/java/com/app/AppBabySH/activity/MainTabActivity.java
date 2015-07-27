@@ -11,6 +11,7 @@ import com.app.AppBabySH.ProfileFragment;
 import com.app.AppBabySH.R;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.UserMstr;
+import com.tencent.android.tpush.XGPushManager;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -72,6 +73,10 @@ public class MainTabActivity extends FragmentActivity {
         centerV.windowHeight = metrics.heightPixels;
         centerV.windowWidth = metrics.widthPixels;
         aryPushText = new ArrayList<TextView>();
+
+        //信鴿
+        Context context = getApplicationContext();
+        XGPushManager.registerPush(context);
         initView();
     }
 

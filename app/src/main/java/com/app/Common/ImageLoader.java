@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 
 public class ImageLoader {
     final private String TAG = "IMGLoader";
-    final int stub_id = R.drawable.doroto_loadimag;
+    final int stub_id = R.drawable.loading;
     final int stub_id2 = R.drawable.user_default_avatar;
     final int THUMBIMG_SIZE = 200;
     final int VIEWIMG_SIZE = 400;
