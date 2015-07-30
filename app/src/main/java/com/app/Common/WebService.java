@@ -354,6 +354,14 @@ public class WebService {
         GetJson(id, "Baby_Get_Parent_Relation", map, $callBack);
     }
 
+    //  查詢家長與學生關係代碼
+    public static void GetVersion(String id, WebCallback $callBack) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("Client_OS", "Android");
+        map.put("CheckKey", "");
+        GetJson(id, "Baby_Get_Version", map, $callBack);
+    }
+
     /**
      * 處理Json
      *

@@ -1,6 +1,7 @@
 package com.app.AppBabySH;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +14,9 @@ import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.ComFun;
 import com.app.Common.WebService;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class SetAccountAboutFragment extends BaseFragment {
     final private String TAG = "setAboutF";
@@ -40,6 +44,7 @@ public class SetAccountAboutFragment extends BaseFragment {
         initView();
         return rootView;
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -87,7 +92,39 @@ public class SetAccountAboutFragment extends BaseFragment {
                 case R.id.btnSetAccAboutCheck:
                     //  判斷網路
                     if (!WebService.isConnected(getActivity())) return;
-                    DisplayToast("功能尚未啟用");
+
+                    WebService.GetVersion(null, new WebService.WebCallback() {
+
+                        @Override
+                        public void CompleteCallback(String id, Object obj) {
+                            CancelDiaLog();
+                            try {
+                                if (obj == null) {
+                                    DisplayOKDiaLog("取得版本资讯错误！");
+                                    return;
+                                } else if (obj.equals("Success! No Data Return!")) {
+                                    DisplayOKDiaLog("没有任何资讯！");
+                                    return;
+                                }
+                                Log.i(TAG, "GetStudentHistory obj : " + obj);
+                                JSONArray json = (JSONArray) obj;
+                                if (json.length() == 0) {
+                                    DisplayOKDiaLog("没有任何版本资讯！");
+                                    return;
+                                }
+                                JSONObject tmpObj = json.optJSONObject(0);
+                                if (ComFun.getVersionName(getActivity()).equals(tmpObj.optString("VERSION_SN"))) {
+                                    DisplayToast("目前为最新版本");
+                                } else {
+                                    DisplayToast("最新版本为:" + tmpObj.optString("VERSION_SN"));
+                                }
+                            } catch (NumberFormatException e) {
+                                DisplayOKDiaLog("GetStudentHistory 取得版本资讯失败！e:" + e);
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
                     break;
             }
         }
@@ -96,7 +133,7 @@ public class SetAccountAboutFragment extends BaseFragment {
     private void setVersion() {
         if (!centerV.apn.equals("P")) {
             mTxtVersion.setText("版本号 ： v" + ComFun.getVersionName(getActivity()) + " APN : " + centerV.apn);
-        }else{
+        } else {
             mTxtVersion.setText("版本号 ： v" + ComFun.getVersionName(getActivity()));
         }
     }

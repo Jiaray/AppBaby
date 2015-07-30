@@ -2,6 +2,7 @@ package com.app.AppBabySH;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.AppBabySH.adapter.MomentsAdapter;
@@ -53,6 +55,7 @@ public class MomentsFragment extends BaseFragment {
     private PullDownView pullDownView;
     private ScrollOverListView mSlvContent;
     private ImageButton mImgBFilter, mImgBAddNew;
+    private MomentsFragment thisFragment;
 
     //values
     public String CurrClassID;
@@ -79,7 +82,14 @@ public class MomentsFragment extends BaseFragment {
         Log.i(TAG, "onCreateView");
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
-        initView();
+
+        if(UserMstr.userData.getUserName().equals("guest")){
+            final AlertDialog mutiItemDialogLogin = createLoginDialog();
+            mutiItemDialogLogin.show();
+        }else{
+            initView();
+        }
+
         return rootView;
     }
 
@@ -91,9 +101,13 @@ public class MomentsFragment extends BaseFragment {
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustResize");
         comF = new MomentsCommonFun(this, rootView);
-        //ListView Add Header
-        hdrMain = new Handler();
-        hdrMain.post(runInit);
+
+        if(!UserMstr.userData.getUserName().equals("guest")){
+            //ListView Add Header
+            hdrMain = new Handler();
+            hdrMain.post(runInit);
+        }
+
     }
 
 
@@ -245,6 +259,38 @@ public class MomentsFragment extends BaseFragment {
         }
     };
 
+    //  提示登入選單
+    public AlertDialog createLoginDialog() {
+        final String[] items = {"我已经有帐户，我需要登录", "没有帐户，需要注册", "取消"};
+        alertD = new AlertDialog.Builder(getActivity());
+        alertD.setTitle("当前您并未登录宝贝通，部分功能需要登录后可用。");
+        //設定對話框內的項目
+        alertD.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                main.mTabHost.setCurrentTab(1);
+               switch(which){
+                   case 0:
+                       centerV.loginAgain = true;
+                       UserMstr.userData = null;
+                       Intent intent = new Intent();
+                       intent.setClass(getActivity(), LoginActivity.class);
+                       startActivity(intent);
+                       break;
+                   case 1:
+                       AccountRegistFragment regF = new AccountRegistFragment();
+                       main.OpenBottom(regF);
+                       break;
+                   case 2:
+
+                       break;
+               }
+
+            }
+        });
+        return alertD.create();
+    }
+
     //  過濾選單
     public AlertDialog createFilterDialog() {
         final String[] items = new String[UserMstr.userData.ClassAryList.size() + 1];
@@ -283,6 +329,7 @@ public class MomentsFragment extends BaseFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which != 2) {
+                    clearGridView();
                     MomentsAddNewFragment addF = new MomentsAddNewFragment();
                     addF.Class_ID = CurrClassID;
                     addF.Add_Type = which == 0 ? "albums" : "camera";
@@ -297,6 +344,14 @@ public class MomentsFragment extends BaseFragment {
             }
         });
         return alertD.create();
+    }
+    private void clearGridView() {
+        ImageLoader.getInstance().clearCache();
+        momentslist.clear();
+        ImageLoader.getInstance().clearCache();
+        System.gc();
+        adapter.notifyDataSetChanged();
+        System.gc();
     }
 
     //  取得 Web 資料

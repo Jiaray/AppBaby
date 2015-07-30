@@ -1,5 +1,8 @@
 package com.app.AppBabySH;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.app.AppBabySH.activity.LoginActivity;
 import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.ImageLoader;
@@ -21,7 +25,9 @@ public class ProfileFragment extends BaseFragment {
     final private String TAG = "profile";
     private MainTabActivity main;
     private View rootView;
+    private GlobalVar centerV;
     private LayoutInflater _inflater;
+    private AlertDialog.Builder alertD;
 
     private LinearLayout mLyRegOther, mLySet, mLyFavChannel;
     private ImageView mImgPic;
@@ -32,17 +38,24 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.profile_fragment, container, false);
-        initView();
+        if(UserMstr.userData.getUserName().equals("guest")){
+            final AlertDialog mutiItemDialogLogin = createLoginDialog();
+            mutiItemDialogLogin.show();
+        }else{
+            initView();
+        }
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //共用宣告
+        centerV = (GlobalVar) rootView.getContext().getApplicationContext();
         main = (MainTabActivity) getActivity();
         main.setSoftInputMode("adjustPan");
         //  判斷網路
-        if (WebService.isConnected(getActivity())) getData();
+        if (WebService.isConnected(getActivity()) && !UserMstr.userData.getUserName().equals("guest")) getData();
     }
 
 
@@ -60,6 +73,38 @@ public class ProfileFragment extends BaseFragment {
         mLyFavChannel.setOnClickListener(new onClick());
         ImageLoader.getInstance().DisplayRoundedCornerImage(
                 UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgPic);
+    }
+
+    //  提示登入選單
+    public AlertDialog createLoginDialog() {
+        final String[] items = {"我已经有帐户，我需要登录", "没有帐户，需要注册", "取消"};
+        alertD = new AlertDialog.Builder(getActivity());
+        alertD.setTitle("当前您并未登录宝贝通，部分功能需要登录后可用。");
+        //設定對話框內的項目
+        alertD.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                main.mTabHost.setCurrentTab(1);
+                switch (which) {
+                    case 0:
+                        centerV.loginAgain = true;
+                        UserMstr.userData = null;
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        AccountRegistFragment regF = new AccountRegistFragment();
+                        main.OpenBottom(regF);
+                        break;
+                    case 2:
+
+                        break;
+                }
+
+            }
+        });
+        return alertD.create();
     }
 
     //  取得數據

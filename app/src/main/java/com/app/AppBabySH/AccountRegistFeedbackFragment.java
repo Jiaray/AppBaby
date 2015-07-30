@@ -106,7 +106,13 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                     } else if (strPhone.equals("")) {
                         DisplayToast("手机号码未填写!");
                         return;
-                    } else if (strEmail.equals("")) {
+                    } else if (strSchool.equals("")) {
+                        DisplayToast("学校未填写!");
+                        return;
+                    } else if (strContent.equals("")) {
+                        DisplayToast("意见内容未填写!");
+                        return;
+                    } /*else if (strEmail.equals("")) {
                         DisplayToast("Email 未填写!");
                         return;
                     } else if (strStudent.equals("")) {
@@ -115,16 +121,10 @@ public class AccountRegistFeedbackFragment extends BaseFragment {
                     } else if (TYPE.equals("activation") && strActivation.equals("")) {
                         DisplayToast("激活码未填写!");
                         return;
-                    } else if (strContent.equals("")) {
-                        DisplayToast("意见内容未填写!");
-                        return;
-                    } else if (strSchool.equals("")) {
-                        DisplayToast("学校未填写!");
-                        return;
                     } else if (strClass.equals("")) {
                         DisplayToast("班级未填写!");
                         return;
-                    } else {
+                    }*/ else {
                         sendFeedback();
                     }
                     break;

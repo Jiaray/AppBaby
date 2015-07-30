@@ -18,8 +18,9 @@ public class LocalSQLCode {
                 " USER_NAME TEXT, " +
                 " USER_PSWD TEXT,  " +
                 " AGREEMENT TEXT,  " +
+                " AUTO_LOGIN TEXT,  " +
                 " USER_PMS TEXT) ";
-        Log.v(TAG, "組合 創建 本地資料庫SQL:" + sql);
+        Log.i(TAG, "組合 創建 本地資料庫SQL:" + sql);
         return sql;
     }
 
@@ -48,7 +49,7 @@ public class LocalSQLCode {
      */
     public static String SQLite_RemoveTable(String _name) {
         String sql = "Delete From " + _name;
-        Log.v(TAG, "組合 刪除 本地資料庫SQL:" + sql);
+        Log.i(TAG, "組合 刪除 本地資料庫SQL:" + sql);
         return sql;
     }
 
@@ -60,19 +61,20 @@ public class LocalSQLCode {
      * @param _pms
      * @return
      */
-    public static String SQLite_InsertMSTR(String _id, String _psd, String _enter, String _pms) {
-        String sql = "Insert Into ASC_MSTR (   USER_NAME, USER_PSWD , AGREEMENT , USER_PMS ) Values ( " +
+    public static String SQLite_InsertMSTR(String _id, String _psd, String _enter, String _auto, String _pms) {
+        String sql = "Insert Into ASC_MSTR (   USER_NAME, USER_PSWD , AGREEMENT , AUTO_LOGIN , USER_PMS ) Values ( " +
                 "'" + _id + "'" + " , " +
                 "'" + _psd + "'" + " , " +
                 "'" + _enter + "'" + " , " +
+                "'" + _auto + "'" + " , " +
                 "'" + _pms + "'" + " ) ";
-        Log.v(TAG, "組合 新增 本地資料庫SQL:" + sql);
+        Log.i(TAG, "組合 新增 本地資料庫SQL:" + sql);
         return sql;
     }
 
     //  取得使用者資料列
     public static String SQLite_GetMSTRList() {
-        String sql = "Select  USER_NAME, USER_PSWD, AGREEMENT, USER_PMS From ASC_MSTR ";
+        String sql = "Select USER_NAME, USER_PSWD, AGREEMENT, AUTO_LOGIN, USER_PMS From ASC_MSTR ";
         return sql;
     }
 

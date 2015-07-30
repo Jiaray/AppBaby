@@ -8,13 +8,13 @@ import com.app.AppBabySH.R;
 
 public class LocalDB extends SQLiteOpenHelper {
     // 資料庫名稱
-    private static final String DB_NAME = "ShBaby";
+    private static final String DB_NAME = "ShBaby20150728";
     // 資料庫版本，資料結構改變的時候要更改這個數字，通常是加一
-    private static final int DB_VERSION = 1;
+    //private static final int DB_VERSION = 1;
     private static SQLiteOpenHelper mSQLiteOpenHelper;
 
     public LocalDB(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, DB_NAME, null, 1);
         mSQLiteOpenHelper = this;
     }
 

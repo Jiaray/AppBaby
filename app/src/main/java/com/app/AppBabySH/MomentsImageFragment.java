@@ -111,6 +111,7 @@ public class MomentsImageFragment extends BaseFragment {
         mLyGood = (LinearLayout) rootView.findViewById(R.id.lyMomentsImageGood);
         mLyFav = (LinearLayout) rootView.findViewById(R.id.lyMomentsImageFav);
         mLyComment = (LinearLayout) rootView.findViewById(R.id.lyMomentsImageComment);
+        mLyFav.setVisibility(View.GONE);
         mLyGood.setOnClickListener(new ImageFragmentClick());
         mLyFav.setOnClickListener(new ImageFragmentClick());
         mLyComment.setOnClickListener(new ImageFragmentClick());

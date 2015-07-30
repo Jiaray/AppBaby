@@ -25,6 +25,9 @@ import com.app.Common.ComFun;
 import java.util.ArrayList;
 
 import com.app.Common.ImageLoader;
+import com.app.Common.UserMstr;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by ray on 2015/5/11.
@@ -42,7 +45,7 @@ public class MomentsAdapter extends BaseAdapter {
     private GlobalVar centerV;
     private MomentsImageAdapter adapter;
     private ViewGroup onClickVG;
-    private View targetV;
+    private View targetCommentV,delV,setGoodLineV;
 
     public interface CallBack {
         public void onClick(String $actionType, MomentsItem $item);
@@ -64,7 +67,7 @@ public class MomentsAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView mTxtName, mTxtTitle, mTxtClass, mTxtDate;
-        ImageView mImgHeader;
+        ImageView mImgHeader,mImgSetFavLine,mImgSetGoodLine;
         LinearLayout mLyDel, mLySetGood, mLySetFav, mLyToComment;
         ImageButton mImgbCommentFun;
         GridView mGdvPic;
@@ -101,7 +104,9 @@ public class MomentsAdapter extends BaseAdapter {
             viewHolder.mLyComment = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemComment);
             viewHolder.mImgbCommentFun = (ImageButton) convertView.findViewById(R.id.btnMomentsItemCommentFun);
             viewHolder.mLyDel = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemDel);
+            viewHolder.mImgSetGoodLine = (ImageView) convertView.findViewById(R.id.imgMomentsItemSetGoodLine);
             viewHolder.mLySetGood = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemSetGood);
+            viewHolder.mImgSetFavLine = (ImageView) convertView.findViewById(R.id.imgMomentsItemSetFavLine);
             viewHolder.mLySetFav = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemSetFav);
             viewHolder.mLyToComment = (LinearLayout) convertView.findViewById(R.id.lyMomentsItemToComment);
             viewHolder.mTxtDate = (TextView) convertView.findViewById(R.id.txtMomentsItemDate);
@@ -115,6 +120,8 @@ public class MomentsAdapter extends BaseAdapter {
         if (item != null) {
             ImageLoader.getInstance().DisplayRoundedCornerImage(item.USER_AVATAR, viewHolder.mImgHeader);
             viewHolder.mLyComment.setVisibility(View.GONE);
+            viewHolder.mLySetFav.setVisibility(View.GONE);
+            viewHolder.mImgSetFavLine.setVisibility(View.GONE);
             viewHolder.mTxtName.setText(item.NIC_NAME);
             viewHolder.mTxtTitle.setText(item.DESCRIPTION);
             viewHolder.mTxtClass.setText(item.SCHOOL_NAME + item.CLASS_NAME);
@@ -265,14 +272,13 @@ public class MomentsAdapter extends BaseAdapter {
         public void onClick(View v) {
             Log.v(TAG, "AtReply onClick!");
             onCallBack.onCommentClick(callBackItem, atSN, atName);
-            if (targetV != null) targetV.setVisibility(View.GONE);
+            if (targetCommentV != null) targetCommentV.setVisibility(View.GONE);
         }
     }
 
     /*點擊按鈕監聽*/
     class MyOnClickListener implements View.OnClickListener {
         private MomentsItem callBackItem;
-
         public MyOnClickListener(MomentsItem $item) {
             callBackItem = $item;
         }
@@ -281,31 +287,41 @@ public class MomentsAdapter extends BaseAdapter {
             switch (v.getId()) {
                 //Open Personal Page
                 case R.id.imgMomentsItemHeader:
-                    if (targetV != null) targetV.setVisibility(View.GONE);
+                    if (targetCommentV != null) targetCommentV.setVisibility(View.GONE);
                     onCallBack.onClick("personal", callBackItem);
                     break;
                 //Open Comment
                 case R.id.btnMomentsItemCommentFun:
                     onClickVG = (ViewGroup) v.getParent();
-                    targetV = onClickVG.findViewById(R.id.lyMomentsItemComment);
-                    if (targetV.isShown()) {
-                        targetV.setVisibility(View.GONE);
+                    targetCommentV = onClickVG.findViewById(R.id.lyMomentsItemComment);
+                    delV = onClickVG.findViewById(R.id.lyMomentsItemDel);
+                    setGoodLineV = onClickVG.findViewById(R.id.imgMomentsItemSetGoodLine);
+                    TextView ttt = (TextView) ((ViewGroup) onClickVG.getParent()).findViewById(R.id.txtMomentsItemName);
+                    if(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("NIC_NAME").equals(ttt.getText().toString())){
+                        delV.setVisibility(View.VISIBLE);
+                        setGoodLineV.setVisibility(View.VISIBLE);
+                    }else{
+                        delV.setVisibility(View.GONE);
+                        setGoodLineV.setVisibility(View.GONE);
+                    }
+                    if (targetCommentV.isShown()) {
+                        targetCommentV.setVisibility(View.GONE);
                     } else {
-                        targetV.setVisibility(View.VISIBLE);
+                        targetCommentV.setVisibility(View.VISIBLE);
                     }
                     break;
 
                 //About Comment
                 case R.id.lyMomentsItemDel://Del Circle
-                    if (targetV != null) targetV.setVisibility(View.GONE);
+                    if (targetCommentV != null) targetCommentV.setVisibility(View.GONE);
                     onCallBack.onClick("del", callBackItem);
                     break;
                 case R.id.lyMomentsItemSetGood://Set Circle Good
-                    if (targetV != null) targetV.setVisibility(View.GONE);
+                    if (targetCommentV != null) targetCommentV.setVisibility(View.GONE);
                     onCallBack.onClick("good", callBackItem);
                     break;
                 case R.id.lyMomentsItemSetFav://Fav Circle
-                    if (targetV != null) targetV.setVisibility(View.GONE);
+                    if (targetCommentV != null) targetCommentV.setVisibility(View.GONE);
                     onCallBack.onClick("fav", callBackItem);
                     break;
             }

@@ -93,7 +93,12 @@ public class SetMenuFragment extends BaseFragment {
                     DisplayNYDialog("确认", "确定要退出登录此帐号？", "确定", "取消", new DialogCallBack() {
                         @Override
                         public void onEnter() {
-                            LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
+                            //LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
+                            LocalFun.getInstance().RunSqlNoQuery(
+                                    LocalSQLCode.SQLite_UpdateTableData(
+                                            "ASC_MSTR",
+                                            "AUTO_LOGIN", "1",
+                                            "AUTO_LOGIN", "0"));
                             centerV.loginAgain = true;
                             UserMstr.userData = null;
                             Intent intent = new Intent();
@@ -115,10 +120,20 @@ public class SetMenuFragment extends BaseFragment {
                     main.OpenBottom(setAccF);
                     break;
                 case R.id.lySetMenuClearCache:
-                    ImageLoader.getInstance().clearCache();
-                    if (FileCache.getInstance().clearAllData() == 1) {
-                        DisplayToast("清除緩存!");
-                    }
+                    DisplayNYDialog("确认", "确定要清除緩存？", "确定", "取消", new DialogCallBack() {
+                        @Override
+                        public void onEnter() {
+                            ImageLoader.getInstance().clearCache();
+                            if (FileCache.getInstance().clearAllData() == 1) {
+                                DisplayToast("清除緩存!");
+                            }
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
                     break;
                 case R.id.lySetMenuFeedback:
                     AccountRegistFeedbackFragment feedbackF = new AccountRegistFeedbackFragment();

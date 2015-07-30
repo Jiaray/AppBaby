@@ -54,6 +54,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     private Toast toast;
     private ProgressDialog pd;
     public Boolean Agreement = false;
+    public Boolean AutoLogin = false;
 
     //  按兩次返回建退出
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -129,12 +130,14 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
         boolean getCheckDB = LocalFun.getInstance().CheckDB(dbDatabase);
         boolean getCheckBaseTable = false;
         boolean getCheckTableList = false;
+        Log.i(TAG,"getCheckDB : "+getCheckDB);
         if (getCheckDB) {
             // 判斷基本資料表是否存在
             getCheckBaseTable = LocalFun.getInstance().CheckTable("ASC_MSTR");
             getCheckTableList = getUserData();
+            Log.i(TAG,"getCheckBaseTable : "+getCheckBaseTable);
             if (getCheckBaseTable && getCheckTableList) {// 自動登錄
-                if (Agreement) {
+                if (Agreement && AutoLogin) {
                     checkLoginData();
                 } else {
                     pd.cancel();
@@ -155,9 +158,11 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     private boolean getUserData() {
         // TODO 自動產生的方法 Stub
         List<Map<String, String>> wLocal_Data = LocalFun.getInstance().RunSqlDataTable(LocalSQLCode.SQLite_GetMSTRList());
+        Log.i(TAG, "wLocal_Data = " + wLocal_Data);
         if (wLocal_Data != null) {
             Log.i(TAG, "wLocal_Data = " + wLocal_Data.get(0));
             Agreement = wLocal_Data.get(0).get("AGREEMENT").toString().equals("1") ? true : false;
+            AutoLogin = wLocal_Data.get(0).get("AUTO_LOGIN").toString().equals("1") ? true : false;
             if (Agreement) {
                 UserMstr.userData = new UserData();
                 UserMstr.userData.setUserName(wLocal_Data.get(0).get("USER_NAME"));
@@ -170,6 +175,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
             }
             return true;
         } else {
+            if (LocalFun.getInstance().CheckTable("ASC_MSTR")) {
+                LocalFun.getInstance().RunSqlNoQuery(LocalSQLCode.SQLite_RemoveTable("ASC_MSTR"));
+            }
             DisplayToast("null");
             return false;
         }
@@ -201,6 +209,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                 OpenBottom(forgetF);
                 break;
             case R.id.btnLoginGuest:
+                UserMstr.userData = new UserData();
+                UserMstr.userData.setUserName("guest");
+                finish();
                 break;
             case R.id.imgbLoginDelName:
                 mTxtName.setText("");
@@ -354,6 +365,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                         UserMstr.userData.getUserName(),
                         UserMstr.userData.getUserPW(),
                         Agreement ? "1" : "0",
+                        "1",
                         UserMstr.userData.getUserID()));
     }
 

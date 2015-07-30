@@ -89,10 +89,14 @@ public class MainTabActivity extends FragmentActivity {
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
         }else{
-            refreshPush();
-            if(centerV.loginAgain){
-                centerV.loginAgain = false;
-                mTabHost.setCurrentTab(0);
+            if(UserMstr.userData.getUserName().equals("guest")){
+                mTabHost.setCurrentTab(1);
+            }else{
+                refreshPush();
+                if(centerV.loginAgain){
+                    centerV.loginAgain = false;
+                    mTabHost.setCurrentTab(0);
+                }
             }
         }
         if (!isActive) {

@@ -113,12 +113,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="刪除"
+                        android:text="删除"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp" />
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/imgMomentsItemSetGoodLine"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
@@ -147,12 +148,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="2dp"
-                        android:text="讚"
+                        android:text="赞"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp" />
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/imgMomentsItemSetFavLine"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
@@ -214,7 +216,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="2dp"
-                        android:text="評論"
+                        android:text="评论"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>

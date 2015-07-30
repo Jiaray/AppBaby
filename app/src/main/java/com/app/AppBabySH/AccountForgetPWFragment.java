@@ -62,9 +62,18 @@ public class AccountForgetPWFragment extends BaseFragment {
         if (getActivity().getLocalClassName().equals("activity.LoginActivity")) {
             loginA = (LoginActivity) getActivity();
             actName = "LoginActivity";
+            mTxtTitle.setText("忘记密码");
+            mLyPhone.setVisibility(View.VISIBLE);
+            mLyCaptcha.setVisibility(View.VISIBLE);
+            mLySendCaptcha.setVisibility(View.VISIBLE);
         } else {
             mainA = (MainTabActivity) getActivity();
             actName = "MainTabActivity";
+            mTxtTitle.setText("设置新密码");
+            mEdtPhone.setText(UserMstr.userData.getUserName());
+            mLyPhone.setVisibility(View.GONE);
+            mLyCaptcha.setVisibility(View.GONE);
+            mLySendCaptcha.setVisibility(View.GONE);
         }
     }
 
@@ -88,18 +97,7 @@ public class AccountForgetPWFragment extends BaseFragment {
         mBtnBack.setOnClickListener(new ForGetPwonClick());
         mBtnSendCaptcha.setOnClickListener(new ForGetPwonClick());
         mBtnCommit.setOnClickListener(new ForGetPwonClick());
-        if (actName.equals("LoginActivity")) {
-            mTxtTitle.setText("忘记密码");
-            mLyPhone.setVisibility(View.VISIBLE);
-            mLyCaptcha.setVisibility(View.VISIBLE);
-            mLySendCaptcha.setVisibility(View.VISIBLE);
-        } else {
-            mTxtTitle.setText("设置新密码");
-            mEdtPhone.setText(UserMstr.userData.getUserName());
-            mLyPhone.setVisibility(View.GONE);
-            mLyCaptcha.setVisibility(View.GONE);
-            mLySendCaptcha.setVisibility(View.GONE);
-        }
+
     }
 
     class ForGetPwonClick implements View.OnClickListener {
