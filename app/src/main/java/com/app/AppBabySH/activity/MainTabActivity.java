@@ -11,7 +11,6 @@ import com.app.AppBabySH.ProfileFragment;
 import com.app.AppBabySH.R;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.UserMstr;
-import com.tencent.android.tpush.XGPushManager;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -32,6 +31,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+
+import cn.jpush.android.api.JPushInterface;
 
 //for git test
 public class MainTabActivity extends FragmentActivity {
@@ -74,9 +75,7 @@ public class MainTabActivity extends FragmentActivity {
         centerV.windowWidth = metrics.widthPixels;
         aryPushText = new ArrayList<TextView>();
 
-        //信鴿
-        Context context = getApplicationContext();
-        XGPushManager.registerPush(context);
+        JPushInterface.init(getApplicationContext());
         initView();
     }
 
@@ -84,14 +83,19 @@ public class MainTabActivity extends FragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+        JPushInterface.onResume(getApplicationContext());
         if (!UserMstr.closeApp && UserMstr.userData == null) {
             Log.i(TAG, "onResume : (UserMstr.userData = null)");
             Intent intent = new Intent(MainTabActivity.this, LoginActivity.class);
             startActivityForResult(intent, 0);// 打开新界面无法使用动画
+            JPushInterface.stopPush(getApplicationContext());
         }else{
             if(UserMstr.userData.getUserName().equals("guest")){
+                JPushInterface.stopPush(getApplicationContext());
                 mTabHost.setCurrentTab(1);
             }else{
+                JPushInterface.resumePush(getApplicationContext());
+                JPushInterface.setAlias(getApplicationContext(),UserMstr.userData.getUserID(),null);
                 refreshPush();
                 if(centerV.loginAgain){
                     centerV.loginAgain = false;
@@ -114,6 +118,12 @@ public class MainTabActivity extends FragmentActivity {
         isActive = isBackground(this);
         UserMstr.closeApp = false;
         Log.i(TAG, "onStop : isActive : " + isActive);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        JPushInterface.onPause(getApplicationContext());
     }
 
 

@@ -34,6 +34,9 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuLayout.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuListView.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/Common/listviewswipemenu/SwipeMenuView.java" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/jniLibs/arm64-v8a" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/jniLibs/armeabi" charset="x-windows-950" />
+    <file url="file://$PROJECT_DIR$/app/src/main/jniLibs/armeabi-v7a" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_in.xml" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_out.xml" charset="x-windows-950" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_action_share.png" charset="x-windows-950" />

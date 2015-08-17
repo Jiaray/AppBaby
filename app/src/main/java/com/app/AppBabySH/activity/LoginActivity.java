@@ -9,6 +9,7 @@ import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
 import com.app.AppBabySH.item.ClassItem;
 import com.app.Common.ComFun;
+import com.app.Common.SQLite.LocalDB;
 import com.app.Common.SQLite.LocalFun;
 import com.app.Common.SQLite.LocalSQLCode;
 import com.app.Common.UserData;
@@ -21,6 +22,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -43,6 +46,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import android.os.Build;
 
 import com.app.Common.FileCache;
 
@@ -125,7 +129,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     private void getUserInfoByDB() {
         pd = MyAlertDialog.ShowProgress(this, "資料確認中...");
         pd.show();
-        String dbName = "ShBaby";
+        String dbName = LocalDB.DB_NAME;
         File dbDatabase = getApplicationContext().getDatabasePath(dbName);
         boolean getCheckDB = LocalFun.getInstance().CheckDB(dbDatabase);
         boolean getCheckBaseTable = false;
@@ -254,10 +258,11 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     private void connectWebLogin() {
         Log.i(TAG, "connectWebLogin : 連結至網路確認登入資料");
         WebService.Login(null, mTxtName.getText().toString(), mTxtPW.getText().toString(),
-                "Android", "1234", "1234", "1234", "1234", new WebService.WebCallback() {
+                "Android", Build.VERSION.RELEASE, "", "", "", new WebService.WebCallback() {
 
                     @Override
                     public void CompleteCallback(String id, Object obj) {
+                        Log.i(TAG,"Android Build.VERSION.RELEASE:"+Build.VERSION.RELEASE);
                         // TODO Auto-generated method stub
                         if (obj == null) {
                             MyAlertDialog.Show(LoginActivity.this, "账号或密码错误！");

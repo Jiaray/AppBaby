@@ -3,6 +3,12 @@
     package="com.app.AppBabySH"
     android:versionCode="1"
     android:versionName="1.0">
+    <!-- Required 自定义用来收发消息的相关权限 -->
+    <permission
+        android:name="com.app.AppBabySH.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.app.AppBabySH.permission.JPUSH_MESSAGE" />
+
     <!-- BaiduPush service 运行需要的权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -156,59 +162,120 @@
 
         <!-- APP项目的其它配置... -->
 
-        <!-- 【必须】 信鸽receiver广播接收 -->
+        <!-- 【必须】 信鸽receiver广播接收
         <receiver
             android:name="com.tencent.android.tpush.XGPushReceiver"
             android:process=":xg_service_v2" >
-            <intent-filter android:priority="0x7fffffff" >
-                <!-- 【必须】 信鸽SDK的内部广播 -->
+            <intent-filter android:priority="0x7fffffff" >-->
+                <!-- 【必须】 信鸽SDK的内部广播
                 <action android:name="com.tencent.android.tpush.action.SDK" />
-                <action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE" />
-                <!-- 【必须】 系统广播：开屏和网络切换 -->
+                <action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE" />-->
+                <!-- 【必须】 系统广播：开屏和网络切换
                 <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
 
-                <!-- 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service -->
+                <!-- 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service
                 <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <!-- 【必须】 (2.30及以上版新增)展示通知的activity -->
-        <!-- 【注意】 如果被打开的activity是启动模式为SingleTop，SingleTask或SingleInstance，请根据通知的异常自查列表第8点处理-->
+        <!-- 【注意】 如果被打开的activity是启动模式为SingleTop，SingleTask或SingleInstance，请根据通知的异常自查列表第8点处理
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"
             android:exported="true" >
-            <intent-filter>
-                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
+            <intent-filter>-->
+                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"
                 <action android:name="android.intent.action" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
-        <!-- 【必须】 信鸽service -->
+        <!-- 【必须】 信鸽service
         <service
             android:name="com.tencent.android.tpush.service.XGPushService"
             android:exported="true"
             android:persistent="true"
-            android:process=":xg_service_v2" />
+            android:process=":xg_service_v2" />-->
 
-        <!-- 【必须】 通知service，此选项有助于提高抵达率 -->
+        <!-- 【必须】 通知service，此选项有助于提高抵达率
         <service
             android:name="com.tencent.android.tpush.rpc.XGRemoteService"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.app.AppBabySH.PUSH_ACTION" />
             </intent-filter>
-        </service>
+        </service>-->
 
-        <!-- 【必须】 请将YOUR_ACCESS_ID修改为APP的AccessId，“21”开头的10位数字，中间没空格 -->
+        <!-- 【必须】 请将YOUR_ACCESS_ID修改为APP的AccessId，“21”开头的10位数字，中间没空格
         <meta-data
             android:name="XG_V2_ACCESS_ID"
-            android:value="2100123280" />
-        <!-- 【必须】 请将YOUR_ACCESS_KEY修改为APP的AccessKey，“A”开头的12位字符串，中间没空格 -->
+            android:value="2100123280" />-->
+        <!-- 【必须】 请将YOUR_ACCESS_KEY修改为APP的AccessKey，“A”开头的12位字符串，中间没空格
         <meta-data
             android:name="XG_V2_ACCESS_KEY"
-            android:value="A8JH795JV5MK" />
+            android:value="A8JH795JV5MK" />-->
+
+        <!-- Required -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+
+        <!-- Required -->
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true" >
+            <intent-filter android:priority="1000"> <!--since 1.3.5 -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!--since 1.3.5 -->
+                <category android:name="com.app.AppBabySH" /> <!--since 1.3.5 -->
+            </intent-filter> <!--since 1.3.5 -->
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <!-- Required SDK核心功能-->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.app.AppBabySH" />
+            </intent-filter>
+        </activity>
+        <!-- Required SDK核心功能-->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <!-- Required SDK核心功能-->
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+
+        <!-- Required. For publish channel feature -->
+        <!-- JPUSH_CHANNEL 是为了方便开发者统计APK分发渠道。-->
+        <!-- 例如: -->
+        <!-- 发到 Google Play 的APK可以设置为 google-play; -->
+        <!-- 发到其他市场的 APK 可以设置为 xxx-market。 -->
+        <!-- 目前这个渠道统计功能的报表还未开放。-->
+        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
+        <!-- Required. AppKey copied from Portal -->
+        <meta-data android:name="JPUSH_APPKEY" android:value="72d3d0a8ab1204e7f8b37ab4"/>
     </application>
 </manifest>
