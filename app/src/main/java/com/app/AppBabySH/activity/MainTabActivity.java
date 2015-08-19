@@ -58,8 +58,6 @@ public class MainTabActivity extends FragmentActivity {
     public String mTextviewArray[] = {"班级圈", "频道", "我"};
 
     private ArrayList<TextView> aryPushText;
-    private int i;
-    public String momentPushNum, chatPushNum, newsPushNum, growthPushNum,strTmpJsonName;
 
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -67,8 +65,10 @@ public class MainTabActivity extends FragmentActivity {
         setContentView(R.layout.maintab_layout);
         Log.i(TAG, "onCreate");
 
-        //取得螢幕寬高
         centerV = (GlobalVar) getApplicationContext();
+        centerV.momentPushNum = centerV.chatPushNum = centerV.newsPushNum = centerV.growthPushNum = "0";
+
+        //取得螢幕寬高
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         centerV.windowHeight = metrics.heightPixels;
@@ -178,32 +178,22 @@ public class MainTabActivity extends FragmentActivity {
             return;
         }
         Log.i(TAG,"refreshPush");
-        momentPushNum = chatPushNum = newsPushNum = growthPushNum = "0";
-        i = -1;
-        while(++i < UserMstr.userData.getPushInfoAry().length()){
-            strTmpJsonName = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("PUSH_TYPE");
-            if(strTmpJsonName.equals("CIRCLE")){
-                momentPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
-            }else if(strTmpJsonName.equals("CHANNEL")){
-                newsPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
-            }
-        }
-        if(momentPushNum.equals("0")){
+        if(centerV.momentPushNum.equals("0")){
             aryPushText.get(0).setVisibility(View.GONE);
         }else{
-            aryPushText.get(0).setText(momentPushNum);
+            aryPushText.get(0).setText(centerV.momentPushNum);
             aryPushText.get(0).setVisibility(View.VISIBLE);
         }
-        if(newsPushNum.equals("0")){
+        if(centerV.newsPushNum.equals("0")){
             aryPushText.get(1).setVisibility(View.GONE);
         }else{
-            aryPushText.get(1).setText(newsPushNum);
+            aryPushText.get(1).setText(centerV.newsPushNum);
             aryPushText.get(1).setVisibility(View.VISIBLE);
         }
-        if(growthPushNum.equals("0")){
+        if(centerV.growthPushNum.equals("0")){
             aryPushText.get(2).setVisibility(View.GONE);
         }else{
-            aryPushText.get(2).setText(growthPushNum);
+            aryPushText.get(2).setText(centerV.growthPushNum);
             aryPushText.get(2).setVisibility(View.VISIBLE);
         }
         /*if(momentPushNum.equals("0")){

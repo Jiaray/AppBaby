@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal|center"
         android:background="@drawable/common_bg_corners_gray"
-        android:text="2 News!"
+        android:text=""
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

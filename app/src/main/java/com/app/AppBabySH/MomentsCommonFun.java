@@ -191,6 +191,13 @@ public class MomentsCommonFun {
             personalF.NIC_NAME = "MomentsNews";
             personalF.USER_AVATAR = "";
         }
+        personalF.onCallBack = new MomentsCustomFragment.CallBack() {
+            @Override
+            public void onBack() {
+                Log.i(TAG,"onBack");
+                momentsF.refreshListView();
+            }
+        };
 
         main.OpenBottom(personalF);
     }

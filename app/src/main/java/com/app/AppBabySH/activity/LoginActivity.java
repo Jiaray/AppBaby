@@ -4,6 +4,7 @@ package com.app.AppBabySH.activity;
 import com.app.AppBabySH.AccountAgreeFragment;
 import com.app.AppBabySH.AccountForgetPWFragment;
 import com.app.AppBabySH.AccountRegistFragment;
+import com.app.AppBabySH.GlobalVar;
 import com.app.AppBabySH.R;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.Common.MyAlertDialog;
@@ -52,6 +53,7 @@ import com.app.Common.FileCache;
 
 public class LoginActivity extends FragmentActivity implements OnClickListener {
     private static final String TAG = "LoginA";
+    private GlobalVar centerV;
     public EditText mTxtName, mTxtPW;
     private Button mBtnLoginEnter, mBtnReg, mBtnForget, mBtnGuest;
     private ImageButton mBtnDelName,mBtnDelPw;
@@ -92,6 +94,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        centerV = (GlobalVar) getApplicationContext();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         setContentView(R.layout.login_activity);
         initView();
@@ -199,6 +202,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.btnLoginEnter:
                 Log.i(TAG, "點擊登入按鈕");
+                centerV.selectClass = true;
                 checkLoginData();
                 overridePendingTransition(android.R.anim.fade_in, R.anim.out_to_bottom);
                 break;
@@ -300,7 +304,7 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                         }
                         UserMstr.userData.setBaseInfoAry(json.optJSONObject(0).optJSONArray("BASE_INFO"));
                         UserMstr.userData.setPushInfoAry(json.optJSONObject(0).optJSONArray("PUSH_INFO"));
-
+                        Log.i(TAG,"PushInfoAry:"+json.optJSONObject(0).optJSONArray("PUSH_INFO"));
                         //  整理班級資訊
                         UserMstr.userData.ClassAryList = new ArrayList<ClassItem>();
                         JSONArray ClassInfoAry;
@@ -352,6 +356,16 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
             AccountAgreeFragment regAF = new AccountAgreeFragment();
             OpenBottom(regAF);
         } else {
+            String strTmpJsonName;
+           int  i = -1;
+            while(++i < UserMstr.userData.getPushInfoAry().length()){
+                strTmpJsonName = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("PUSH_TYPE");
+                if(strTmpJsonName.equals("CIRCLE")){
+                    centerV.momentPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
+                }else if(strTmpJsonName.equals("CHANNEL")){
+                    centerV.newsPushNum = UserMstr.userData.getPushInfoAry().optJSONObject(i).optString("CNT");
+                }
+            }
             finish();
         }
     }

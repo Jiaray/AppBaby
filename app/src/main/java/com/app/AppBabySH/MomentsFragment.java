@@ -41,7 +41,6 @@ import com.app.Common.ImageLoader;
 public class MomentsFragment extends BaseFragment {
     private static final String TAG = "MomentsF";
     private MomentsCommonFun comF;
-    private GlobalVar centerV;
     public MomentsAdapter adapter;
     private AlertDialog.Builder alertD;
     public ArrayList<MomentsItem> momentslist;
@@ -63,6 +62,7 @@ public class MomentsFragment extends BaseFragment {
     private int pageIndex;
     private boolean isInit = true;
     public MomentsItem callBackItem;
+    private GlobalVar centerV;
 
     //About Reply
     public View mVReply;
@@ -75,18 +75,21 @@ public class MomentsFragment extends BaseFragment {
     private Integer intListViewH;
     private Integer intAdjustH;
 
+    private TextView mTxtHeaderNews;
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
+        centerV = (GlobalVar) getActivity().getApplicationContext();
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_fragment, container, false);
 
-        if(UserMstr.userData.getUserName().equals("guest")){
+        if (UserMstr.userData.getUserName().equals("guest")) {
             final AlertDialog mutiItemDialogLogin = createLoginDialog();
             mutiItemDialogLogin.show();
-        }else{
+        } else {
             initView();
         }
 
@@ -102,7 +105,7 @@ public class MomentsFragment extends BaseFragment {
         main.setSoftInputMode("adjustResize");
         comF = new MomentsCommonFun(this, rootView);
 
-        if(!UserMstr.userData.getUserName().equals("guest")){
+        if (!UserMstr.userData.getUserName().equals("guest")) {
             //ListView Add Header
             hdrMain = new Handler();
             hdrMain.post(runInit);
@@ -200,6 +203,7 @@ public class MomentsFragment extends BaseFragment {
                 }
             }
         });
+        if(centerV.selectClass)mutiItemDialogFilter.show();
 
         //Create AddNew Menu
         mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
@@ -223,28 +227,23 @@ public class MomentsFragment extends BaseFragment {
             viewG = (ViewGroup) rootView.getParent();
             ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, mSlvContent, false);
             ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
-            TextView mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
-            if (main.momentPushNum.equals("0")) {
-                mTxtHeaderNews.setVisibility(View.GONE);
-            } else {
-                mTxtHeaderNews.setVisibility(View.VISIBLE);
-                mTxtHeaderNews.setText(main.momentPushNum + " 條新消息!");
-                mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Handler tt = new Handler();
-                        tt.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //  判斷網路
-                                if (WebService.isConnected(getActivity())) {
-                                    comF.customCircle("news");
-                                }
+            mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
+            mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Handler tt = new Handler();
+                    tt.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //  判斷網路
+                            if (WebService.isConnected(getActivity())) {
+                                comF.customCircle("news");
                             }
-                        });
-                    }
-                });
-            }
+                        }
+                    });
+                }
+            });
+
             ImageLoader.getInstance().DisplayRoundedCornerImage(UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_AVATAR"), mImgHeaderHeadImage);
             mSlvContent.addHeaderView(mVgHeader, null, false);
             //  判斷網路
@@ -269,22 +268,22 @@ public class MomentsFragment extends BaseFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 main.mTabHost.setCurrentTab(1);
-               switch(which){
-                   case 0:
-                       centerV.loginAgain = true;
-                       UserMstr.userData = null;
-                       Intent intent = new Intent();
-                       intent.setClass(getActivity(), LoginActivity.class);
-                       startActivity(intent);
-                       break;
-                   case 1:
-                       AccountRegistFragment regF = new AccountRegistFragment();
-                       main.OpenBottom(regF);
-                       break;
-                   case 2:
+                switch (which) {
+                    case 0:
+                        centerV.loginAgain = true;
+                        UserMstr.userData = null;
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        AccountRegistFragment regF = new AccountRegistFragment();
+                        main.OpenBottom(regF);
+                        break;
+                    case 2:
 
-                       break;
-               }
+                        break;
+                }
 
             }
         });
@@ -314,6 +313,7 @@ public class MomentsFragment extends BaseFragment {
                     CurrClassID = UserMstr.userData.ClassAryList.get(which).CLASS_ID;
                     refreshListView();
                 }
+                centerV.selectClass = false;
             }
         });
         return alertD.create();
@@ -345,6 +345,7 @@ public class MomentsFragment extends BaseFragment {
         });
         return alertD.create();
     }
+
     private void clearGridView() {
         ImageLoader.getInstance().clearCache();
         momentslist.clear();
@@ -432,7 +433,7 @@ public class MomentsFragment extends BaseFragment {
     }
 
     //  刷新列表
-    private void refreshListView() {
+    public void refreshListView() {
         pageIndex = 1;
         if (mVReply != null) {
             viewG.removeView(mVReply);
@@ -447,6 +448,12 @@ public class MomentsFragment extends BaseFragment {
 
     //  刷新外框View
     private void refreshPullView() {
+        if (centerV.momentPushNum.equals("0")) {
+            mTxtHeaderNews.setVisibility(View.GONE);
+        } else {
+            mTxtHeaderNews.setVisibility(View.VISIBLE);
+            mTxtHeaderNews.setText(centerV.momentPushNum + " 條新消息!");
+        }
         if (isInit) {
             isInit = false;
         } else {
@@ -584,7 +591,7 @@ public class MomentsFragment extends BaseFragment {
     class SendReplyMsg implements View.OnClickListener {
         public void onClick(View v) {
             toViewMode();
-            Log.i(TAG, "CIRCLE_ID:" + callBackItem.CIRCLE_ID + "||getUserID:" + UserMstr.userData.getUserID() + "||replyTo:" + mEdtReplyTo.getText().toString().replace("\n", "") + "||strReplySN:" + strReplySN);
+            Log.i(TAG, "SendReplyMsg\nAPN:" + centerV.apn + "\nCIRCLE_ID:" + callBackItem.CIRCLE_ID + "\ngetUserID:" + UserMstr.userData.getUserID() + "\nreplyTo:" + mEdtReplyTo.getText().toString().replace("\n", "") + "\nstrReplySN:" + strReplySN);
             WebService.SetCircleReply(null, centerV.apn, callBackItem.CIRCLE_ID, UserMstr.userData.getUserID(), mEdtReplyTo.getText().toString().replace("\n", ""), strReplySN, new WebService.WebCallback() {
                 @Override
                 public void CompleteCallback(String id, Object obj) {
@@ -624,4 +631,5 @@ public class MomentsFragment extends BaseFragment {
             main.mTabHost.setVisibility(View.VISIBLE);
         }
     }
+
 }

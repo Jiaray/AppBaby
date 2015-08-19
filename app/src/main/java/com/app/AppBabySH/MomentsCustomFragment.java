@@ -31,6 +31,7 @@ import com.app.Common.ImageLoader;
  */
 public class MomentsCustomFragment extends BaseFragment {
     final private String TAG = "MomentsCustomFragment";
+    private GlobalVar centerV;
     //  初始必須帶入資料
     public String USER_ID, Class_ID, NIC_NAME, USER_AVATAR;
     //
@@ -73,6 +74,7 @@ public class MomentsCustomFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         _inflater = inflater;
         rootView = inflater.inflate(R.layout.moments_custom_frag, container, false);
+        centerV = (GlobalVar) getActivity().getApplicationContext();
         thisFragment = this;
         initView();
         return rootView;
@@ -194,7 +196,7 @@ public class MomentsCustomFragment extends BaseFragment {
     private void getData() {
         DisplayLoadingDiaLog("资料读取中，请稍后...");
         if (NIC_NAME.equals("MomentsNews")) {
-            main.momentPushNum = "0";
+            centerV.momentPushNum = "0";
             main.refreshPush();
             WebService.GetCircleListNotRead(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
         } else {
