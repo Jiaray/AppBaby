@@ -21,6 +21,7 @@ import com.app.Common.ScrollOverListView;
 import com.app.Common.WebService;
 
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -176,6 +177,8 @@ public class MomentsCustomFragment extends BaseFragment {
             //ListView Add Header
             ViewGroup header = (ViewGroup) _inflater.inflate(R.layout.moments_header, mSlvContent, false);
             ImageView headerIMG = (ImageView) header.findViewById(R.id.imgMomentsHeaderUserHead);
+            TextView currClass = (TextView) header.findViewById(R.id.txtMomentsCurrentClassName);
+            currClass.setVisibility(View.GONE);
             ((ViewGroup.MarginLayoutParams) headerIMG.getLayoutParams()).bottomMargin = 20;
             if (USER_AVATAR.equals("")) {
                 headerIMG.setVisibility(View.GONE);
@@ -198,9 +201,9 @@ public class MomentsCustomFragment extends BaseFragment {
         if (NIC_NAME.equals("MomentsNews")) {
             centerV.momentPushNum = "0";
             main.refreshPush();
-            WebService.GetCircleListNotRead(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
+            WebService.GetCircleListNotRead(null, USER_ID, Class_ID, String.valueOf(pageIndex), getResources().getString(R.string.Max_Row), new webCallBack());
         } else {
-            WebService.GetCircleListPersonal(null, USER_ID, Class_ID, String.valueOf(pageIndex), "3", new webCallBack());
+            WebService.GetCircleListPersonal(null, USER_ID, Class_ID, String.valueOf(pageIndex), getResources().getString(R.string.Max_Row), new webCallBack());
         }
     }
 

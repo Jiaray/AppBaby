@@ -75,7 +75,7 @@ public class MomentsFragment extends BaseFragment {
     private Integer intListViewH;
     private Integer intAdjustH;
 
-    private TextView mTxtHeaderNews;
+    private TextView mTxtHeaderNews, mTxtCurrentClassName;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -118,7 +118,7 @@ public class MomentsFragment extends BaseFragment {
         Log.v(TAG, "Moments-Init");
         if (UserMstr.userData == null) return;
         isInit = true;
-        CurrClassID = UserMstr.userData.ClassAryList.get(0).CLASS_ID;
+        CurrClassID = UserMstr.userData.ClassAryList.get(centerV.currClass).CLASS_ID;
         pageIndex = 1;
 
         //ListView Ready
@@ -203,7 +203,7 @@ public class MomentsFragment extends BaseFragment {
                 }
             }
         });
-        if(centerV.selectClass)mutiItemDialogFilter.show();
+        if (centerV.selectClass) mutiItemDialogFilter.show();
 
         //Create AddNew Menu
         mImgBAddNew = (ImageButton) rootView.findViewById(R.id.imgbMomentsAddNew);
@@ -227,6 +227,12 @@ public class MomentsFragment extends BaseFragment {
             viewG = (ViewGroup) rootView.getParent();
             ViewGroup mVgHeader = (ViewGroup) _inflater.inflate(R.layout.moments_header, mSlvContent, false);
             ImageView mImgHeaderHeadImage = (ImageView) mVgHeader.findViewById(R.id.imgMomentsHeaderUserHead);
+            mTxtCurrentClassName = (TextView) mVgHeader.findViewById(R.id.txtMomentsCurrentClassName);
+            if (UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE").equals("P")) {
+                mTxtCurrentClassName.setText(UserMstr.userData.ClassAryList.get(centerV.currClass).SCHOOL_NAME + "-" + UserMstr.userData.ClassAryList.get(centerV.currClass).CLASS_NAME);
+            }else{
+                mTxtCurrentClassName.setText(UserMstr.userData.ClassAryList.get(centerV.currClass).CLASS_NAME);
+            }
             mTxtHeaderNews = (TextView) mVgHeader.findViewById(R.id.txtMomentsHeaderNews);
             mTxtHeaderNews.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -311,6 +317,12 @@ public class MomentsFragment extends BaseFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (which != (UserMstr.userData.ClassAryList.size())) {
                     CurrClassID = UserMstr.userData.ClassAryList.get(which).CLASS_ID;
+                    if (UserMstr.userData.getBaseInfoAry().optJSONObject(0).optString("USER_TYPE").equals("P")) {
+                        mTxtCurrentClassName.setText(UserMstr.userData.ClassAryList.get(which).SCHOOL_NAME + "-" + UserMstr.userData.ClassAryList.get(which).CLASS_NAME);
+                    }else{
+                        mTxtCurrentClassName.setText(UserMstr.userData.ClassAryList.get(which).CLASS_NAME);
+                    }
+                    centerV.currClass = which;
                     refreshListView();
                 }
                 centerV.selectClass = false;
@@ -358,7 +370,7 @@ public class MomentsFragment extends BaseFragment {
     //  取得 Web 資料
     private void getData() {
         DisplayLoadingDiaLog("资料读取中，请稍后...");
-        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, String.valueOf(pageIndex), "5", new WebService.WebCallback() {
+        WebService.GetCircleListClass(null, UserMstr.userData.getUserID(), CurrClassID, String.valueOf(pageIndex), getResources().getString(R.string.Max_Row), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {
@@ -422,7 +434,6 @@ public class MomentsFragment extends BaseFragment {
                         momentslist.add(item);
                     }
                     MOMENTS_COUNT = Integer.valueOf(infoAry.optJSONObject(0).optString("COUNT"));
-                    adapter.notifyDataSetChanged();
                     refreshPullView();
                 } catch (NumberFormatException e) {
                     DisplayOKDiaLog("GetCircleListClass Error! e:" + e);
@@ -431,6 +442,16 @@ public class MomentsFragment extends BaseFragment {
             }
         });
     }
+
+    private Handler mHandler;
+    Runnable myTask = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(TAG, "in RunTime");
+            //do work
+            adapter.notifyDataSetChanged();
+        }
+    };
 
     //  刷新列表
     public void refreshListView() {

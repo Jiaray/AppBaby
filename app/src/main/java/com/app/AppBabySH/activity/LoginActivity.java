@@ -336,6 +336,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener {
                             tSchoolID = tSchoolName = tStudentID = tStudentName = "";
                             i = -1;
                             while (++i < ClassInfoAry.length()) {
+                                //老師的info中沒有班級的資料...
+                               /* tSchoolID = ClassInfoAry.optJSONObject(i).optString("SCHOOL_ID");
+                                tSchoolName = ClassInfoAry.optJSONObject(i).optString("SCHOOL_NAME");*/
                                 tClassID = ClassInfoAry.optJSONObject(i).optString("CLASS_ID");
                                 tClassName = ClassInfoAry.optJSONObject(i).optString("CLASS_NAME");
                                 addClassList(tSchoolID, tSchoolName, tClassID, tClassName, tStudentID, tStudentName);

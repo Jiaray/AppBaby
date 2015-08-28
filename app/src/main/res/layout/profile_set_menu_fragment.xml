@@ -63,7 +63,7 @@
                     android:layout_weight="1"
                     android:textColor="@drawable/common_textcolor_black"
                     android:text="帐号设置"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -90,7 +90,7 @@
                     android:layout_weight="1"
                     android:textColor="@drawable/common_textcolor_black"
                     android:text="清除缓存"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -117,7 +117,7 @@
                     android:layout_weight="1"
                     android:textColor="@drawable/common_textcolor_black"
                     android:text="意见反馈"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -144,7 +144,7 @@
                     android:layout_weight="1"
                     android:textColor="@drawable/common_textcolor_black"
                     android:text="关于宝贝通"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"

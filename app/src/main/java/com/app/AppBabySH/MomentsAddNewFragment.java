@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.app.AppBabySH.activity.MainTabActivity;
 import com.app.AppBabySH.base.BaseFragment;
 import com.app.AppBabySH.adapter.MomentsImageAdapter;
 import com.app.AppBabySH.item.MomentsImageItem;
+import com.app.AppBabySH.item.MomentsItem;
 import com.app.Common.UserMstr;
 import com.app.Common.WebService;
 import com.qiniu.android.http.ResponseInfo;
@@ -127,6 +129,12 @@ public class MomentsAddNewFragment extends BaseFragment {
 
         mTxtCancel.setOnClickListener(new AddNewOnClickListener());
         mTxtSend.setOnClickListener(new AddNewOnClickListener());
+        mGdvPreview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
     private void createPreview() {
@@ -148,7 +156,19 @@ public class MomentsAddNewFragment extends BaseFragment {
         adapter.onImgCallBack = new MomentsImageAdapter.callBackImgItem() {
             @Override
             public void onImgClick(MomentsImageItem $item) {
-
+                clearGridView();
+                MomentsAddNewImageFragment momentsaddnewImageFragment = new MomentsAddNewImageFragment();
+                momentsaddnewImageFragment.aryPicPath = aryPicPath;
+                momentsaddnewImageFragment.SEQ =  $item.SEQ;
+                //  MomentsImageFragmentCallBack
+                momentsaddnewImageFragment.onCallBack = new MomentsAddNewImageFragment.imgCallBack() {
+                    @Override
+                    public void onBack(ArrayList<String> $backPicAry) {
+                        aryPicPath = $backPicAry;
+                        createPreview();
+                    }
+                };
+                main.OpenBottom(momentsaddnewImageFragment);
             }
 
             @Override
@@ -170,7 +190,7 @@ public class MomentsAddNewFragment extends BaseFragment {
         }
 
         public void onClick(View v) {
-            if(onFragCLick)return;
+            if (onFragCLick) return;
             onFragCLick = true;
             switch (v.getId()) {
                 case R.id.txtMomentsAddNewCancel:

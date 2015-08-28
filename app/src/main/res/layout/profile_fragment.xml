@@ -90,7 +90,7 @@
                     android:layout_weight="1"
                     android:text="绑定您宝贝的其他学校"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -122,7 +122,7 @@
                     android:layout_weight="1"
                     android:text="设置"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -154,7 +154,7 @@
                     android:layout_weight="1"
                     android:text="频道文章收藏"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"

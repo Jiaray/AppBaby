@@ -63,7 +63,7 @@
                     android:layout_weight="1"
                     android:text="设置新昵称"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <TextView
                     android:id="@+id/txtSetAccCurrNickName"
@@ -74,7 +74,7 @@
                     android:layout_weight="1"
                     android:text="陳MAX"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -101,7 +101,7 @@
                     android:layout_weight="1"
                     android:text="设置新密码"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -128,7 +128,7 @@
                     android:layout_weight="1"
                     android:text="设置头像"
                     android:textColor="@drawable/common_textcolor_black"
-                    android:textSize="26sp" />
+                    android:textSize="@dimen/profile_txt_size" />
 
                 <ImageView
                     android:layout_width="40dp"

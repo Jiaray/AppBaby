@@ -12,4 +12,5 @@ public class GlobalVar extends Application {
     public String apn = "P";
     public String momentPushNum, chatPushNum, newsPushNum, growthPushNum;
     public boolean selectClass = false;
+    public int currClass = 0;
 }

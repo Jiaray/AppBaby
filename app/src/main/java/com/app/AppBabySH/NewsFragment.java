@@ -116,7 +116,7 @@ public class NewsFragment extends BaseFragment {
     private void getData() {
         if(UserMstr.userData == null)return;
         DisplayLoadingDiaLog("资料读取中，请稍后...");
-        WebService.GetNews(null, UserMstr.userData.getUserID(), "P", String.valueOf(pageIndex), "3", new WebService.WebCallback() {
+        WebService.GetNews(null, UserMstr.userData.getUserID(), "P", String.valueOf(pageIndex), getResources().getString(R.string.Max_Row), new WebService.WebCallback() {
 
             @Override
             public void CompleteCallback(String id, Object obj) {

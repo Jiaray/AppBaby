@@ -5,5 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="BaseWebUrl">http://img.appbaby.net/</string>
-
+    <string name="Max_Row">20</string>
+    <dimen name="profile_txt_size">22sp</dimen>
 </resources>

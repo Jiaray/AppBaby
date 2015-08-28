@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="陳MAX 的 叔叔"
-            android:textSize="26sp" />
+            android:textSize="@dimen/profile_txt_size"  />
 
         <TextView
             android:id="@+id/txtProfilPersonalSchool"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="上海MAX校"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView
